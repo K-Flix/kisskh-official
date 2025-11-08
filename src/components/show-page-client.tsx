@@ -113,7 +113,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                     ></iframe>
                     <button 
                         onClick={handleClosePlayer} 
-                        className="absolute -top-2 -right-2 md:-top-4 md:-right-4 z-10 text-white bg-background/50 rounded-full p-1 hover:bg-background/80 transition-colors"
+                        className="absolute top-2 right-2 z-10 text-white bg-background/50 rounded-full p-1 hover:bg-background/80 transition-colors"
                         aria-label="Close player"
                     >
                         <X className="w-6 h-6" />
