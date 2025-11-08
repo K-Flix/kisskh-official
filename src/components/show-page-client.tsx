@@ -101,8 +101,8 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
         <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-black/20" />
         
         {playerState ? (
-          <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
-            <div className="w-full max-w-6xl">
+          <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm">
+            <div className="absolute left-1/2 top-1/2 w-full max-w-6xl -translate-x-1/2 -translate-y-1/2 p-4">
                 <div className="w-full aspect-video relative">
                     <iframe
                         src={videoUrl}
