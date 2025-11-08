@@ -37,31 +37,36 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
     : '';
 
   return (
-    <div className="flex flex-col">
-       <div className="relative h-[56.25vw] max-h-[80vh] w-full bg-background">
-        {playerState ? (
+    <>
+      {!playerState && (
+         <div className="relative h-[56.25vw] max-h-[80vh] w-full bg-background">
+            <Image
+            src={show.backdrop_path}
+            alt={`Backdrop for ${show.title}`}
+            fill
+            priority
+            className="object-cover object-top"
+            data-ai-hint="tv show backdrop"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/30 to-transparent" />
+            <ShowHero show={show} onPlayClick={handlePlayFirstEpisode} />
+        </div>
+      )}
+
+      {playerState && (
+        <div className="container py-8">
+          <div className="aspect-video">
             <iframe
                 src={videoUrl}
                 allow="autoplay; encrypted-media; picture-in-picture"
                 allowFullScreen
-                className="w-full h-full border-0"
+                className="w-full h-full border-0 rounded-lg"
               ></iframe>
-        ) : (
-            <>
-                <Image
-                src={show.backdrop_path}
-                alt={`Backdrop for ${show.title}`}
-                fill
-                priority
-                className="object-cover object-top"
-                data-ai-hint="tv show backdrop"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-r from-background via-background/30 to-transparent" />
-                <ShowHero show={show} onPlayClick={handlePlayFirstEpisode} />
-            </>
-        )}
-      </div>
+          </div>
+        </div>
+      )}
+
 
       <div className="container py-8 md:py-12 space-y-12">
         <EpisodeList seasons={show.seasons} onEpisodePlay={handlePlay} />
@@ -82,6 +87,6 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
           <MovieCarousel title="You may also like" movies={show.similar} />
         )}
       </div>
-    </div>
+    </>
   );
 }

@@ -23,92 +23,96 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
   const videoUrl = `https://vidstorm.ru/movie/${movie.id}`;
 
   return (
-    <div className="flex flex-col">
-      <div className="relative h-[56.25vw] max-h-[80vh] w-full bg-background">
-        {showPlayer ? (
-          <iframe
-            src={videoUrl}
-            allow="autoplay; encrypted-media; picture-in-picture"
-            allowFullScreen
-            className="w-full h-full border-0"
-          ></iframe>
-        ) : (
-          <>
-            <Image
-              src={movie.backdrop_path}
-              alt={`Backdrop for ${movie.title}`}
-              fill
-              priority
-              className="object-cover object-top"
-              data-ai-hint="movie backdrop"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/30 to-transparent" />
-          </>
-        )}
-        
-        {!showPlayer && (
-            <div className="relative z-10 flex flex-col justify-end h-full container pb-8 md:pb-16 space-y-4">
+    <>
+      {!showPlayer && (
+        <div className="relative h-[56.25vw] max-h-[80vh] w-full bg-background">
+          <Image
+            src={movie.backdrop_path}
+            alt={`Backdrop for ${movie.title}`}
+            fill
+            priority
+            className="object-cover object-top"
+            data-ai-hint="movie backdrop"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/30 to-transparent" />
+
+          <div className="relative z-10 flex flex-col justify-end h-full container pb-8 md:pb-16 space-y-4">
             {movie.logo_path ? (
-                <div className="relative w-full max-w-sm h-20 md:h-28">
+              <div className="relative w-full max-w-sm h-20 md:h-28">
                 <Image
-                    src={movie.logo_path}
-                    alt={`${movie.title} logo`}
-                    fill
-                    className="object-contain object-left-bottom"
-                    data-ai-hint="movie logo"
+                  src={movie.logo_path}
+                  alt={`${movie.title} logo`}
+                  fill
+                  className="object-contain object-left-bottom"
+                  data-ai-hint="movie logo"
                 />
-                </div>
+              </div>
             ) : (
-                <h1 className="text-4xl md:text-6xl font-bold font-headline text-white drop-shadow-lg">
+              <h1 className="text-4xl md:text-6xl font-bold font-headline text-white drop-shadow-lg">
                 {movie.title}
-                </h1>
+              </h1>
             )}
 
             <div className="flex items-center gap-4 text-sm text-foreground/80">
-                <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1">
                 <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                 <span>{movie.vote_average.toFixed(1)}</span>
-                </div>
-                <div className="flex items-center gap-1">
+              </div>
+              <div className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
                 <span>{movieYear}</span>
-                </div>
-                {movie.runtime > 0 && (
+              </div>
+              {movie.runtime > 0 && (
                 <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    <span>{runtimeHours}h {runtimeMinutes}m</span>
+                  <Clock className="w-4 h-4" />
+                  <span>{runtimeHours}h {runtimeMinutes}m</span>
                 </div>
-                )}
+              )}
             </div>
             <div className="flex flex-wrap gap-2">
-                {movie.genres.map((genre) => (
+              {movie.genres.map((genre) => (
                 <Badge key={genre.id} variant="secondary" className="backdrop-blur-sm bg-white/10">{genre.name}</Badge>
-                ))}
+              ))}
             </div>
 
             <p className="max-w-2xl text-foreground/80 md:text-base drop-shadow-md line-clamp-3">
-                {movie.overview}
+              {movie.overview}
             </p>
             <div className="flex flex-wrap gap-2 md:gap-4 items-center">
-                <Button onClick={() => setShowPlayer(true)} size="lg" className="bg-white text-black hover:bg-white/90">
+              <Button onClick={() => setShowPlayer(true)} size="lg" className="bg-white text-black hover:bg-white/90">
                 <Play className="mr-2" />
                 Play
-                </Button>
-                <WatchlistButton movie={movie} />
-                <Button variant="outline" className="bg-transparent border-white/50 hover:bg-white/10">
+              </Button>
+              <WatchlistButton movie={movie} />
+              <Button variant="outline" className="bg-transparent border-white/50 hover:bg-white/10">
                 <Video className="mr-2" />
                 Trailer
-                </Button>
-                <Button variant="ghost" size="icon">
+              </Button>
+              <Button variant="ghost" size="icon">
                 <Download />
                 <span className="sr-only">Download</span>
-                </Button>
+              </Button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showPlayer && (
+        <div className="container py-8">
+            <div className='aspect-video'>
+                <iframe
+                    src={videoUrl}
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full border-0 rounded-lg"
+                ></iframe>
             </div>
-        )}
-      </div>
+        </div>
+      )}
+
       <div className="container py-8 md:py-12 space-y-12">
+         {!showPlayer && <div className='h-0'></div>}
         <div>
           <h2 className="text-2xl font-bold mb-4 font-headline flex items-center">
             <span className="w-1 h-7 bg-primary mr-3"></span>
@@ -125,6 +129,6 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
           <MovieCarousel title="You may also like" movies={movie.similar} />
         )}
       </div>
-    </div>
+    </>
   );
 }
