@@ -55,7 +55,7 @@ function processItem(item: any, mediaType: 'movie' | 'tv', images?: any): Movie 
         return {
             ...baseItem,
             media_type: 'tv',
-            title: item.name || 'Untitled',
+            title: item.name || item.title || 'Untitled',
         } as Show;
     }
 }
@@ -171,7 +171,7 @@ export const getMovieById = async (id: number): Promise<MovieDetails | null> => 
           ...member,
           profile_path: member.profile_path ? `${IMAGE_BASE_URL}/w300${member.profile_path}` : null
         })),
-        similar: data.similar?.results.map((item: any) => processItem(item, 'movie')) || [],
+        similar: data.similar?.results?.map((item: any) => processItem(item, 'movie')) || [],
     };
 }
 
@@ -201,7 +201,7 @@ export const getShowById = async (id: number): Promise<ShowDetails | null> => {
           ...member,
           profile_path: member.profile_path ? `${IMAGE_BASE_URL}/w300${member.profile_path}` : null
         })),
-        similar: data.similar?.results.map((item: any) => processItem(item, 'tv', item.images)) || []
+        similar: data.similar?.results?.map((item: any) => processItem(item, 'tv', item.images)) || []
     };
 };
 

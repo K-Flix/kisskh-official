@@ -123,7 +123,7 @@ export default function ShowPage({ params }: ShowPageProps) {
             </h2>
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-4 sm:gap-6">
                 {show.cast.slice(0, 8).map((member) => (
-                    <ActorCard key={member.name} actor={member} />
+                    <ActorCard key={member.credit_id} actor={member} />
                 ))}
             </div>
         </div>

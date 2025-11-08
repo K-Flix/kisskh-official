@@ -23,10 +23,11 @@ export interface Movie extends BaseItem {
 
 export interface Show extends BaseItem {
   media_type: 'tv';
-  genre_ids: number[];
+  title: string;
 }
 
 export interface CastMember {
+  credit_id: string;
   name: string;
   character: string;
   profile_path: string | null;
