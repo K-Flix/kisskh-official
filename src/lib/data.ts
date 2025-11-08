@@ -86,7 +86,13 @@ export async function getItems(key: string, page: number = 1): Promise<(Movie | 
 
 export async function getFeatured(): Promise<(Movie | Show)[]> {
     const items = await getItems('trending_today');
-    return items.slice(0, 15);
+    const detailedItems = await Promise.all(
+        items.slice(0, 15).map(async (item) => {
+            const details = await fetchFromTMDB(`${item.media_type}/${item.id}`, { append_to_response: 'images,videos' });
+            return processItem(item, item.media_type, details?.images, details?.videos);
+        })
+    );
+    return detailedItems.filter(Boolean) as (Movie | Show)[];
 }
 
 
