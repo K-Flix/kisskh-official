@@ -1,3 +1,5 @@
+'use client';
+
 import type { Movie, Show } from '@/lib/types';
 import { MovieCard } from '@/components/movie-card';
 import {

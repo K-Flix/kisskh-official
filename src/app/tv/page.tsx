@@ -1,14 +1,12 @@
-'use client';
 
 import { getTrending, getKDramas, getCDramas } from '@/lib/data';
 import { MovieCarousel } from '@/components/movie-carousel';
-import { use } from 'react';
 import { Separator } from '@/components/ui/separator';
 
-export default function TVPage() {
-  const trending = use(getTrending('day', 'tv'));
-  const kDramas = use(getKDramas());
-  const cDramas = use(getCDramas());
+export default async function TVPage() {
+  const trending = await getTrending('day', 'tv');
+  const kDramas = await getKDramas();
+  const cDramas = await getCDramas();
 
   return (
     <div className="container py-8 space-y-8">
@@ -18,7 +16,7 @@ export default function TVPage() {
         </div>
         <Separator />
       <MovieCarousel title="Trending TV Shows" movies={trending} />
-      <MovieCarousel title="K-Drama" movies={kDramas} />
+      <MovieCarousel title="K-Drama" movies={kDramas} key="k-dramas" />
       <MovieCarousel title="C-Drama" movies={cDramas} />
     </div>
   );
