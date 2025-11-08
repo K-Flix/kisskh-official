@@ -36,7 +36,7 @@ export function SearchInput() {
     if (debouncedQuery.trim().length > 1) {
       startTransition(async () => {
         const searchResults = await searchMovies(debouncedQuery);
-        setResults(searchResults.slice(0, 7)); // Limit to 7 results
+        setResults(searchResults.slice(0, 12)); // Limit to 12 results
       });
     } else {
       setResults([]);
