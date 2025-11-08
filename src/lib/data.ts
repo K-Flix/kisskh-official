@@ -1,3 +1,4 @@
+
 import type { Genre, Movie, MovieDetails, Show, ShowDetails, Episode } from '@/lib/types';
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
@@ -115,7 +116,7 @@ export const getMovieById = async (id: number): Promise<MovieDetails | null> => 
           ...member,
           profile_path: member.profile_path ? `${IMAGE_BASE_URL}/w300${member.profile_path}` : null
         })),
-        similar: movieData.similar.results.map((item: any) => processMovie(item)),
+        similar: movieData.similar?.results.map((item: any) => processMovie(item)) || [],
         runtime: movieData.runtime
     };
 }
@@ -126,7 +127,6 @@ export const getShowById = async (id: number): Promise<ShowDetails | null> => {
 
     const creditsData = showData.credits;
     const images = showData.images;
-    const similar = showData.similar;
 
     const seasons = await Promise.all(showData.seasons
         .filter((s:any) => s.season_number > 0)
@@ -149,7 +149,7 @@ export const getShowById = async (id: number): Promise<ShowDetails | null> => {
           profile_path: member.profile_path ? `${IMAGE_BASE_URL}/w300${member.profile_path}` : null
         })),
         seasons: seasons,
-        similar: similar.results.map((item: any) => processShow(item))
+        similar: showData.similar?.results.map((item: any) => processShow(item)) || []
     };
 };
 
