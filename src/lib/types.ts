@@ -1,3 +1,4 @@
+
 export interface Genre {
   id: number;
   name: string;
@@ -45,7 +46,7 @@ export interface Episode {
   name: string;
   overview: string;
   still_path: string | null;
-  runtime: number;
+  runtime: number | null;
 }
 
 export interface Season {

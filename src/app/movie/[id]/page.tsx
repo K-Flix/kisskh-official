@@ -1,8 +1,10 @@
+
 import { notFound } from 'next/navigation';
 import { getMovieById } from '@/lib/data';
 import { MoviePageClient } from '@/components/movie-page-client';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { DetailLayout } from '@/components/layout/detail-layout';
 
 interface MoviePageProps {
   params: {
@@ -23,12 +25,12 @@ export default async function MoviePage({ params }: MoviePageProps) {
   }
 
   return (
-    <div className="relative">
-       <Link href="/" className="absolute top-4 left-4 z-20 bg-background/50 p-2 rounded-full hover:bg-background/80 transition-colors">
-          <ArrowLeft className="w-6 h-6"/>
-          <span className="sr-only">Back</span>
+    <DetailLayout>
+        <Link href="/" className="absolute top-4 left-4 z-20 bg-background/50 p-2 rounded-full hover:bg-background/80 transition-colors">
+            <ArrowLeft className="w-6 h-6"/>
+            <span className="sr-only">Back</span>
         </Link>
-      <MoviePageClient movie={movie} />
-    </div>
+        <MoviePageClient movie={movie} />
+    </DetailLayout>
   );
 }

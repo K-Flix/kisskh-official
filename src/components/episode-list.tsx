@@ -1,10 +1,12 @@
+
 'use client';
 
 import { useState } from 'react';
 import type { Season } from '@/lib/types';
 import { SeasonSelector } from '@/components/season-selector';
 import { EpisodeCard } from '@/components/episode-card';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Input } from './ui/input';
+import { Search } from 'lucide-react';
 
 interface EpisodeListProps {
   seasons: Season[];
@@ -12,7 +14,8 @@ interface EpisodeListProps {
 }
 
 export function EpisodeList({ seasons, onEpisodePlay }: EpisodeListProps) {
-  const [selectedSeason, setSelectedSeason] = useState<Season | undefined>(seasons[0]);
+  const [selectedSeason, setSelectedSeason] = useState<Season | undefined>(seasons.find(s => s.season_number > 0) || seasons[0]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleSeasonChange = (seasonNumber: string) => {
     const season = seasons.find(s => s.season_number.toString() === seasonNumber);
@@ -23,29 +26,37 @@ export function EpisodeList({ seasons, onEpisodePlay }: EpisodeListProps) {
     return null;
   }
 
+  const filteredEpisodes = selectedSeason?.episodes.filter(ep => 
+    ep.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    ep.overview.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold font-headline flex items-center">
+      <div className="flex justify-between items-center mb-4 gap-4">
+        <h2 className="text-2xl font-bold font-headline flex items-center shrink-0">
             <span className="w-1 h-7 bg-primary mr-3"></span>
             Episodes
         </h2>
-        <SeasonSelector seasons={seasons} onSeasonChange={handleSeasonChange} />
+        <div className='flex items-center gap-2 w-full'>
+          <SeasonSelector seasons={seasons} onSeasonChange={handleSeasonChange} />
+          <div className="relative w-full max-w-xs">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input 
+              placeholder="Search episode..." 
+              className="pl-10"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
       </div>
       {selectedSeason && (
-        <Carousel opts={{ align: 'start', loop: false }}>
-          <CarouselContent>
-            {selectedSeason.episodes.map((episode) => (
-              <CarouselItem key={episode.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
-                <div onClick={() => onEpisodePlay(selectedSeason.season_number, episode.episode_number)}>
-                    <EpisodeCard episode={episode} />
-                </div>
-              </CarouselItem>
+        <div className="space-y-3">
+            {filteredEpisodes?.map((episode) => (
+                <EpisodeCard key={episode.id} episode={episode} onPlay={() => onEpisodePlay(selectedSeason.season_number, episode.episode_number)} />
             ))}
-          </CarouselContent>
-          <CarouselPrevious className="ml-12" />
-          <CarouselNext className="mr-12" />
-        </Carousel>
+        </div>
       )}
     </div>
   );

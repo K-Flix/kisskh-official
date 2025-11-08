@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import type { CastMember } from '@/lib/types';
 import { User } from 'lucide-react';
@@ -16,7 +17,7 @@ export function ActorCard({ actor }: ActorCardProps) {
             alt={actor.name}
             width={128}
             height={128}
-            className="object-cover w-full h-full"
+            className="object-cover w-full h-full rounded-full"
           />
         ) : (
           <User className="w-12 h-12 text-muted-foreground" />

@@ -1,10 +1,10 @@
+
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
 import type { ShowDetails } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
-import { Star, Calendar, Play, Video, Download, ArrowLeft, X } from 'lucide-react';
+import { Star, Calendar, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WatchlistButton } from '@/components/watchlist-button';
 
@@ -19,21 +19,9 @@ export function ShowHero({ show, onPlayClick }: ShowHeroProps) {
   return (
     <div className="relative z-10 flex flex-col justify-end h-full container pb-8 md:pb-16 space-y-4">
       
-      {show.logo_path ? (
-        <div className="relative w-full max-w-sm h-20 md:h-28">
-          <Image
-            src={show.logo_path}
-            alt={`${show.title} logo`}
-            fill
-            className="object-contain object-left-bottom"
-            data-ai-hint="tv show logo"
-          />
-        </div>
-      ) : (
-        <h1 className="text-4xl md:text-6xl font-bold font-headline text-white drop-shadow-lg">
+      <h1 className="text-4xl md:text-5xl font-bold font-headline text-white drop-shadow-lg max-w-2xl">
           {show.title}
-        </h1>
-      )}
+      </h1>
 
       <div className="flex items-center gap-4 text-sm text-foreground/80">
           <div className="flex items-center gap-1">
@@ -44,15 +32,12 @@ export function ShowHero({ show, onPlayClick }: ShowHeroProps) {
             <Calendar className="w-4 h-4" />
             <span>{showYear}</span>
           </div>
-          <Badge variant="outline" className='border-white text-white'>TV Show</Badge>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {show.genres.map((genre) => (
-          <Badge key={genre.id} variant="secondary" className="backdrop-blur-sm bg-white/10">{genre.name}</Badge>
-        ))}
+          {show.genres.slice(0, 2).map((genre) => (
+            <Badge key={genre.id} variant="outline" className="backdrop-blur-sm bg-transparent border-white/50 text-white">{genre.name}</Badge>
+          ))}
       </div>
 
-      <p className="max-w-2xl text-foreground/80 md:text-base drop-shadow-md line-clamp-3">
+      <p className="max-w-xl text-foreground/80 md:text-base drop-shadow-md line-clamp-3">
         {show.overview}
       </p>
       <div className="flex flex-wrap gap-2 md:gap-4 items-center">
@@ -61,13 +46,11 @@ export function ShowHero({ show, onPlayClick }: ShowHeroProps) {
             Play
         </Button>
         <WatchlistButton movie={show} />
-        <Button variant="outline" className="bg-transparent border-white/50 hover:bg-white/10">
-            <Video className="mr-2" />
-            Trailer
+        <Button variant="outline" className="bg-transparent border-white/50 hover:bg-white/10 text-white">
+            Episodes
         </Button>
-        <Button variant="ghost" size="icon">
-            <Download />
-            <span className="sr-only">Download</span>
+        <Button variant="outline" className="bg-transparent border-white/50 hover:bg-white/10 text-white">
+            Similar
         </Button>
       </div>
     </div>
