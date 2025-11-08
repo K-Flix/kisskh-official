@@ -10,7 +10,7 @@ import { MainLayout } from '@/components/layout/main-layout';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
-  title: 'StreamVerse',
+  title: 'Streamss',
   description: 'A streaming website built with Next.js',
 };
 

@@ -6,9 +6,10 @@ import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { SearchInput } from '../search-input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Clapperboard } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
+import { Logo } from '../logo';
 
 const navLinks = [
   { href: '/', children: 'Home' },
@@ -39,10 +40,7 @@ export function Header() {
       <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
         <div className="flex gap-6 md:gap-10 items-center">
           <Link href="/" className="flex items-center space-x-2">
-            <Clapperboard className="w-6 h-6 text-primary" />
-            <span className="inline-block font-bold text-lg">
-              StreamVerse
-            </span>
+            <Logo />
           </Link>
           <nav className="hidden md:flex gap-2">
             {navLinks.map((link) => (
@@ -66,10 +64,7 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="left">
               <Link href="/" className="flex items-center space-x-2 mb-6">
-                <Clapperboard className="w-6 h-6 text-primary" />
-                <span className="inline-block font-bold text-lg">
-                  StreamVerse
-                </span>
+                <Logo />
               </Link>
               <nav className="flex flex-col gap-3">
                 {navLinks.map((link) => (
