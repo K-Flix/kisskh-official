@@ -6,12 +6,25 @@ export interface Movie {
   overview: string;
   release_date: string;
   vote_average: number;
-  genres: { id: number; name: string }[];
-  cast: { name: string; character: string; profile_path: string | null }[];
   genre_ids: number[];
 }
 
 export interface Genre {
   id: number;
   name: string;
+}
+
+export interface CastMember {
+  name: string;
+  character: string;
+  profile_path: string | null;
+}
+
+export interface Credits {
+    cast: CastMember[];
+}
+
+export interface MovieDetails extends Movie {
+    genres: Genre[];
+    cast: CastMember[];
 }
