@@ -90,17 +90,17 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
     <div className="text-white">
       {playerState ? (
         <div className="w-full">
-            <div className="relative aspect-video w-full max-w-4xl mx-auto mt-8">
+            <div className="relative aspect-video w-full max-w-4xl mx-auto md:mt-8">
               <iframe
                 src={videoUrl}
                 allow="autoplay; encrypted-media; picture-in-picture"
                 allowFullScreen
-                className="w-full h-full border-0 rounded-lg bg-black"
+                className="w-full h-full border-0 md:rounded-lg bg-black"
                 key={selectedServer}
               ></iframe>
               <button
                 onClick={handleClosePlayer}
-                className="absolute -top-3 -right-3 z-10 text-white bg-background/50 rounded-full p-1 hover:bg-background/80 transition-colors"
+                className="absolute top-2 right-2 md:-top-3 md:-right-3 z-10 text-white bg-background/50 rounded-full p-1 hover:bg-background/80 transition-colors"
                 aria-label="Close player"
               >
                 <X className="w-6 h-6" />

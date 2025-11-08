@@ -30,7 +30,9 @@ export default async function ShowPage({ params }: ShowPageProps) {
         <ArrowLeft className="w-6 h-6 text-white"/>
         <span className="sr-only">Back to TV shows</span>
       </Link>
-      <ShowPageClient show={show} />
+       <div className="md:px-0">
+            <ShowPageClient show={show} />
+        </div>
     </div>
   );
 }

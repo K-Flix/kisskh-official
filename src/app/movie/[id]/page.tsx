@@ -29,7 +29,9 @@ export default async function MoviePage({ params }: MoviePageProps) {
             <ArrowLeft className="w-6 h-6 text-white"/>
             <span className="sr-only">Back</span>
         </Link>
-        <MoviePageClient movie={movie} />
+        <div className="md:px-0">
+            <MoviePageClient movie={movie} />
+        </div>
     </div>
   );
 }
