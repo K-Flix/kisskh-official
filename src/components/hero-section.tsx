@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from 'next/image';
@@ -30,6 +29,7 @@ export function HeroSection({ movies }: HeroSectionProps) {
         {movies.map((movie) => (
           <CarouselItem key={movie.id}>
             <div className="relative h-[60vh] md:h-[80vh] w-full">
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
                 <Image
                     src={movie.backdrop_path}
                     alt={`Backdrop for ${movie.title}`}
@@ -38,7 +38,7 @@ export function HeroSection({ movies }: HeroSectionProps) {
                     className="object-cover object-top"
                     data-ai-hint="movie backdrop"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-r from-background/30 via-background/10 to-transparent" />
                 <div className="relative z-10 flex flex-col justify-end h-full container pb-12 md:pb-24 space-y-4">
                     
@@ -68,7 +68,7 @@ export function HeroSection({ movies }: HeroSectionProps) {
                         Play
                         </Link>
                     </Button>
-                    <Button asChild size="lg" variant="secondary" className="bg-gray-500/50 text-white hover:bg-gray-500/40">
+                    <Button asChild size="lg" variant="secondary" className="bg-gray-500/50 text-white hover:bg-gray-500/40 border border-white/20">
                          <Link href={movie.media_type === 'tv' ? `/tv/${movie.id}` : `/movie/${movie.id}`}>
                         <Info className="mr-2" />
                         See More
