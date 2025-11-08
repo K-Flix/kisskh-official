@@ -69,51 +69,49 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-black/20" />
         
-        {showPlayer ? (
-            <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm">
-              <div className="absolute left-1/2 top-1/2 w-full max-w-6xl -translate-x-1/2 -translate-y-1/2 p-4">
-                  <div className="w-full aspect-video relative">
-                      <iframe
-                          src={videoUrl}
-                          allow="autoplay; encrypted-media; picture-in-picture"
-                          allowFullScreen
-                          className="w-full h-full border-0 rounded-lg bg-black"
-                          key={selectedServer}
-                      ></iframe>
-                      <button 
-                        onClick={() => setShowPlayer(false)} 
-                        className="absolute top-2 right-2 z-10 text-white bg-background/50 rounded-full p-1 hover:bg-background/80 transition-colors"
-                        aria-label="Close player"
-                      >
-                          <X className="w-6 h-6" />
-                      </button>
-                  </div>
-                   <div className="mt-4 p-2 bg-black/30 rounded-lg backdrop-blur-sm">
-                      <div className="flex flex-wrap items-center gap-2">
-                          <span className="text-sm font-semibold text-gray-300 mr-2 shrink-0">Servers:</span>
-                          {servers.map(({ name, displayName }) => (
-                              <Button
-                                  key={name}
-                                  onClick={() => setSelectedServer(name)}
-                                  size="sm"
-                                  variant={selectedServer === name ? 'default' : 'secondary'}
-                                  className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
-                                      selectedServer === name
-                                          ? 'bg-primary text-primary-foreground'
-                                          : 'bg-zinc-700/80 hover:bg-zinc-600'
-                                  }`}
-                              >
-                                  {displayName}
-                              </Button>
-                          ))}
-                      </div>
-                  </div>
-              </div>
-          </div>
-        ) : (
-          <ShowHero show={movie} onPlayClick={() => setShowPlayer(true)} onTrailerClick={() => setShowTrailer(true)} />
-        )}
+        <ShowHero show={movie} onPlayClick={() => setShowPlayer(true)} onTrailerClick={() => setShowTrailer(true)} />
       </div>
+
+      {showPlayer && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center" onClick={() => setShowPlayer(false)}>
+            <div className="w-full max-w-6xl aspect-video relative" onClick={(e) => e.stopPropagation()}>
+                <iframe
+                    src={videoUrl}
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full border-0 rounded-lg bg-black"
+                    key={selectedServer}
+                ></iframe>
+                <button 
+                  onClick={() => setShowPlayer(false)} 
+                  className="absolute -top-2 -right-2 z-10 text-white bg-background/50 rounded-full p-1 hover:bg-background/80 transition-colors"
+                  aria-label="Close player"
+                >
+                    <X className="w-6 h-6" />
+                </button>
+                <div className="mt-4 p-2 bg-black/30 rounded-lg backdrop-blur-sm">
+                    <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-sm font-semibold text-gray-300 mr-2 shrink-0">Servers:</span>
+                        {servers.map(({ name, displayName }) => (
+                            <Button
+                                key={name}
+                                onClick={() => setSelectedServer(name)}
+                                size="sm"
+                                variant={selectedServer === name ? 'default' : 'secondary'}
+                                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                                    selectedServer === name
+                                        ? 'bg-primary text-primary-foreground'
+                                        : 'bg-zinc-700/80 hover:bg-zinc-600'
+                                }`}
+                            >
+                                {displayName}
+                            </Button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
+      )}
 
       <div className="container py-8 space-y-12">
         <ActorCard actors={movie.cast} />
