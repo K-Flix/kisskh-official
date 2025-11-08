@@ -35,7 +35,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-black/20" />
         {showPlayer ? (
-            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/75 backdrop-blur-lg">
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/75 backdrop-blur-sm">
                 <div className="w-full h-full max-w-6xl aspect-video relative">
                 <iframe
                     src={videoUrl}
