@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
@@ -31,7 +30,6 @@ export function WatchlistButton({ movie }: WatchlistButtonProps) {
   };
 
   return (
-    <TooltipProvider>
       <Tooltip delayDuration={200}>
         <TooltipTrigger asChild>
           <Button
@@ -48,6 +46,5 @@ export function WatchlistButton({ movie }: WatchlistButtonProps) {
           <p>{isBookmarked ? 'Remove from watchlist' : 'Add to watchlist'}</p>
         </TooltipContent>
       </Tooltip>
-    </TooltipProvider>
   );
 }

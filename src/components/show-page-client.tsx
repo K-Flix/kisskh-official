@@ -8,6 +8,7 @@ import { EpisodeList } from '@/components/episode-list';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ActorCard } from '@/components/actor-card';
 import { ShowHero } from './show-hero';
+import { X } from 'lucide-react';
 
 interface ShowPageClientProps {
   show: ShowDetails;
@@ -24,6 +25,10 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
   const handlePlay = (season: number, episode: number) => {
     setPlayerState({ season, episode });
   };
+
+  const handleClosePlayer = () => {
+    setPlayerState(null);
+  }
   
   const handlePlayFirstEpisode = () => {
     if (show && show.seasons.length > 0) {
@@ -37,14 +42,13 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
     }
   };
 
-
   const videoUrl = playerState
     ? `https://vidstorm.ru/tv/${show.id}/${playerState.season}/${playerState.episode}`
     : '';
 
   return (
     <div className="text-white">
-      <div className="relative h-[50vh] md:h-[75vh] w-full">
+      <div className="relative h-[60vh] md:h-[90vh] w-full">
         <Image
           src={show.backdrop_path}
           alt={`Backdrop for ${show.title}`}
@@ -57,16 +61,20 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
         <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-black/20" />
         
         {playerState ? (
-            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/50">
-                <div className="w-full h-full max-w-4xl aspect-video">
-                <iframe
-                    src={videoUrl}
-                    allow="autoplay; encrypted-media; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full border-0"
-                ></iframe>
-                </div>
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/75 backdrop-blur-lg">
+            <div className="w-full h-full max-w-6xl aspect-video relative">
+              <iframe
+                  src={videoUrl}
+                  allow="autoplay; encrypted-media; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full border-0"
+              ></iframe>
+              <button onClick={handleClosePlayer} className="absolute -top-10 right-0 text-white hover:text-primary transition-colors">
+                <X className="w-8 h-8" />
+                <span className="sr-only">Close player</span>
+              </button>
             </div>
+          </div>
         ) : (
             <ShowHero show={show} onPlayClick={handlePlayFirstEpisode} />
         )}

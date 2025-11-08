@@ -1,3 +1,4 @@
+
 import { getFeaturedMovie, getTrending, getKDramas, getCDramas, getAnime, getPopularMovies, getTopRated } from '@/lib/data';
 import { HeroSection } from '@/components/hero-section';
 import { MovieCarousel } from '@/components/movie-carousel';
@@ -17,15 +18,13 @@ export default async function Home() {
     <div className="flex flex-col">
       {featuredMovie && <HeroSection movie={featuredMovie} />}
       <div className="container py-8 space-y-12">
-        <MovieCarousel title="Trending Today" movies={trending} />
-        <MovieCarousel title="Popular K-Dramas" movies={kDramas} />
-        <MovieCarousel title="Popular C-Dramas" movies={cDramas} />
-        <MovieCarousel title="Anime" movies={anime} />
-        <MovieCarousel title="Popular Movies" movies={popularMovies} />
-        <MovieCarousel title="Top Rated" movies={topRated} />
+        <MovieCarousel title="Trending Today" movies={trending} seeAllHref="/tv" />
+        <MovieCarousel title="Popular K-Dramas" movies={kDramas} seeAllHref="/tv?genre=k-drama" />
+        <MovieCarousel title="Popular C-Dramas" movies={cDramas} seeAllHref="/tv?genre=c-drama" />
+        <MovieCarousel title="Anime" movies={anime} seeAllHref="/discover?genre=anime" />
+        <MovieCarousel title="Popular Movies" movies={popularMovies} seeAllHref="/movies" />
+        <MovieCarousel title="Top Rated" movies={topRated} seeAllHref="/movies?sort=top-rated" />
       </div>
     </div>
   );
 }
-
-    

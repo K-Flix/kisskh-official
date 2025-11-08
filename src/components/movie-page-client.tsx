@@ -4,13 +4,10 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import type { MovieDetails } from '@/lib/types';
-import { Badge } from '@/components/ui/badge';
-import { Star } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { WatchlistButton } from '@/components/watchlist-button';
 import { ActorCard } from '@/components/actor-card';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ShowHero } from './show-hero';
+import { X } from 'lucide-react';
 
 interface MoviePageClientProps {
   movie: MovieDetails;
@@ -19,12 +16,15 @@ interface MoviePageClientProps {
 export function MoviePageClient({ movie }: MoviePageClientProps) {
   const [showPlayer, setShowPlayer] = useState(false);
 
-  const movieYear = movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A';
+  const handleClosePlayer = () => {
+    setShowPlayer(false);
+  }
+
   const videoUrl = `https://vidstorm.ru/movie/${movie.id}`;
 
   return (
     <div className="text-white">
-      <div className="relative h-[50vh] md:h-[75vh] w-full">
+      <div className="relative h-[60vh] md:h-[90vh] w-full">
         <Image
           src={movie.backdrop_path}
           alt={`Backdrop for ${movie.title}`}
@@ -35,14 +35,18 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-black/20" />
         {showPlayer ? (
-            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/50">
-                <div className="w-full h-full max-w-4xl aspect-video">
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/75 backdrop-blur-lg">
+                <div className="w-full h-full max-w-6xl aspect-video relative">
                 <iframe
                     src={videoUrl}
                     allow="autoplay; encrypted-media; picture-in-picture"
                     allowFullScreen
                     className="w-full h-full border-0"
                 ></iframe>
+                <button onClick={handleClosePlayer} className="absolute -top-10 right-0 text-white hover:text-primary transition-colors">
+                    <X className="w-8 h-8" />
+                    <span className="sr-only">Close player</span>
+                </button>
                 </div>
           </div>
         ) : (

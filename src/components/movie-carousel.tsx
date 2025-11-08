@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { Movie, Show } from '@/lib/types';
@@ -15,9 +16,10 @@ import { Button } from './ui/button';
 interface MovieCarouselProps {
   title: string;
   movies: (Movie | Show)[];
+  seeAllHref?: string;
 }
 
-export function MovieCarousel({ title, movies }: MovieCarouselProps) {
+export function MovieCarousel({ title, movies, seeAllHref }: MovieCarouselProps) {
   if (!movies || movies.length === 0) return null;
   
   return (
@@ -27,9 +29,11 @@ export function MovieCarousel({ title, movies }: MovieCarouselProps) {
             <span className="w-1 h-7 bg-primary mr-3"></span>
             {title}
         </h2>
-        <Button variant="link" asChild>
-            <Link href="#">See All &gt;</Link>
-        </Button>
+        {seeAllHref && (
+          <Button variant="link" asChild>
+              <Link href={seeAllHref}>See All &gt;</Link>
+          </Button>
+        )}
       </div>
       <Carousel
         opts={{

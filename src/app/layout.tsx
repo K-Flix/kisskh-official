@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Inter } from 'next/font/google';
@@ -5,6 +6,7 @@ import './globals.css';
 import { Header } from '@/components/layout/header';
 import { Toaster } from '@/components/ui/toaster';
 import { WatchlistProvider } from '@/context/watchlist-context';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
@@ -35,14 +37,16 @@ export default function RootLayout({
   return (
     <html lang="en" className={`dark ${inter.variable}`}>
       <body className="font-body antialiased min-h-screen bg-background">
-        <WatchlistProvider>
-          <div className="relative flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-          <Toaster />
-        </WatchlistProvider>
+        <TooltipProvider>
+          <WatchlistProvider>
+            <div className="relative flex min-h-screen flex-col">
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+            <Toaster />
+          </WatchlistProvider>
+        </TooltipProvider>
       </body>
     </html>
   );

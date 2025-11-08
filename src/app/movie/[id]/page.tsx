@@ -25,7 +25,7 @@ export default async function MoviePage({ params }: MoviePageProps) {
 
   return (
     <div className="relative">
-        <Link href="/" className="absolute top-4 left-4 z-20 flex items-center justify-center bg-background/50 p-2 rounded-full hover:bg-background/80 transition-colors">
+        <Link href="/" className="absolute top-4 left-4 z-50 flex items-center justify-center bg-background/50 p-2 rounded-full hover:bg-background/80 transition-colors">
             <ArrowLeft className="w-6 h-6 text-white"/>
             <span className="sr-only">Back</span>
         </Link>
