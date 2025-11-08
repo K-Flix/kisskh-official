@@ -21,7 +21,7 @@ export function ActorCard({ actor }: ActorCardProps) {
             />
             ) : (
             <div className='w-full h-full bg-muted rounded-t-lg flex items-center justify-center'>
-                <User className="w-12 h-12 text-muted-foreground" />
+                <User className="w-8 h-8 text-muted-foreground" />
             </div>
             )}
       </div>
