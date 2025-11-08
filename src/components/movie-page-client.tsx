@@ -12,6 +12,7 @@ import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import Link from 'next/link';
+import { WatchlistButton } from './watchlist-button';
 
 interface MoviePageClientProps {
   movie: MovieDetails;
@@ -137,8 +138,8 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                 priority
                 className="object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-black/20" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-background/20 via-transparent to-black/20" />
                 
                 <ShowHero 
                     show={movie} 
@@ -146,6 +147,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                     onTrailerClick={() => setShowTrailer(true)}
                     onSimilarsClick={handleSimilarsClick}
                 >
+                    <WatchlistButton movie={movie} />
                     <Button asChild variant="secondary" size="icon" className="rounded-full w-11 h-11 bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
                         <Link href={`https://dl.vidsrc.vip/movie/${movie.id}`} target="_blank" rel="noopener noreferrer">
                             <Download className="w-5 h-5" />
