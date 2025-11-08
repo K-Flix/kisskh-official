@@ -19,7 +19,7 @@ export default async function Home() {
       {featuredMovie && <HeroSection movie={featuredMovie} />}
       <div className="container py-8 space-y-12">
         <MovieCarousel title="Trending Today" movies={trending} seeAllHref="/tv" />
-        <MovieCarousel title="Popular K-Dramas" movies={kDramas} seeAllHref="/tv?genre=k-drama" />
+        <MovieCarousel title="Popular K-Dramas" movies={kDramas} seeAllHref="/tv?genre=k-drama&sort=newest" />
         <MovieCarousel title="Popular C-Dramas" movies={cDramas} seeAllHref="/tv?genre=c-drama" />
         <MovieCarousel title="Anime" movies={anime} seeAllHref="/discover?genre=anime" />
         <MovieCarousel title="Popular Movies" movies={popularMovies} seeAllHref="/movies" />

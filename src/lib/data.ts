@@ -82,7 +82,7 @@ export const getFeaturedMovie = async (): Promise<Movie | Show | undefined> => {
 export const getKDramas = async (): Promise<Show[]> => {
     const data = await fetchFromTMDB('discover/tv', {
         with_origin_country: 'KR',
-        sort_by: 'popularity.desc',
+        sort_by: 'first_air_date.desc',
         language: 'en-US',
     });
     if (!data?.results) return [];
