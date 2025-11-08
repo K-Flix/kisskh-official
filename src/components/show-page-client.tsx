@@ -56,14 +56,14 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
             <ShowHero show={show} onPlayClick={handlePlayFirstEpisode} />
           </>
         ) : (
-          <div className="w-full h-full">
+          <div className="absolute inset-0 z-20">
             <iframe
               src={videoUrl}
               allow="autoplay; encrypted-media; picture-in-picture"
               allowFullScreen
               className="w-full h-full border-0"
             ></iframe>
-            <Button onClick={() => setPlayerState(null)} variant="ghost" size="icon" className="absolute top-4 right-4 z-20 bg-background/50 hover:bg-background/80">
+            <Button onClick={() => setPlayerState(null)} variant="ghost" size="icon" className="absolute top-4 right-4 z-30 bg-background/50 hover:bg-background/80">
               <X/>
               <span className="sr-only">Close player</span>
             </Button>
