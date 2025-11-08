@@ -1,11 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import type { Movie } from '@/lib/types';
+import type { Movie, Show } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { PlayCircle } from 'lucide-react';
 
 interface HeroSectionProps {
-  movie: Movie;
+  movie: Movie | Show;
 }
 
 export function HeroSection({ movie }: HeroSectionProps) {
