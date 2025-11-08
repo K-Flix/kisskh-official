@@ -98,7 +98,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
             >
                 <CarouselContent>
                 {show.cast.map((member) => (
-                    <CarouselItem key={member.credit_id} className="basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6 xl:basis-1/8">
+                    <CarouselItem key={member.credit_id} className="basis-[45%] sm:basis-1/4 md:basis-1/5 lg:basis-1/6 xl:basis-1/8">
                         <ActorCard actor={member} />
                     </CarouselItem>
                 ))}
