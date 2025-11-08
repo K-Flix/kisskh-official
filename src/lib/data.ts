@@ -76,10 +76,6 @@ export async function getItems(key: string, page: number = 1): Promise<(Movie | 
     if (!endpoint) return [];
 
     const params: Record<string, string> = { page: page.toString() };
-    if (key === 'k_drama' || key === 'c_drama' || key === 'anime') {
-        params['air_date.gte'] = airDateGte;
-        params['air_date.lte'] = airDateLte;
-    }
 
     const data = await fetchFromTMDB(endpoint.url, params);
     if (!data?.results) return [];
