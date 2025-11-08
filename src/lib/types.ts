@@ -7,6 +7,7 @@ export interface Movie {
   release_date: string;
   vote_average: number;
   genre_ids: number[];
+  logo_path?: string;
 }
 
 export interface Genre {
@@ -27,4 +28,11 @@ export interface Credits {
 export interface MovieDetails extends Movie {
     genres: Genre[];
     cast: CastMember[];
+}
+
+export interface ImageDetails {
+    logos: {
+        file_path: string;
+        iso_639_1: string;
+    }[];
 }

@@ -22,9 +22,23 @@ export function HeroSection({ movie }: HeroSectionProps) {
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent" />
       <div className="relative z-10 flex flex-col justify-end h-full container pb-12 md:pb-24 space-y-4">
-        <h1 className="text-4xl md:text-6xl font-bold font-headline text-white drop-shadow-lg">
-          {movie.title}
-        </h1>
+        
+        {movie.logo_path ? (
+          <div className="relative w-full max-w-sm h-24 md:h-32">
+            <Image
+              src={movie.logo_path}
+              alt={`${movie.title} logo`}
+              fill
+              className="object-contain"
+              data-ai-hint="movie logo"
+            />
+          </div>
+        ) : (
+          <h1 className="text-4xl md:text-6xl font-bold font-headline text-white drop-shadow-lg">
+            {movie.title}
+          </h1>
+        )}
+
         <p className="max-w-xl text-foreground/80 md:text-lg drop-shadow-md line-clamp-3">
           {movie.overview}
         </p>
