@@ -10,6 +10,7 @@ import { ShowHero } from './show-hero';
 import { X } from 'lucide-react';
 import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
+import { Badge } from './ui/badge';
 
 interface MoviePageClientProps {
   movie: MovieDetails;
@@ -55,61 +56,71 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
 
   const videoUrl = getPlayerUrl();
   const trailerUrl = movie.trailer_url ? `${movie.trailer_url}?autoplay=1&rel=0` : '';
+  
+  const handlePlay = () => {
+    setShowPlayer(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
 
   return (
     <div className="text-white">
-      <div className="relative h-[60vh] md:h-[90vh] w-full">
-        <Image
-          src={movie.backdrop_path}
-          alt={`Backdrop for ${movie.title}`}
-          fill
-          priority
-          className="object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-black/20" />
-        
-        <ShowHero show={movie} onPlayClick={() => setShowPlayer(true)} onTrailerClick={() => setShowTrailer(true)} />
-      </div>
-
-      {showPlayer && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center" onClick={() => setShowPlayer(false)}>
-            <div className="w-full max-w-6xl aspect-video relative" onClick={(e) => e.stopPropagation()}>
-                <iframe
-                    src={videoUrl}
-                    allow="autoplay; encrypted-media; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full border-0 rounded-lg bg-black"
-                    key={selectedServer}
-                ></iframe>
-                <button 
-                  onClick={() => setShowPlayer(false)} 
-                  className="absolute -top-2 -right-2 z-10 text-white bg-background/50 rounded-full p-1 hover:bg-background/80 transition-colors"
-                  aria-label="Close player"
-                >
-                    <X className="w-6 h-6" />
-                </button>
-                <div className="mt-4 p-2 bg-black/30 rounded-lg backdrop-blur-sm">
-                    <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-sm font-semibold text-gray-300 mr-2 shrink-0">Servers:</span>
-                        {servers.map(({ name, displayName }) => (
-                            <Button
-                                key={name}
-                                onClick={() => setSelectedServer(name)}
-                                size="sm"
-                                variant={selectedServer === name ? 'default' : 'secondary'}
-                                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
-                                    selectedServer === name
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'bg-zinc-700/80 hover:bg-zinc-600'
-                                }`}
-                            >
-                                {displayName}
-                            </Button>
-                        ))}
-                    </div>
-                </div>
+      {showPlayer ? (
+        <div className="w-full">
+            <div className="relative aspect-video w-full max-w-4xl mx-auto mt-8">
+              <iframe
+                src={videoUrl}
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full border-0 rounded-lg bg-black"
+                key={selectedServer}
+              ></iframe>
+              <button
+                onClick={() => setShowPlayer(false)}
+                className="absolute -top-3 -right-3 z-10 text-white bg-background/50 rounded-full p-1 hover:bg-background/80 transition-colors"
+                aria-label="Close player"
+              >
+                <X className="w-6 h-6" />
+              </button>
             </div>
+            <div className="container max-w-4xl mx-auto mt-4">
+              <div className="flex flex-wrap items-center gap-2 p-2 bg-secondary/50 rounded-lg">
+                <span className="text-sm font-semibold text-gray-300 mr-2 shrink-0">Servers:</span>
+                {servers.map(({ name, displayName }) => (
+                  <Button
+                    key={name}
+                    onClick={() => setSelectedServer(name)}
+                    size="sm"
+                    variant={selectedServer === name ? 'default' : 'secondary'}
+                    className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                      selectedServer === name
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-zinc-700/80 hover:bg-zinc-600'
+                    }`}
+                  >
+                    {displayName}
+                  </Button>
+                ))}
+              </div>
+            </div>
+        </div>
+      ) : (
+        <div className="relative h-[60vh] md:h-[90vh] w-full">
+            <Image
+            src={movie.backdrop_path}
+            alt={`Backdrop for ${movie.title}`}
+            fill
+            priority
+            className="object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-black/20" />
+            
+            <ShowHero show={movie} onPlayClick={handlePlay} onTrailerClick={() => setShowTrailer(true)}>
+                {'runtime' in movie && movie.runtime ? (
+                    <Badge variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{movie.runtime} min</Badge>
+                ) : null}
+            </ShowHero>
         </div>
       )}
 
