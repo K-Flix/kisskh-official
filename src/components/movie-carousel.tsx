@@ -7,6 +7,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import Link from 'next/link';
+import { Button } from './ui/button';
 
 interface MovieCarouselProps {
   title: string;
@@ -18,11 +20,19 @@ export function MovieCarousel({ title, movies }: MovieCarouselProps) {
   
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold font-headline">{title}</h2>
+      <div className='flex justify-between items-center'>
+        <h2 className="text-2xl font-bold font-headline flex items-center">
+            <span className="w-1 h-7 bg-primary mr-3"></span>
+            {title}
+        </h2>
+        <Button variant="link" asChild>
+            <Link href="#">See All &gt;</Link>
+        </Button>
+      </div>
       <Carousel
         opts={{
           align: 'start',
-          loop: true,
+          loop: false,
         }}
         className="w-full"
       >

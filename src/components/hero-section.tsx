@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Movie, Show } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import { PlayCircle } from 'lucide-react';
+import { PlayCircle, Info } from 'lucide-react';
 
 interface HeroSectionProps {
   movie: Movie | Show;
@@ -19,8 +19,8 @@ export function HeroSection({ movie }: HeroSectionProps) {
         className="object-cover object-top"
         data-ai-hint="movie backdrop"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/30 to-transparent" />
       <div className="relative z-10 flex flex-col justify-end h-full container pb-12 md:pb-24 space-y-4">
         
         {movie.logo_path ? (
@@ -43,10 +43,16 @@ export function HeroSection({ movie }: HeroSectionProps) {
           {movie.overview}
         </p>
         <div className="flex gap-4">
-          <Button asChild size="lg">
+          <Button asChild size="lg" className="bg-white text-black hover:bg-white/90">
             <Link href={`/movie/${movie.id}`}>
               <PlayCircle className="mr-2" />
-              Watch Now
+              Play
+            </Link>
+          </Button>
+          <Button asChild size="lg" variant="secondary" className="bg-gray-500/50 text-white hover:bg-gray-500/40">
+            <Link href={`/movie/${movie.id}`}>
+              <Info className="mr-2" />
+              See More
             </Link>
           </Button>
         </div>
