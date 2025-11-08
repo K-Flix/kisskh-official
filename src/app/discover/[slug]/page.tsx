@@ -32,8 +32,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 }
 
 export async function generateStaticParams() {
-  const categories = ['k_drama', 'c_drama', 'anime'];
-  return categories.map((slug) => ({
-    slug,
-  }));
+    // Generate params for all discoverable endpoints
+    const discoverEndpoints = endpoints.filter(e => e.key.endsWith('_drama') || e.key === 'anime' || e.key === 'trending_today');
+    return discoverEndpoints.map((endpoint) => ({
+      slug: endpoint.key,
+    }));
 }
