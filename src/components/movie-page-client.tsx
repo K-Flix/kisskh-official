@@ -8,6 +8,7 @@ import { ActorCard } from '@/components/actor-card';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ShowHero } from './show-hero';
 import { X } from 'lucide-react';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
 
 interface MoviePageClientProps {
   movie: MovieDetails;
@@ -60,11 +61,23 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
             <span className="w-1 h-7 bg-primary mr-3"></span>
             Cast
           </h2>
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-4 sm:gap-6">
-            {movie.cast.slice(0, 12).map((member) => (
-              <ActorCard key={member.credit_id} actor={member} />
-            ))}
-          </div>
+          <Carousel
+            opts={{
+              align: 'start',
+              loop: false,
+            }}
+            className="w-full"
+          >
+            <CarouselContent>
+              {movie.cast.map((member) => (
+                <CarouselItem key={member.credit_id} className="basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/8 xl:basis-1/10">
+                  <ActorCard actor={member} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="ml-12" />
+            <CarouselNext className="mr-12" />
+          </Carousel>
         </div>
 
         {movie.similar && movie.similar.length > 0 && (

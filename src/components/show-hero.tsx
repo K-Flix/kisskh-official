@@ -46,12 +46,6 @@ export function ShowHero({ show, onPlayClick }: ShowHeroProps) {
             Play
         </Button>
         <WatchlistButton movie={show} />
-        <Button variant="outline" className="bg-transparent border-white/50 hover:bg-white/10 text-white">
-            Episodes
-        </Button>
-        <Button variant="outline" className="bg-transparent border-white/50 hover:bg-white/10 text-white">
-            Similar
-        </Button>
       </div>
     </div>
   );
