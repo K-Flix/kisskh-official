@@ -38,7 +38,7 @@ export function HeroSection({ movies }: HeroSectionProps) {
                     className="object-cover object-top"
                     data-ai-hint="movie backdrop"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
                 <div className="relative z-10 flex flex-col justify-end h-full container pb-12 md:pb-24 space-y-4">
                     
                     {movie.logo_path ? (

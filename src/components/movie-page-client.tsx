@@ -7,7 +7,7 @@ import type { MovieDetails } from '@/lib/types';
 import { ActorCard } from '@/components/actor-card';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ShowHero } from './show-hero';
-import { X, ArrowLeft, Download } from 'lucide-react';
+import { X, ArrowLeft, Download, Film } from 'lucide-react';
 import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -59,6 +59,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
 
   const videoUrl = getPlayerUrl();
   const trailerUrl = movie.trailer_url ? `${movie.trailer_url}?autoplay=1&rel=0` : '';
+  const downloadUrl = `https://dl.vidsrc.vip/movie/${movie.id}`;
   
   const handlePlay = () => {
     setShowPlayer(true);
@@ -138,14 +139,25 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                 priority
                 className="object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
                 
                 <ShowHero 
                     show={movie} 
                     onPlayClick={handlePlay} 
                     onTrailerClick={() => setShowTrailer(true)}
                     onSimilarsClick={handleSimilarsClick}
-                />
+                >
+                    <Button asChild variant="secondary" className="bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
+                        <Link href={downloadUrl} target="_blank">
+                            <Download />
+                            Download
+                        </Link>
+                    </Button>
+                    <Button onClick={handleSimilarsClick} variant="secondary" className="bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
+                        <Film />
+                        Similars
+                    </Button>
+                </ShowHero>
             </div>
              <div className="container py-8 space-y-12" ref={similarSectionRef}>
                 <ActorCard actors={movie.cast} />
