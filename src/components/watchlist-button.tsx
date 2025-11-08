@@ -1,7 +1,7 @@
 
 'use client';
 
-import { BookmarkPlus, BookmarkCheck, Plus } from 'lucide-react';
+import { BookmarkCheck, Plus } from 'lucide-react';
 import { useWatchlist } from '@/context/watchlist-context';
 import type { Movie, Show } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -36,7 +36,7 @@ export function WatchlistButton({ movie }: WatchlistButtonProps) {
             variant="secondary"
             size="icon"
             onClick={handleClick}
-            className="rounded-full w-11 h-11 bg-gray-500/50 text-white hover:bg-gray-500/40 border border-white/20"
+            className="rounded-full w-11 h-11 bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm"
             aria-label={isBookmarked ? 'Remove from watchlist' : 'Add to watchlist'}
           >
             {isBookmarked ? <BookmarkCheck className="h-5 w-5" /> : <Plus className="h-6 w-6" />}

@@ -4,7 +4,7 @@
 import Image from 'next/image';
 import type { MovieDetails, ShowDetails } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
-import { Star, Calendar, Play, Video, Plus, BookmarkPlus, BookmarkCheck } from 'lucide-react';
+import { Star, Calendar, Play, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WatchlistButton } from '@/components/watchlist-button';
 
@@ -49,7 +49,9 @@ export function ShowHero({ show, onPlayClick, onTrailerClick, onSimilarsClick, c
             <Calendar className="w-4 h-4" />
             <span>{showYear}</span>
           </div>
-          {isMovie && children}
+          {isMovie && ('runtime' in show && show.runtime) ? (
+              <Badge variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{show.runtime} min</Badge>
+          ) : null}
           {show.genres.slice(0, 3).map((genre) => (
             <Badge key={genre.id} variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{genre.name}</Badge>
           ))}
@@ -64,17 +66,12 @@ export function ShowHero({ show, onPlayClick, onTrailerClick, onSimilarsClick, c
             Play
         </Button>
         <WatchlistButton movie={show} />
-        {!isMovie && children}
-        {show.trailer_url && (
-            <Button onClick={onTrailerClick} size="lg" variant="secondary" className="bg-gray-500/50 text-white hover:bg-gray-500/40">
+        {children}
+        {show.trailer_url && !isMovie && (
+            <Button onClick={onTrailerClick} size="lg" variant="secondary" className="bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
                 <Video className="mr-2"/>
                 Trailer
             </Button>
-        )}
-        {isMovie && onSimilarsClick && (
-          <Button onClick={onSimilarsClick} size="lg" variant="secondary" className="bg-gray-500/50 text-white hover:bg-gray-500/40">
-            Similars
-          </Button>
         )}
       </div>
     </div>
