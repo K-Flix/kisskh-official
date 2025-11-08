@@ -22,6 +22,7 @@ function Footer() {
 export function MainLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const isDetailPage = pathname.startsWith('/movie/') || pathname.startsWith('/tv/');
+    const isHomePage = pathname === '/';
 
     if (isDetailPage) {
         return <main>{children}</main>;
@@ -30,7 +31,9 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
     return (
         <div className="relative flex min-h-screen flex-col">
             <Header />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1">
+                {isHomePage ? children : <div className="pt-16">{children}</div>}
+            </main>
             <Footer />
         </div>
     );

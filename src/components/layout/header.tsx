@@ -24,7 +24,7 @@ function NavLink({ href, children, onClick }: { href: string; children: React.Re
   const isActive = pathname === href;
 
   return (
-    <Button variant="ghost" asChild className={cn(isActive && 'bg-accent/50 text-primary')}>
+    <Button variant="ghost" asChild className={cn('text-white hover:bg-white/10 hover:text-white', isActive && 'bg-white/20 text-white')}>
       <Link href={href} onClick={onClick}>
         {children}
       </Link>
@@ -36,7 +36,7 @@ export function Header() {
   const [isSheetOpen, setSheetOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 w-full">
+    <header className="absolute top-0 z-40 w-full bg-gradient-to-b from-black/80 to-transparent">
       <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
         <div className="flex gap-6 md:gap-10 items-center">
           <Link href="/" className="flex items-center space-x-2">
@@ -57,7 +57,7 @@ export function Header() {
           </div>
           <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
+              <Button variant="ghost" size="icon" className="md:hidden text-white hover:bg-white/10 hover:text-white">
                 <Menu />
                 <span className="sr-only">Toggle Menu</span>
               </Button>

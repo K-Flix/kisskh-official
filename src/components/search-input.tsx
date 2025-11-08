@@ -40,9 +40,9 @@ export function SearchInput() {
         placeholder="Search..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-full pl-10 pr-20"
+        className="w-full pl-10 pr-20 bg-white/20 text-white placeholder:text-gray-300 border-white/30 focus:bg-white/30 focus:ring-primary"
       />
-      <div className="absolute right-1.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground border rounded-sm px-1.5 py-0.5 pointer-events-none">
+      <div className="absolute right-1.5 top-1/2 -translate-y-1/2 text-xs text-gray-300 border border-gray-400 rounded-sm px-1.5 py-0.5 pointer-events-none">
         Ctrl+K
       </div>
     </form>
