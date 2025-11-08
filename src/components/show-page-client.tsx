@@ -44,7 +44,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
         {/* Player Overlay */}
         {playerState && (
            <div className="absolute inset-0 z-30 flex items-center justify-center bg-background/80 backdrop-blur-lg">
-            <div className="relative w-full max-w-4xl aspect-video rounded-lg overflow-hidden shadow-2xl mx-4">
+            <div className="relative w-full max-w-5xl aspect-video rounded-lg overflow-hidden shadow-2xl mx-4">
               <iframe
                 src={videoUrl}
                 allow="autoplay; encrypted-media; picture-in-picture"
