@@ -80,16 +80,17 @@ export const getFeaturedMovie = async (): Promise<Movie | Show | undefined> => {
 }
 
 export const getKDramas = async (): Promise<Show[]> => {
-    const data = await fetchFromTMDB('discover/tv', {
+    const data = await fetchFromTMDB('tv/on_the_air', {
         with_origin_country: 'KR',
-        sort_by: 'first_air_date.desc',
         language: 'en-US',
     });
     if (!data?.results) return [];
     
-    const shows = data.results.map(async (show: any) => {
-        const images = await fetchFromTMDB(`tv/${show.id}/images`);
-        return processItem(show, 'tv', images) as Show;
+    const shows = data.results
+        .filter((show: any) => show.poster_path && show.backdrop_path)
+        .map(async (show: any) => {
+            const images = await fetchFromTMDB(`tv/${show.id}/images`);
+            return processItem(show, 'tv', images) as Show;
     });
 
     return Promise.all(shows);
