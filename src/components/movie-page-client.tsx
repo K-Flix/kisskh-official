@@ -27,18 +27,18 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
       <div className="relative h-[56.25vw] max-h-[80vh] w-full bg-background">
         {/* Player Overlay */}
         {showPlayer && (
-           <div className="absolute inset-0 z-30 flex items-center justify-center bg-background/80 backdrop-blur-lg">
-            <div className="relative w-full max-w-5xl aspect-video rounded-lg overflow-hidden shadow-2xl mx-4">
+           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90">
+            <Button onClick={() => setShowPlayer(false)} variant="ghost" size="icon" className="absolute top-4 right-4 z-50 bg-background/50 hover:bg-background/80 rounded-full h-12 w-12">
+                <X className="h-8 w-8"/>
+                <span className="sr-only">Close player</span>
+            </Button>
+            <div className="relative w-full max-w-6xl aspect-video rounded-lg overflow-hidden shadow-2xl mx-4">
               <iframe
                 src={videoUrl}
                 allow="autoplay; encrypted-media; picture-in-picture"
                 allowFullScreen
                 className="w-full h-full border-0"
               ></iframe>
-              <Button onClick={() => setShowPlayer(false)} variant="ghost" size="icon" className="absolute top-2 right-2 z-40 bg-background/50 hover:bg-background/80 rounded-full">
-                <X/>
-                <span className="sr-only">Close player</span>
-              </Button>
             </div>
           </div>
         )}
