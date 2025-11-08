@@ -144,7 +144,14 @@ export const getKDramas = async (): Promise<Show[]> => {
         sort_by: 'popularity.desc',
         'air_date.gte': new Date(new Date().setMonth(new Date().getMonth() - 2)).toISOString().split('T')[0]
     });
-    return data?.results.map((s: any) => processShow(s)) || [];
+    if (!data?.results) return [];
+    
+    const shows = await Promise.all(data.results.map(async (show: any) => {
+        const images = await fetchFromTMDB(`tv/${show.id}/images`);
+        return processShow(show, images);
+    }));
+
+    return shows;
 }
 
 export const getCDramas = async (): Promise<Show[]> => {
@@ -153,5 +160,12 @@ export const getCDramas = async (): Promise<Show[]> => {
         sort_by: 'popularity.desc',
         'air_date.gte': new Date(new Date().setMonth(new Date().getMonth() - 2)).toISOString().split('T')[0]
     });
-    return data?.results.map((s: any) => processShow(s)) || [];
+    if (!data?.results) return [];
+
+    const shows = await Promise.all(data.results.map(async (show: any) => {
+        const images = await fetchFromTMDB(`tv/${show.id}/images`);
+        return processShow(show, images);
+    }));
+
+    return shows;
 }
