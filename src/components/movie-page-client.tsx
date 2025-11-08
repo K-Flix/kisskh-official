@@ -139,7 +139,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                 priority
                 className="object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
                 
                 <ShowHero 
                     show={movie} 

@@ -164,7 +164,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                     className="object-cover object-center"
                     data-ai-hint="tv show backdrop"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
                 
                 <ShowHero show={show} onPlayClick={handlePlayFirstEpisode} onTrailerClick={() => setShowTrailer(true)} />
             </div>
