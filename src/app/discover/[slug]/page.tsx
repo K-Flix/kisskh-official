@@ -1,7 +1,8 @@
 
-import { getItems, endpoints } from '@/lib/data';
-import { MovieCard } from '@/components/movie-card';
+import { getItems } from '@/lib/data';
+import { endpoints } from '@/lib/endpoints';
 import { notFound } from 'next/navigation';
+import { CategoryClientPage } from '@/components/category-client-page';
 
 interface CategoryPageProps {
   params: {
@@ -17,24 +18,19 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     notFound();
   }
 
-  const items = await getItems(slug);
+  const initialItems = await getItems(slug, 1);
 
   return (
     <div className="container py-8">
       <h1 className="text-3xl font-bold mb-8">{endpoint.title}</h1>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
-        {items.map((item) => (
-          <MovieCard key={item.id} movie={item} />
-        ))}
-      </div>
+      <CategoryClientPage initialItems={initialItems} slug={slug} />
     </div>
   );
 }
 
 export async function generateStaticParams() {
     // Generate params for all discoverable endpoints
-    const discoverEndpoints = endpoints.filter(e => e.key.endsWith('_drama') || e.key === 'anime' || e.key === 'trending_today');
-    return discoverEndpoints.map((endpoint) => ({
+    return endpoints.map((endpoint) => ({
       slug: endpoint.key,
     }));
 }
