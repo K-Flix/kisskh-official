@@ -7,8 +7,6 @@ import { ShowHero } from '@/components/show-hero';
 import { EpisodeList } from '@/components/episode-list';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ActorCard } from '@/components/actor-card';
-import { X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 interface ShowPageClientProps {
   show: ShowDetails;
@@ -41,36 +39,28 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
   return (
     <div className="flex flex-col">
        <div className="relative h-[56.25vw] max-h-[80vh] w-full bg-background">
-        {/* Player Overlay */}
-        {playerState && (
-           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90">
-             <Button onClick={() => setPlayerState(null)} variant="ghost" size="icon" className="absolute top-4 right-4 z-50 bg-background/50 hover:bg-background/80 rounded-full h-12 w-12">
-                <X className="h-8 w-8"/>
-                <span className="sr-only">Close player</span>
-              </Button>
-            <div className="relative w-full max-w-6xl aspect-video rounded-lg overflow-hidden shadow-2xl mx-4">
-              <iframe
+        {playerState ? (
+            <iframe
                 src={videoUrl}
                 allow="autoplay; encrypted-media; picture-in-picture"
                 allowFullScreen
                 className="w-full h-full border-0"
               ></iframe>
-            </div>
-          </div>
+        ) : (
+            <>
+                <Image
+                src={show.backdrop_path}
+                alt={`Backdrop for ${show.title}`}
+                fill
+                priority
+                className="object-cover object-top"
+                data-ai-hint="tv show backdrop"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-background via-background/30 to-transparent" />
+                <ShowHero show={show} onPlayClick={handlePlayFirstEpisode} />
+            </>
         )}
-
-        {/* Backdrop and Show Info */}
-        <Image
-          src={show.backdrop_path}
-          alt={`Backdrop for ${show.title}`}
-          fill
-          priority
-          className="object-cover object-top"
-          data-ai-hint="tv show backdrop"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/30 to-transparent" />
-        <ShowHero show={show} onPlayClick={handlePlayFirstEpisode} />
       </div>
 
       <div className="container py-8 md:py-12 space-y-12">
