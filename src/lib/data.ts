@@ -68,16 +68,16 @@ const ninetyDaysAgo = subDays(today, 90);
 const airDateGte = format(ninetyDaysAgo, 'yyyy-MM-dd');
 const airDateLte = format(today, 'yyyy-MM-dd');
 
-const endpoints: { key: string; title: string; url: string; type?: 'movie' | 'tv' }[] = [
+export const endpoints: { key: string; title: string; url: string; type?: 'movie' | 'tv' }[] = [
   // Home Page
   { key: 'trending_today', title: 'Trending Today', url: `/trending/all/day?language=en-US` },
   { key: 'k_drama_on_air', title: 'On The Air K-Dramas', url: `/tv/on_the_air?with_origin_country=KR&language=en-US`, type: 'tv' },
 
   // TV Shows
   { key: 'trending_tv', title: 'Trending TV Shows', url: `/trending/tv/week?language=en-US`, type: 'tv' },
-  { key: 'k_drama', title: 'Recent K-Dramas', url: `/discover/tv?with_origin_country=KR&with_genres=18&language=en-US&sort_by=popularity.desc&air_date.gte=${airDateGte}&air_date.lte=${airDateLte}`, type: 'tv' },
-  { key: 'c_drama', title: 'Recent C-Dramas', url: `/discover/tv?with_origin_country=CN&with_genres=18&language=en-US&sort_by=popularity.desc&air_date.gte=${airDateGte}&air_date.lte=${airDateLte}`, type: 'tv' },
-  { key: 'anime', title: 'Recent Anime', url: `/discover/tv?with_genres=16&language=en-US&sort_by=popularity.desc&air_date.gte=${airDateGte}&air_date.lte=${airDateLte}`, type: 'tv' },
+  { key: 'k_drama', title: 'K-Dramas', url: `/discover/tv?with_origin_country=KR&with_genres=18&language=en-US&sort_by=popularity.desc&air_date.gte=${airDateGte}&air_date.lte=${airDateLte}`, type: 'tv' },
+  { key: 'c_drama', title: 'C-Dramas', url: `/discover/tv?with_origin_country=CN&with_genres=18&language=en-US&sort_by=popularity.desc&air_date.gte=${airDateGte}&air_date.lte=${airDateLte}`, type: 'tv' },
+  { key: 'anime', title: 'Anime', url: `/discover/tv?with_genres=16&language=en-US&sort_by=popularity.desc&air_date.gte=${airDateGte}&air_date.lte=${airDateLte}`, type: 'tv' },
   { key: 'on_the_air_tv', title: 'On The Air TV Shows', url: `/tv/on_the_air?language=en-US`, type: 'tv' },
   { key: 'top_rated_tv', title: 'Top Rated TV Shows', url: `/tv/top_rated?language=en-US`, type: 'tv' },
   
