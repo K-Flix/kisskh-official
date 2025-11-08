@@ -72,10 +72,6 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                 <div className="container relative flex justify-between items-center h-14 px-4">
                     <Link href="/" className="flex items-center gap-2 text-white">
                         <ArrowLeft className="w-6 h-6"/>
-                        <div className="flex flex-col">
-                            <span className="text-xs text-muted-foreground">You're watching</span>
-                            <span className="font-semibold">{movie.title}</span>
-                        </div>
                     </Link>
                     <button
                         onClick={() => setShowPlayer(false)}

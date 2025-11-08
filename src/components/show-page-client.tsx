@@ -87,8 +87,6 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
   const videoUrl = getPlayerUrl();
   const trailerUrl = show.trailer_url ? `${show.trailer_url}?autoplay=1&rel=0` : '';
 
-  const currentEpisodeTitle = playerState ? `S${playerState.season} E${playerState.episode}` : '';
-
   return (
     <div className="text-white">
       {playerState ? (
@@ -97,10 +95,6 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                 <div className="container relative flex justify-between items-center h-14 px-4">
                      <Link href="/tv" className="flex items-center gap-2 text-white">
                         <ArrowLeft className="w-6 h-6"/>
-                        <div className="flex flex-col">
-                            <span className="text-xs text-muted-foreground">You're watching</span>
-                            <span className="font-semibold truncate max-w-xs">{show.title} {currentEpisodeTitle}</span>
-                        </div>
                     </Link>
                     <button
                         onClick={handleClosePlayer}
