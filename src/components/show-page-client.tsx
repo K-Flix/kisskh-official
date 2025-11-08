@@ -52,8 +52,11 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
       const seasonToPlay = firstSeasonWithEpisodes || show.seasons.find(s => s.episodes.length > 0);
 
       if (seasonToPlay && seasonToPlay.episodes.length > 0) {
-        const firstEpisode = seasonToPlay.episodes[0];
-        handlePlay(seasonToPlay.season_number, firstEpisode.episode_number);
+        // Find first released episode
+        const firstReleasedEpisode = seasonToPlay.episodes.find(ep => ep.air_date && new Date(ep.air_date) <= new Date());
+        if (firstReleasedEpisode) {
+            handlePlay(seasonToPlay.season_number, firstReleasedEpisode.episode_number);
+        }
       }
     }
   };
@@ -138,6 +141,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                 <EpisodeList
                 showId={show.id}
                 seasons={show.seasons} 
+                showBackdropPath={show.backdrop_path}
                 onEpisodePlay={handlePlay} 
                 currentEpisode={playerState ? { season: playerState.season, episode: playerState.episode } : undefined}
                 />
@@ -151,7 +155,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
         </div>
       ) : (
         <>
-            <div className="relative h-[60vh] md:h-[90vh] w-full">
+            <div className="relative h-screen w-full">
                 <Link href="/tv" className="absolute top-4 left-4 z-50 flex items-center justify-center bg-background/50 p-2 rounded-full hover:bg-background/80 transition-colors">
                     <ArrowLeft className="w-6 h-6 text-white"/>
                     <span className="sr-only">Back to TV shows</span>
@@ -164,16 +168,17 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                     className="object-cover object-center"
                     data-ai-hint="tv show backdrop"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
                 
                 <ShowHero show={show} onPlayClick={handlePlayFirstEpisode} onTrailerClick={() => setShowTrailer(true)} />
             </div>
              <div className="container py-8 space-y-12">
                 <EpisodeList
-                showId={show.id}
-                seasons={show.seasons} 
-                onEpisodePlay={handlePlay} 
-                currentEpisode={playerState ? { season: playerState.season, episode: playerState.episode } : undefined}
+                    showId={show.id}
+                    seasons={show.seasons}
+                    showBackdropPath={show.backdrop_path}
+                    onEpisodePlay={handlePlay}
+                    currentEpisode={playerState ? { season: playerState.season, episode: playerState.episode } : undefined}
                 />
                 
                 <ActorCard actors={show.cast} />

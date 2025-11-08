@@ -160,7 +160,6 @@ export async function searchMovies(query: string, page: number = 1): Promise<(Mo
     .map((item: any) => processItem(item, item.media_type))
     .filter(Boolean) as (Movie | Show)[];
   
-  // Simple relevance sort: items with higher popularity get a boost.
   processedResults.sort((a, b) => {
     const aPopularity = (a as any).popularity || 0;
     const bPopularity = (b as any).popularity || 0;

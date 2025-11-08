@@ -12,11 +12,12 @@ import { ScrollArea } from './ui/scroll-area';
 interface EpisodeListProps {
   showId: number;
   seasons: Season[];
+  showBackdropPath: string;
   onEpisodePlay: (season: number, episode: number) => void;
   currentEpisode?: { season: number; episode: number };
 }
 
-export function EpisodeList({ showId, seasons, onEpisodePlay, currentEpisode }: EpisodeListProps) {
+export function EpisodeList({ showId, seasons, showBackdropPath, onEpisodePlay, currentEpisode }: EpisodeListProps) {
   const [selectedSeason, setSelectedSeason] = useState<Season | undefined>(seasons.find(s => s.season_number > 0) || seasons[0]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -67,6 +68,7 @@ export function EpisodeList({ showId, seasons, onEpisodePlay, currentEpisode }: 
                             showId={showId}
                             seasonNumber={selectedSeason.season_number}
                             episode={episode} 
+                            showBackdropPath={showBackdropPath}
                             onPlay={() => onEpisodePlay(selectedSeason.season_number, episode.episode_number)}
                             isPlaying={isPlaying}
                         />

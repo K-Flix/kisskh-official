@@ -48,6 +48,7 @@ export interface Episode {
   overview: string;
   still_path: string | null;
   runtime: number | null;
+  air_date: string | null;
 }
 
 export interface Season {
