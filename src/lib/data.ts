@@ -55,13 +55,13 @@ function processItem(item: any, mediaType: 'movie' | 'tv', images?: any): Movie 
         return {
             ...baseItem,
             media_type: 'tv',
-            genre_ids: item.genre_ids || [],
+            title: item.name || 'Untitled',
         } as Show;
     }
 }
 
-export const getTrending = async (media_type: 'all' | 'movie' | 'tv' = 'day'): Promise<(Movie | Show)[]> => {
-    const data = await fetchFromTMDB(`trending/all/${media_type}`);
+export const getTrending = async (time_window: 'day' | 'week' = 'day', media_type: 'all' | 'movie' | 'tv' = 'all'): Promise<(Movie | Show)[]> => {
+    const data = await fetchFromTMDB(`trending/${media_type}/${time_window}`);
     if (!data?.results) return [];
     
     const items = data.results
@@ -201,7 +201,7 @@ export const getShowById = async (id: number): Promise<ShowDetails | null> => {
           ...member,
           profile_path: member.profile_path ? `${IMAGE_BASE_URL}/w300${member.profile_path}` : null
         })),
-        similar: data.similar?.results.map((item: any) => processItem(item, 'tv')) || []
+        similar: data.similar?.results.map((item: any) => processItem(item, 'tv', item.images)) || []
     };
 };
 
@@ -219,5 +219,3 @@ export const searchMovies = async (query: string): Promise<(Movie | Show)[]> => 
 
     return Promise.all(results);
 }
-
-    
