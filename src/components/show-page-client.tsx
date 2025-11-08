@@ -8,7 +8,7 @@ import { EpisodeList } from '@/components/episode-list';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ActorCard } from '@/components/actor-card';
 import { Badge } from '@/components/ui/badge';
-import { Star, Play, Film } from 'lucide-react';
+import { Star, Play, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WatchlistButton } from '@/components/watchlist-button';
 
@@ -26,7 +26,6 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
 
   const handlePlay = (season: number, episode: number) => {
     setPlayerState({ season, episode });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   
   const handlePlayFirstEpisode = () => {
@@ -97,38 +96,17 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
             </p>
 
             <div className="flex flex-wrap items-center gap-2">
-              <Button onClick={handlePlayFirstEpisode} size="lg" className="bg-white text-black hover:bg-white/90">
-                <Play className="mr-2 h-5 w-5 fill-black" />
+              <Button onClick={handlePlayFirstEpisode} size="lg">
+                <Play className="mr-2 h-5 w-5" />
                 Play
               </Button>
               <WatchlistButton movie={show} />
-              <Button variant="outline" className="border-white/20 bg-white/10 backdrop-blur-sm">
-                <Film className="mr-2 h-4 w-4" />
-                Trailer
-              </Button>
-              <Button variant="outline" className="border-white/20 bg-white/10 backdrop-blur-sm">
-                Episodes
-              </Button>
-              <Button variant="outline" className="border-white/20 bg-white/10 backdrop-blur-sm">
-                Similar
-              </Button>
             </div>
           </div>
         </div>
       </div>
       
       <div className="container py-8 space-y-12">
-        {playerState && (
-            <div className="w-full aspect-video bg-black rounded-lg overflow-hidden">
-                <iframe
-                    src={videoUrl}
-                    allow="autoplay; encrypted-media; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full border-0"
-                ></iframe>
-            </div>
-        )}
-
         <EpisodeList seasons={show.seasons} onEpisodePlay={handlePlay} />
         
         <div>
@@ -147,6 +125,23 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
           <MovieCarousel title="You may also like" movies={show.similar} />
         )}
       </div>
+
+      {playerState && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+           <button onClick={() => setPlayerState(null)} className="absolute top-4 left-4 z-10 text-white">
+            <ArrowLeft className="w-8 h-8" />
+            <span className="sr-only">Back</span>
+          </button>
+          <div className="w-full max-w-4xl aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
+            <iframe
+              src={videoUrl}
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full border-0"
+            ></iframe>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

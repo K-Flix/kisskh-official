@@ -5,7 +5,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import type { MovieDetails } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
-import { Star, Play, Plus, Film } from 'lucide-react';
+import { Star, Play, Plus, Film, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WatchlistButton } from '@/components/watchlist-button';
 import { ActorCard } from '@/components/actor-card';
@@ -72,38 +72,17 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
             </p>
 
             <div className="flex flex-wrap items-center gap-2">
-              <Button onClick={() => setShowPlayer(true)} size="lg" className="bg-white text-black hover:bg-white/90">
-                <Play className="mr-2 h-5 w-5 fill-black" />
+              <Button onClick={() => setShowPlayer(true)} size="lg">
+                <Play className="mr-2 h-5 w-5" />
                 Play
               </Button>
               <WatchlistButton movie={movie} />
-              <Button variant="outline" className="border-white/20 bg-white/10 backdrop-blur-sm">
-                <Film className="mr-2 h-4 w-4" />
-                Trailer
-              </Button>
-              <Button variant="outline" className="border-white/20 bg-white/10 backdrop-blur-sm">
-                Episodes
-              </Button>
-              <Button variant="outline" className="border-white/20 bg-white/10 backdrop-blur-sm">
-                Similar
-              </Button>
             </div>
           </div>
         </div>
       </div>
       
       <div className="container py-8 space-y-12">
-        {showPlayer && (
-            <div className="w-full aspect-video bg-black rounded-lg overflow-hidden">
-                <iframe
-                    src={videoUrl}
-                    allow="autoplay; encrypted-media; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full border-0"
-                ></iframe>
-            </div>
-        )}
-        
         <div>
           <h2 className="text-2xl font-bold mb-4 font-headline flex items-center">
             <span className="w-1 h-7 bg-primary mr-3"></span>
@@ -120,6 +99,23 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
           <MovieCarousel title="You may also like" movies={movie.similar} />
         )}
       </div>
+
+      {showPlayer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+          <button onClick={() => setShowPlayer(false)} className="absolute top-4 left-4 z-10 text-white">
+            <ArrowLeft className="w-8 h-8" />
+            <span className="sr-only">Back</span>
+          </button>
+          <div className="w-full max-w-4xl aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
+            <iframe
+              src={videoUrl}
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full border-0"
+            ></iframe>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
