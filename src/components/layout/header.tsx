@@ -17,7 +17,7 @@ export function Header() {
               <Link href="/">Home</Link>
             </Button>
             <Button variant="ghost" asChild>
-                <Link href="#">TV Shows</Link>
+                <Link href="/tv">TV Shows</Link>
             </Button>
             <Button variant="ghost" asChild>
                 <Link href="#">Movies</Link>

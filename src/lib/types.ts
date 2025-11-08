@@ -44,6 +44,30 @@ export interface MovieDetails extends Movie {
     cast: CastMember[];
 }
 
+export interface Episode {
+  id: number;
+  episode_number: number;
+  name: string;
+  overview: string;
+  still_path: string | null;
+  runtime: number;
+}
+
+export interface Season {
+  id: number;
+  season_number: number;
+  name: string;
+  episode_count: number;
+  episodes: Episode[];
+}
+
+export interface ShowDetails extends Show {
+    genres: Genre[];
+    cast: CastMember[];
+    seasons: Season[];
+    similar: Show[];
+}
+
 export interface ImageDetails {
     logos: {
         file_path: string;

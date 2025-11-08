@@ -72,7 +72,17 @@ export default async function MoviePage({ params }: MoviePageProps) {
               {movie.cast.slice(0, 4).map((member) => (
                 <div key={member.name} className="flex items-center gap-2">
                   <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
-                    <User className="w-5 h-5 text-muted-foreground" />
+                    {member.profile_path ? (
+                      <Image
+                        src={member.profile_path}
+                        alt={member.name}
+                        width={40}
+                        height={40}
+                        className="rounded-full object-cover"
+                      />
+                    ) : (
+                      <User className="w-5 h-5 text-muted-foreground" />
+                    )}
                   </div>
                   <div>
                     <p className="font-semibold text-sm">{member.name}</p>
