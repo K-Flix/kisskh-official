@@ -9,6 +9,8 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ movie }: HeroSectionProps) {
+  const href = movie.media_type === 'tv' ? `/tv/${movie.id}` : `/movie/${movie.id}`;
+  
   return (
     <div className="relative h-[60vh] md:h-[80vh] w-full">
       <Image
@@ -29,7 +31,7 @@ export function HeroSection({ movie }: HeroSectionProps) {
               src={movie.logo_path}
               alt={`${movie.title} logo`}
               fill
-              className="object-contain"
+              className="object-contain object-left-bottom"
               data-ai-hint="movie logo"
             />
           </div>
@@ -44,13 +46,13 @@ export function HeroSection({ movie }: HeroSectionProps) {
         </p>
         <div className="flex gap-4">
           <Button asChild size="lg" className="bg-white text-black hover:bg-white/90">
-            <Link href={`/movie/${movie.id}`}>
+            <Link href={href}>
               <PlayCircle className="mr-2" />
               Play
             </Link>
           </Button>
           <Button asChild size="lg" variant="secondary" className="bg-gray-500/50 text-white hover:bg-gray-500/40">
-            <Link href={`/movie/${movie.id}`}>
+            <Link href={href}>
               <Info className="mr-2" />
               See More
             </Link>

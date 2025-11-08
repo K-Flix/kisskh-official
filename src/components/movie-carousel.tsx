@@ -1,4 +1,4 @@
-import type { Movie } from '@/lib/types';
+import type { Movie, Show } from '@/lib/types';
 import { MovieCard } from '@/components/movie-card';
 import {
   Carousel,
@@ -12,7 +12,7 @@ import { Button } from './ui/button';
 
 interface MovieCarouselProps {
   title: string;
-  movies: Movie[];
+  movies: (Movie | Show)[];
 }
 
 export function MovieCarousel({ title, movies }: MovieCarouselProps) {

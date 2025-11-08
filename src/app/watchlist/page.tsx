@@ -11,7 +11,7 @@ export default function WatchlistPage() {
     <div className="container py-8">
       <h1 className="text-3xl font-bold mb-8">My Watchlist</h1>
       {watchlist.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
           {watchlist.map((movie) => (
             <MovieCard key={movie.id} movie={movie} />
           ))}
@@ -20,7 +20,7 @@ export default function WatchlistPage() {
         <div className="flex flex-col items-center justify-center text-center py-20 border-2 border-dashed rounded-lg">
             <Film className="w-16 h-16 text-muted-foreground mb-4" />
             <h2 className="text-2xl font-semibold">Your Watchlist is Empty</h2>
-            <p className="text-muted-foreground mt-2">Add movies to your watchlist to see them here.</p>
+            <p className="text-muted-foreground mt-2">Add movies and shows to your watchlist to see them here.</p>
         </div>
       )}
     </div>

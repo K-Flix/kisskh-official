@@ -2,12 +2,12 @@
 
 import type { ReactNode } from 'react';
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import type { Movie } from '@/lib/types';
+import type { Movie, Show } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
 interface WatchlistContextType {
-  watchlist: Movie[];
-  addToWatchlist: (movie: Movie) => void;
+  watchlist: (Movie | Show)[];
+  addToWatchlist: (movie: Movie | Show) => void;
   removeFromWatchlist: (movieId: number) => void;
   isInWatchlist: (movieId: number) => boolean;
 }
@@ -15,7 +15,7 @@ interface WatchlistContextType {
 const WatchlistContext = createContext<WatchlistContextType | undefined>(undefined);
 
 export function WatchlistProvider({ children }: { children: ReactNode }) {
-  const [watchlist, setWatchlist] = useState<Movie[]>([]);
+  const [watchlist, setWatchlist] = useState<(Movie | Show)[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
     }
   }, [watchlist]);
 
-  const addToWatchlist = useCallback((movie: Movie) => {
+  const addToWatchlist = useCallback((movie: Movie | Show) => {
     setWatchlist((prev) => {
       if (prev.find((item) => item.id === movie.id)) {
         return prev;

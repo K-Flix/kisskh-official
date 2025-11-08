@@ -1,4 +1,9 @@
-export interface Movie {
+export interface Genre {
+  id: number;
+  name: string;
+}
+
+export interface BaseItem {
   id: number;
   title: string;
   poster_path: string;
@@ -6,29 +11,19 @@ export interface Movie {
   overview: string;
   release_date: string;
   vote_average: number;
-  genre_ids: number[];
-  logo_path?: string;
-  media_type?: 'movie' | 'tv';
   genres: Genre[];
+  logo_path?: string;
+  media_type: 'movie' | 'tv';
 }
 
-export interface Show {
-    id: number;
-    title: string;
-    poster_path: string;
-    backdrop_path: string;
-    overview: string;
-    release_date: string;
-    vote_average: number;
-    genre_ids: number[];
-    logo_path?: string;
-    media_type?: 'tv';
-    genres: Genre[];
+export interface Movie extends BaseItem {
+  media_type: 'movie';
+  genre_ids: number[];
 }
 
-export interface Genre {
-  id: number;
-  name: string;
+export interface Show extends BaseItem {
+  media_type: 'tv';
+  genre_ids: number[];
 }
 
 export interface CastMember {
@@ -37,15 +32,10 @@ export interface CastMember {
   profile_path: string | null;
 }
 
-export interface Credits {
-    cast: CastMember[];
-}
-
 export interface MovieDetails extends Movie {
-    genres: Genre[];
-    cast: CastMember[];
-    similar: Movie[];
-    runtime: number;
+  cast: CastMember[];
+  similar: Movie[];
+  runtime: number;
 }
 
 export interface Episode {
@@ -66,15 +56,14 @@ export interface Season {
 }
 
 export interface ShowDetails extends Show {
-    genres: Genre[];
-    cast: CastMember[];
-    seasons: Season[];
-    similar: Show[];
+  cast: CastMember[];
+  seasons: Season[];
+  similar: Show[];
 }
 
 export interface ImageDetails {
-    logos: {
-        file_path: string;
-        iso_639_1: string;
-    }[];
+  logos: {
+    file_path: string;
+    iso_639_1: string;
+  }[];
 }

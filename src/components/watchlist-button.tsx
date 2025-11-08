@@ -2,7 +2,7 @@
 
 import { BookmarkPlus, BookmarkCheck } from 'lucide-react';
 import { useWatchlist } from '@/context/watchlist-context';
-import type { Movie } from '@/lib/types';
+import type { Movie, Show } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import {
   Tooltip,
@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/tooltip';
 
 interface WatchlistButtonProps {
-  movie: Movie;
+  movie: Movie | Show;
 }
 
 export function WatchlistButton({ movie }: WatchlistButtonProps) {

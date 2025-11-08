@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { Movie } from '@/lib/types';
+import type { Movie, Show } from '@/lib/types';
 import { suggestSimilarShows } from '@/ai/flows/suggest-similar-shows';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -9,7 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 
 interface SimilarShowsProps {
-  movie: Movie;
+  movie: Movie | Show;
 }
 
 export function SimilarShows({ movie }: SimilarShowsProps) {
@@ -42,7 +42,7 @@ export function SimilarShows({ movie }: SimilarShowsProps) {
   return (
     <Card className="bg-card/50">
       <CardHeader>
-        <CardTitle>Similar Shows</CardTitle>
+        <CardTitle>AI Suggested Shows</CardTitle>
       </CardHeader>
       <CardContent>
         {loading && (
