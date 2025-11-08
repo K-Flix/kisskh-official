@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 
 export function SearchInput() {
   const [query, setQuery] = useState('');
@@ -19,17 +18,17 @@ export function SearchInput() {
   };
 
   return (
-    <form onSubmit={handleSearch} className="flex w-full max-w-sm items-center space-x-2">
+    <form onSubmit={handleSearch} className="relative w-full">
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
       <Input
         type="text"
-        placeholder="Search for a movie..."
+        placeholder="Search for a movie, tv show..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-full"
+        className="w-full pl-10"
       />
-      <Button type="submit" size="icon" aria-label="Search">
-        <Search />
-      </Button>
     </form>
   );
 }
+
+    
