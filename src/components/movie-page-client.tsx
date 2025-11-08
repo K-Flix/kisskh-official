@@ -28,13 +28,15 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
     <>
       <div className="relative h-[60vh] md:h-[80vh] w-full">
         {showPlayer ? (
-            <div className='w-full h-full'>
-                 <iframe
-                    src={videoUrl}
-                    allow="autoplay; encrypted-media; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full border-0"
-                ></iframe>
+            <div className='w-full h-full bg-black flex items-center justify-center'>
+                 <div className="container h-full">
+                    <iframe
+                        src={videoUrl}
+                        allow="autoplay; encrypted-media; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-full border-0"
+                    ></iframe>
+                </div>
             </div>
         ) : (
             <>
@@ -51,7 +53,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
             </>
         )}
 
-          <div className="relative z-10 flex flex-col justify-end h-full container pb-8 md:pb-16 space-y-4">
+          <div className="absolute inset-0 z-10 flex flex-col justify-end h-full container pb-8 md:pb-16 space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold font-headline text-white drop-shadow-lg max-w-2xl">
               {movie.title}
             </h1>

@@ -45,13 +45,15 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
     <>
       <div className="relative h-[60vh] md:h-[80vh] w-full">
         {playerState ? (
-             <div className='w-full h-full'>
-                <iframe
-                    src={videoUrl}
-                    allow="autoplay; encrypted-media; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full border-0"
-                ></iframe>
+             <div className='w-full h-full bg-black flex items-center justify-center'>
+                <div className="container h-full">
+                    <iframe
+                        src={videoUrl}
+                        allow="autoplay; encrypted-media; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-full border-0"
+                    ></iframe>
+                </div>
             </div>
         ) : (
             <>
