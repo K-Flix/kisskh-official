@@ -40,35 +40,37 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
 
   return (
     <div className="flex flex-col">
-      <div className="relative h-[56.25vw] max-h-[80vh] w-full bg-background">
-        {!playerState ? (
-          <>
-            <Image
-              src={show.backdrop_path}
-              alt={`Backdrop for ${show.title}`}
-              fill
-              priority
-              className="object-cover object-top"
-              data-ai-hint="tv show backdrop"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/30 to-transparent" />
-            <ShowHero show={show} onPlayClick={handlePlayFirstEpisode} />
-          </>
-        ) : (
-          <div className="absolute inset-0 z-20">
-            <iframe
-              src={videoUrl}
-              allow="autoplay; encrypted-media; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full border-0"
-            ></iframe>
-            <Button onClick={() => setPlayerState(null)} variant="ghost" size="icon" className="absolute top-4 right-4 z-30 bg-background/50 hover:bg-background/80">
-              <X/>
-              <span className="sr-only">Close player</span>
-            </Button>
+       <div className="relative h-[56.25vw] max-h-[80vh] w-full bg-background">
+        {/* Player Overlay */}
+        {playerState && (
+           <div className="absolute inset-0 z-30 flex items-center justify-center bg-background/80 backdrop-blur-lg">
+            <div className="relative w-full max-w-4xl aspect-video rounded-lg overflow-hidden shadow-2xl mx-4">
+              <iframe
+                src={videoUrl}
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full border-0"
+              ></iframe>
+               <Button onClick={() => setPlayerState(null)} variant="ghost" size="icon" className="absolute top-2 right-2 z-40 bg-background/50 hover:bg-background/80 rounded-full">
+                <X/>
+                <span className="sr-only">Close player</span>
+              </Button>
+            </div>
           </div>
         )}
+
+        {/* Backdrop and Show Info */}
+        <Image
+          src={show.backdrop_path}
+          alt={`Backdrop for ${show.title}`}
+          fill
+          priority
+          className="object-cover object-top"
+          data-ai-hint="tv show backdrop"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/30 to-transparent" />
+        <ShowHero show={show} onPlayClick={handlePlayFirstEpisode} />
       </div>
 
       <div className="container py-8 md:py-12 space-y-12">
