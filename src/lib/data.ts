@@ -145,14 +145,47 @@ export async function getShowById(id: number): Promise<ShowDetails | null> {
     };
 };
 
-export async function searchMovies(query: string): Promise<(Movie | Show)[]> {
+export async function searchMovies(query: string, limit: number = 40): Promise<(Movie | Show)[]> {
     if (!query) return [];
-    const data = await fetchFromTMDB('search/multi', { query });
-    if (!data?.results) return [];
 
-    const results = data.results
-        .filter((item: any) => (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path)
-        .map((item: any) => processItem(item, item.media_type));
+    // Fetch first two pages of results
+    const [page1, page2] = await Promise.all([
+        fetchFromTMDB('search/multi', { query, page: '1' }),
+        fetchFromTMDB('search/multi', { query, page: '2' })
+    ]);
 
-    return results.filter(Boolean) as (Movie | Show)[];
+    let combinedResults = [];
+    if (page1?.results) combinedResults.push(...page1.results);
+    if (page2?.results) combinedResults.push(...page2.results);
+
+    if (combinedResults.length === 0) return [];
+    
+    const processedResults = combinedResults
+        .filter((item: any) => (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path && item.backdrop_path)
+        .map((item: any) => processItem(item, item.media_type))
+        .filter(Boolean) as (Movie | Show)[];
+
+    // Sort by popularity and whether the title starts with the query
+    const sortedResults = processedResults.sort((a, b) => {
+        const aTitle = a.title.toLowerCase();
+        const bTitle = b.title.toLowerCase();
+        const queryLower = query.toLowerCase();
+
+        const aStartsWith = aTitle.startsWith(queryLower);
+        const bStartsWith = bTitle.startsWith(queryLower);
+
+        if (aStartsWith && !bStartsWith) return -1;
+        if (!aStartsWith && bStartsWith) return 1;
+
+        // Use vote_average as a stand-in for popularity if available
+        const popularityA = a.vote_average || 0;
+        const popularityB = b.vote_average || 0;
+
+        return popularityB - popularityA;
+    });
+
+    // Remove duplicates
+    const uniqueResults = Array.from(new Map(sortedResults.map(item => [item.id, item])).values());
+    
+    return uniqueResults.slice(0, limit);
 }
