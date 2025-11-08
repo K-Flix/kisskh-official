@@ -30,9 +30,10 @@ async function fetchFromTMDB(endpoint: string, params: Record<string, string> = 
   }
 }
 
-function processItem(item: any, mediaType?: 'movie' | 'tv', images?: any): Movie | Show {
+function processItem(item: any, mediaType?: 'movie' | 'tv', images?: any, videos?: any): Movie | Show {
     const determinedMediaType = mediaType || item.media_type;
     const logo = images?.logos?.find((logo: any) => logo.iso_639_1 === 'en' && !logo.file_path.endsWith('.svg'));
+    const trailer = videos?.results?.find((video: any) => video.site === 'YouTube' && video.type === 'Trailer');
     
     const baseItem: BaseItem = {
         id: item.id,
@@ -45,6 +46,7 @@ function processItem(item: any, mediaType?: 'movie' | 'tv', images?: any): Movie
         genres: item.genres || [],
         logo_path: logo ? `${IMAGE_BASE_URL}/w500${logo.file_path}` : undefined,
         media_type: determinedMediaType,
+        trailer_url: trailer ? `https://www.youtube.com/embed/${trailer.key}` : undefined,
     };
 
     if (determinedMediaType === 'movie') {
@@ -72,9 +74,10 @@ const formatDate = (date: Date) => {
 };
 
 const today = new Date();
-const ninetyDaysAgo = new Date(new Date().setDate(today.getDate() - 90));
+const ninetyDaysAgo = subDays(today, 90);
 const airDateGte = formatDate(ninetyDaysAgo);
 const airDateLte = formatDate(today);
+
 
 const endpoints: { key: string; title: string; url: string; type?: 'movie' | 'tv' }[] = [
   // Home Page
@@ -123,10 +126,10 @@ export const getFeatured = async (): Promise<Movie | Show | undefined> => {
 
 
 export const getMovieById = async (id: number): Promise<MovieDetails | null> => {
-    const data = await fetchFromTMDB(`movie/${id}`, { append_to_response: 'credits,images,similar' });
+    const data = await fetchFromTMDB(`movie/${id}`, { append_to_response: 'credits,images,similar,videos' });
     if (!data) return null;
     
-    const movie = processItem(data, 'movie', data.images) as Movie;
+    const movie = processItem(data, 'movie', data.images, data.videos) as Movie;
     
     return {
         ...movie,
@@ -140,10 +143,10 @@ export const getMovieById = async (id: number): Promise<MovieDetails | null> => 
 }
 
 export const getShowById = async (id: number): Promise<ShowDetails | null> => {
-    const data = await fetchFromTMDB(`tv/${id}`, { append_to_response: 'credits,images,similar' });
+    const data = await fetchFromTMDB(`tv/${id}`, { append_to_response: 'credits,images,similar,videos' });
     if (!data) return null;
 
-    const show = processItem(data, 'tv', data.images) as Show;
+    const show = processItem(data, 'tv', data.images, data.videos) as Show;
     
     const seasons = await Promise.all((data.seasons || [])
         .filter((s:any) => s.season_number > 0 && s.episode_count > 0)
@@ -179,11 +182,9 @@ export const searchMovies = async (query: string): Promise<(Movie | Show)[]> => 
     const results = data.results
         .filter((item: any) => (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path)
         .map(async (item: any) => {
-            const images = await fetchFromTMDB(`${item.media_type}/${item.id}/images`);
-            return processItem(item, item.media_type, images);
+            const details = await fetchFromTMDB(`${item.media_type}/${item.id}`, { append_to_response: 'images,videos' });
+            return processItem(item, item.media_type, details?.images, details?.videos);
         });
 
     return (await Promise.all(results)).filter(Boolean) as (Movie | Show)[];
 }
-
-    

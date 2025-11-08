@@ -15,6 +15,7 @@ export interface BaseItem {
   genres: Genre[];
   logo_path?: string;
   media_type: 'movie' | 'tv';
+  trailer_url?: string;
 }
 
 export interface Movie extends BaseItem {

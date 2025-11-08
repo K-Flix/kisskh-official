@@ -10,7 +10,7 @@ interface ActorCardProps {
 
 export function ActorCard({ actor }: ActorCardProps) {
   return (
-    <Card className="bg-secondary border-0 text-center shrink-0">
+    <Card className="bg-secondary border-0 text-center shrink-0 w-full overflow-hidden">
         <div className="relative aspect-[2/3] w-full">
             {actor.profile_path ? (
             <Image

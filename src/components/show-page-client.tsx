@@ -10,6 +10,7 @@ import { ActorCard } from '@/components/actor-card';
 import { ShowHero } from './show-hero';
 import { X } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
+import { Dialog, DialogContent } from './ui/dialog';
 
 interface ShowPageClientProps {
   show: ShowDetails;
@@ -22,6 +23,7 @@ interface PlayerState {
 
 export function ShowPageClient({ show }: ShowPageClientProps) {
   const [playerState, setPlayerState] = useState<PlayerState | null>(null);
+  const [showTrailer, setShowTrailer] = useState(false);
 
   const handlePlay = (season: number, episode: number) => {
     setPlayerState({ season, episode });
@@ -47,6 +49,8 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
     ? `https://vidstorm.ru/tv/${show.id}/${playerState.season}/${playerState.episode}`
     : '';
 
+  const trailerUrl = show.trailer_url ? `${show.trailer_url}?autoplay=1&rel=0` : '';
+
   return (
     <div className="text-white">
       <div className="relative h-[60vh] md:h-[90vh] w-full">
@@ -68,7 +72,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                   src={videoUrl}
                   allow="autoplay; encrypted-media; picture-in-picture"
                   allowFullScreen
-                  className="w-full h-full border-0"
+                  className="w-full h-full border-0 rounded-lg"
               ></iframe>
               <button onClick={handleClosePlayer} className="absolute -top-10 right-0 text-white hover:text-primary transition-colors">
                 <X className="w-8 h-8" />
@@ -77,7 +81,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
             </div>
           </div>
         ) : (
-            <ShowHero show={show} onPlayClick={handlePlayFirstEpisode} />
+            <ShowHero show={show} onPlayClick={handlePlayFirstEpisode} onTrailerClick={() => setShowTrailer(true)} />
         )}
       </div>
       
@@ -98,7 +102,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
             >
                 <CarouselContent>
                 {show.cast.map((member) => (
-                    <CarouselItem key={member.credit_id} className="basis-1/3 sm:basis-1/4 md:basis-1/6 lg:basis-1/7 xl:basis-1/8">
+                    <CarouselItem key={member.credit_id} className="basis-1/3 sm:basis-1/4 md:basis-1/6 lg:basis-[12.5%]">
                         <ActorCard actor={member} />
                     </CarouselItem>
                 ))}
@@ -113,6 +117,16 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
         )}
       </div>
 
+        <Dialog open={showTrailer} onOpenChange={setShowTrailer}>
+            <DialogContent className="bg-black border-0 p-0 max-w-4xl w-full aspect-video">
+                 <iframe
+                    src={trailerUrl}
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full border-0 rounded-lg"
+                ></iframe>
+            </DialogContent>
+        </Dialog>
     </div>
   );
 }

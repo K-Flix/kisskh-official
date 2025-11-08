@@ -2,28 +2,42 @@
 'use client';
 
 import Image from 'next/image';
-import type { ShowDetails } from '@/lib/types';
+import type { MovieDetails, ShowDetails } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
-import { Star, Calendar, Play } from 'lucide-react';
+import { Star, Calendar, Play, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WatchlistButton } from '@/components/watchlist-button';
 
 interface ShowHeroProps {
-  show: ShowDetails;
+  show: ShowDetails | MovieDetails;
   onPlayClick: () => void;
+  onTrailerClick: () => void;
 }
 
-export function ShowHero({ show, onPlayClick }: ShowHeroProps) {
+export function ShowHero({ show, onPlayClick, onTrailerClick }: ShowHeroProps) {
   const showYear = show.release_date ? new Date(show.release_date).getFullYear() : 'N/A';
 
   return (
     <div className="relative z-10 flex flex-col justify-end h-full container pb-8 md:pb-16 space-y-4">
       
-      <h1 className="text-4xl md:text-5xl font-bold font-headline text-white drop-shadow-lg max-w-2xl">
-          {show.title}
-      </h1>
+      {show.logo_path ? (
+          <div className="relative w-full max-w-md h-24 md:h-32">
+            <Image
+              src={show.logo_path}
+              alt={`${show.title} logo`}
+              fill
+              className="object-contain object-left-bottom drop-shadow-lg"
+              data-ai-hint="movie logo"
+            />
+          </div>
+        ) : (
+          <h1 className="text-4xl md:text-5xl font-bold font-headline text-white drop-shadow-lg max-w-2xl">
+              {show.title}
+          </h1>
+      )}
 
-      <div className="flex items-center gap-4 text-sm text-foreground/80">
+
+      <div className="flex items-center flex-wrap gap-2 md:gap-4 text-sm text-foreground/80">
           <div className="flex items-center gap-1">
             <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
             <span>{show.vote_average.toFixed(1)}</span>
@@ -32,8 +46,11 @@ export function ShowHero({ show, onPlayClick }: ShowHeroProps) {
             <Calendar className="w-4 h-4" />
             <span>{showYear}</span>
           </div>
-          {show.genres.slice(0, 2).map((genre) => (
-            <Badge key={genre.id} variant="outline" className="backdrop-blur-sm bg-transparent border-white/50 text-white">{genre.name}</Badge>
+          { 'runtime' in show && show.runtime ? (
+            <Badge variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{show.runtime} min</Badge>
+          ) : null}
+          {show.genres.slice(0, 3).map((genre) => (
+            <Badge key={genre.id} variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{genre.name}</Badge>
           ))}
       </div>
 
@@ -45,6 +62,12 @@ export function ShowHero({ show, onPlayClick }: ShowHeroProps) {
             <Play className="mr-2" />
             Play
         </Button>
+        {show.trailer_url && (
+            <Button onClick={onTrailerClick} size="lg" variant="secondary" className="bg-gray-500/50 text-white hover:bg-gray-500/40">
+                <Video className="mr-2"/>
+                Trailer
+            </Button>
+        )}
         <WatchlistButton movie={show} />
       </div>
     </div>
