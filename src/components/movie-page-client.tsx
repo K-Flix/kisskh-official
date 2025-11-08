@@ -152,9 +152,6 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                     <Button onClick={handleSimilarsClick} size="lg" variant="secondary" className="bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
                         Similars
                     </Button>
-                    {'runtime' in movie && movie.runtime ? (
-                        <Badge variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{movie.runtime} min</Badge>
-                    ) : null}
                 </ShowHero>
             </div>
              <div className="container py-8 space-y-12" ref={similarSectionRef}>
