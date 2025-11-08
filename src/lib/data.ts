@@ -65,7 +65,7 @@ function processItem(item: any, mediaType?: 'movie' | 'tv', images?: any, videos
     }
 }
 
-export async function getItems(key: string, page: number = 1): Promise<(Movie | Show)[]> {
+export async function getItems(key: string, page: number = 1, featured: boolean = false): Promise<(Movie | Show)[]> {
     const endpoint = endpoints.find(e => e.key === key);
     if (!endpoint) return [];
 
@@ -76,23 +76,26 @@ export async function getItems(key: string, page: number = 1): Promise<(Movie | 
 
     const data = await fetchFromTMDB(endpoint.url, params);
     if (!data?.results) return [];
-
-    const items = data.results
+    
+    let items = data.results
         .filter((item: any) => item.poster_path && item.backdrop_path)
         .map((item: any) => processItem(item, endpoint.type || item.media_type));
+
+    if (featured) {
+        const detailedItems = await Promise.all(
+            items.slice(0, 15).map(async (item: any) => {
+                const details = await fetchFromTMDB(`${item.media_type}/${item.id}`, { append_to_response: 'images,videos' });
+                return processItem(item, item.media_type, details?.images, details?.videos);
+            })
+        );
+        items = detailedItems;
+    }
 
     return items.filter(Boolean) as (Movie | Show)[];
 }
 
 export async function getFeatured(): Promise<(Movie | Show)[]> {
-    const items = await getItems('trending_today');
-    const detailedItems = await Promise.all(
-        items.slice(0, 15).map(async (item) => {
-            const details = await fetchFromTMDB(`${item.media_type}/${item.id}`, { append_to_response: 'images,videos' });
-            return processItem(item, item.media_type, details?.images, details?.videos);
-        })
-    );
-    return detailedItems.filter(Boolean) as (Movie | Show)[];
+    return getItems('trending_today', 1, true);
 }
 
 
@@ -146,16 +149,23 @@ export async function getShowById(id: number): Promise<ShowDetails | null> {
 };
 
 export async function searchMovies(query: string, page: number = 1): Promise<(Movie | Show)[]> {
-    if (!query) return [];
+  if (!query) return [];
 
-    const data = await fetchFromTMDB('search/multi', { query, page: page.toString() });
+  const data = await fetchFromTMDB('search/multi', { query, page: page.toString(), include_adult: 'false' });
 
-    if (!data?.results) return [];
-    
-    const processedResults = data.results
-        .filter((item: any) => (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path && item.backdrop_path)
-        .map((item: any) => processItem(item, item.media_type))
-        .filter(Boolean) as (Movie | Show)[];
-    
-    return processedResults;
+  if (!data?.results) return [];
+
+  const processedResults = data.results
+    .filter((item: any) => (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path && item.backdrop_path)
+    .map((item: any) => processItem(item, item.media_type))
+    .filter(Boolean) as (Movie | Show)[];
+  
+  // Simple relevance sort: items with higher popularity get a boost.
+  processedResults.sort((a, b) => {
+    const aPopularity = (a as any).popularity || 0;
+    const bPopularity = (b as any).popularity || 0;
+    return bPopularity - aPopularity;
+  });
+
+  return processedResults;
 }

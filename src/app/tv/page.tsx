@@ -5,7 +5,7 @@ import { Separator } from '@/components/ui/separator';
 import { HeroSection } from '@/components/hero-section';
 
 export default async function TVPage() {
-  const featured = await getItems('trending_tv', 1);
+  const featured = await getItems('trending_tv', 1, true);
   const trending = await getItems('trending_tv');
   const kDramas = await getItems('k_drama');
   const cDramas = await getItems('c_drama');

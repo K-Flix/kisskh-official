@@ -5,7 +5,7 @@ import { Separator } from '@/components/ui/separator';
 import { HeroSection } from '@/components/hero-section';
 
 export default async function MoviesPage() {
-  const featured = await getItems('trending_movies', 1);
+  const featured = await getItems('trending_movies', 1, true);
   const popularMovies = await getItems('popular_movies');
   const topRated = await getItems('top_rated_movies');
   const nowPlaying = await getItems('now_playing_movies');
