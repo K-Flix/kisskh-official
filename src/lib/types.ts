@@ -42,6 +42,8 @@ export interface Credits {
 export interface MovieDetails extends Movie {
     genres: Genre[];
     cast: CastMember[];
+    similar: Movie[];
+    runtime: number;
 }
 
 export interface Episode {

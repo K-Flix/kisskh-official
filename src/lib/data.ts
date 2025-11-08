@@ -79,12 +79,14 @@ export const getTrending = async (): Promise<(Movie | Show)[]> => {
     const data = await fetchFromTMDB('trending/all/week');
     if (!data?.results) return [];
     
-    const combined = data.results.map((item: any) => {
-        if (item.media_type === 'tv') {
-            return processShow(item);
-        }
-        return processMovie(item);
-    });
+    const combined = data.results
+        .filter((item: any) => item.media_type === 'movie' || item.media_type === 'tv')
+        .map((item: any) => {
+            if (item.media_type === 'tv') {
+                return processShow(item);
+            }
+            return processMovie(item);
+        });
 
     const detailedCombined = await Promise.all(combined.map(async (item: any) => {
         const type = item.media_type;
@@ -100,7 +102,7 @@ export const getTrending = async (): Promise<(Movie | Show)[]> => {
 
 
 export const getMovieById = async (id: number): Promise<MovieDetails | null> => {
-    const movieData = await fetchFromTMDB(`movie/${id}`, { append_to_response: 'credits,images' });
+    const movieData = await fetchFromTMDB(`movie/${id}`, { append_to_response: 'credits,images,similar' });
     if (!movieData) return null;
     
     const creditsData = movieData.credits;
@@ -113,6 +115,8 @@ export const getMovieById = async (id: number): Promise<MovieDetails | null> => 
           ...member,
           profile_path: member.profile_path ? `${IMAGE_BASE_URL}/w300${member.profile_path}` : null
         })),
+        similar: movieData.similar.results.map((item: any) => processMovie(item)),
+        runtime: movieData.runtime
     };
 }
 
@@ -124,15 +128,17 @@ export const getShowById = async (id: number): Promise<ShowDetails | null> => {
     const images = showData.images;
     const similar = showData.similar;
 
-    const seasons = await Promise.all(showData.seasons.map(async (season: any) => {
-        const seasonDetails = await fetchFromTMDB(`tv/${id}/season/${season.season_number}`);
-        return {
-            ...season,
-            episodes: (seasonDetails?.episodes || []).map((ep: any) => ({
-                ...ep,
-                still_path: ep.still_path ? `${IMAGE_BASE_URL}/w300${ep.still_path}` : null,
-            })),
-        };
+    const seasons = await Promise.all(showData.seasons
+        .filter((s:any) => s.season_number > 0)
+        .map(async (season: any) => {
+            const seasonDetails = await fetchFromTMDB(`tv/${id}/season/${season.season_number}`);
+            return {
+                ...season,
+                episodes: (seasonDetails?.episodes || []).map((ep: any) => ({
+                    ...ep,
+                    still_path: ep.still_path ? `${IMAGE_BASE_URL}/w300${ep.still_path}` : null,
+                })),
+            };
     }));
 
     return {
@@ -153,7 +159,7 @@ export const searchMovies = async (query: string): Promise<(Movie | Show)[]> => 
     if (!data?.results) return [];
 
     const results = data.results
-        .filter((item: any) => item.media_type === 'movie' || item.media_type === 'tv')
+        .filter((item: any) => (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path)
         .map(async (item: any) => {
             const images = await fetchFromTMDB(`${item.media_type}/${item.id}/images`);
             if (item.media_type === 'tv') {
