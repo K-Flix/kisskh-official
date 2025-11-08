@@ -116,7 +116,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
       </div>
 
       <div className="container py-8 space-y-12">
-        {movie.cast.length > 0 && <ActorCard actors={movie.cast} />}
+        <ActorCard actors={movie.cast} />
 
         {movie.similar && movie.similar.length > 0 && (
           <MovieCarousel title="You may also like" movies={movie.similar} />

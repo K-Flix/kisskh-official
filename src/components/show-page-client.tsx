@@ -153,7 +153,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
           currentEpisode={playerState ? { season: playerState.season, episode: playerState.episode } : undefined}
         />
         
-        {show.cast.length > 0 && <ActorCard actors={show.cast} />}
+        <ActorCard actors={show.cast} />
         
         {show.similar && show.similar.length > 0 && (
           <MovieCarousel title="You may also like" movies={show.similar} />
