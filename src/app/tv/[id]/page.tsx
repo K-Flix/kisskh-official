@@ -6,7 +6,6 @@ import { ShowHero } from '@/components/show-hero';
 import { EpisodeList } from '@/components/episode-list';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ActorCard } from '@/components/actor-card';
-import { SimilarShows } from '@/components/similar-shows';
 import { useState, useEffect } from 'react';
 import type { ShowDetails } from '@/lib/types';
 import Image from 'next/image';
@@ -129,8 +128,6 @@ export default function ShowPage({ params }: ShowPageProps) {
             </div>
         </div>
         
-        <SimilarShows item={show} />
-
         {show.similar && show.similar.length > 0 && (
             <MovieCarousel title="You may also like" movies={show.similar} />
         )}

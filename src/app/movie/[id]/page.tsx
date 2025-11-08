@@ -13,7 +13,6 @@ import { WatchlistButton } from '@/components/watchlist-button';
 import { ActorCard } from '@/components/actor-card';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { Skeleton } from '@/components/ui/skeleton';
-import { SimilarShows } from '@/components/similar-shows';
 
 interface MoviePageProps {
   params: {
@@ -167,8 +166,6 @@ export default function MoviePage({ params }: MoviePageProps) {
                 ))}
             </div>
         </div>
-
-        <SimilarShows item={movie} />
         
         {movie.similar && movie.similar.length > 0 && (
             <MovieCarousel title="You may also like" movies={movie.similar} />
