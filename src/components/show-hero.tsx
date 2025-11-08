@@ -12,11 +12,13 @@ interface ShowHeroProps {
   show: ShowDetails | MovieDetails;
   onPlayClick: () => void;
   onTrailerClick: () => void;
+  onSimilarsClick?: () => void;
   children?: React.ReactNode;
 }
 
-export function ShowHero({ show, onPlayClick, onTrailerClick, children }: ShowHeroProps) {
+export function ShowHero({ show, onPlayClick, onTrailerClick, onSimilarsClick, children }: ShowHeroProps) {
   const showYear = show.release_date ? new Date(show.release_date).getFullYear() : 'N/A';
+  const isMovie = show.media_type === 'movie';
 
   return (
     <div className="relative z-10 flex flex-col justify-end h-full container pb-8 md:pb-16 space-y-4">
@@ -47,7 +49,7 @@ export function ShowHero({ show, onPlayClick, onTrailerClick, children }: ShowHe
             <Calendar className="w-4 h-4" />
             <span>{showYear}</span>
           </div>
-          {children}
+          {isMovie && children}
           {show.genres.slice(0, 3).map((genre) => (
             <Badge key={genre.id} variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{genre.name}</Badge>
           ))}
@@ -62,11 +64,17 @@ export function ShowHero({ show, onPlayClick, onTrailerClick, children }: ShowHe
             Play
         </Button>
         <WatchlistButton movie={show} />
+        {!isMovie && children}
         {show.trailer_url && (
             <Button onClick={onTrailerClick} size="lg" variant="secondary" className="bg-gray-500/50 text-white hover:bg-gray-500/40">
                 <Video className="mr-2"/>
                 Trailer
             </Button>
+        )}
+        {isMovie && onSimilarsClick && (
+          <Button onClick={onSimilarsClick} size="lg" variant="secondary" className="bg-gray-500/50 text-white hover:bg-gray-500/40">
+            Similars
+          </Button>
         )}
       </div>
     </div>

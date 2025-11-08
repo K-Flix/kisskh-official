@@ -1,13 +1,13 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
 import type { MovieDetails } from '@/lib/types';
 import { ActorCard } from '@/components/actor-card';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ShowHero } from './show-hero';
-import { X, ArrowLeft } from 'lucide-react';
+import { X, ArrowLeft, Download } from 'lucide-react';
 import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -31,6 +31,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
   const [showPlayer, setShowPlayer] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
   const [selectedServer, setSelectedServer] = useState('Vidstorm');
+  const similarSectionRef = useRef<HTMLDivElement>(null);
 
   const getPlayerUrl = () => {
     const id = movie.id;
@@ -61,6 +62,10 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
   const handlePlay = () => {
     setShowPlayer(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSimilarsClick = () => {
+    similarSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
 
@@ -135,13 +140,21 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-black/20" />
                 
-                <ShowHero show={movie} onPlayClick={handlePlay} onTrailerClick={() => setShowTrailer(true)}>
+                <ShowHero 
+                    show={movie} 
+                    onPlayClick={handlePlay} 
+                    onTrailerClick={() => setShowTrailer(true)}
+                    onSimilarsClick={handleSimilarsClick}
+                >
                     {'runtime' in movie && movie.runtime ? (
                         <Badge variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{movie.runtime} min</Badge>
                     ) : null}
+                    <Button variant="secondary" size="icon" className="rounded-full w-11 h-11 bg-gray-500/50 text-white hover:bg-gray-500/40 border border-white/20">
+                        <Download className="w-5 h-5" />
+                    </Button>
                 </ShowHero>
             </div>
-             <div className="container py-8 space-y-12">
+             <div className="container py-8 space-y-12" ref={similarSectionRef}>
                 <ActorCard actors={movie.cast} />
                 {movie.similar && movie.similar.length > 0 && (
                   <MovieCarousel title="Similars" movies={movie.similar} />
