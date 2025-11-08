@@ -1,13 +1,13 @@
 
-import { getTrending, getKDramas, getCDramas, getAnime } from '@/lib/data';
+import { getItems } from '@/lib/data';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { Separator } from '@/components/ui/separator';
 
 export default async function DiscoverPage() {
-  const trending = await getTrending('day');
-  const kDramas = await getKDramas();
-  const cDramas = await getCDramas();
-  const anime = await getAnime();
+  const trending = await getItems('trending_today');
+  const kDramas = await getItems('k_drama');
+  const cDramas = await getItems('c_drama');
+  const anime = await getItems('anime');
 
   return (
     <div className="container py-8 space-y-8">

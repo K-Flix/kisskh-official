@@ -1,11 +1,13 @@
 
-import { getPopularMovies, getTopRated } from '@/lib/data';
+import { getItems } from '@/lib/data';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { Separator } from '@/components/ui/separator';
 
 export default async function MoviesPage() {
-  const popularMovies = await getPopularMovies();
-  const topRated = await getTopRated();
+  const popularMovies = await getItems('popular_movies');
+  const topRated = await getItems('top_rated_movies');
+  const nowPlaying = await getItems('now_playing_movies');
+  const upcoming = await getItems('upcoming_movies');
 
   return (
     <div className="container py-8 space-y-8">
@@ -16,6 +18,8 @@ export default async function MoviesPage() {
         <Separator />
       <MovieCarousel title="Popular Movies" movies={popularMovies} />
       <MovieCarousel title="Top Rated Movies" movies={topRated} />
+      <MovieCarousel title="Now Playing" movies={nowPlaying} />
+      <MovieCarousel title="Upcoming" movies={upcoming} />
     </div>
   );
 }

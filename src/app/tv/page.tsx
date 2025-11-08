@@ -1,13 +1,15 @@
 
-import { getTrending, getKDramas, getCDramas, getAnime } from '@/lib/data';
+import { getItems } from '@/lib/data';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { Separator } from '@/components/ui/separator';
 
 export default async function TVPage() {
-  const trending = await getTrending('day', 'tv');
-  const kDramas = await getKDramas();
-  const cDramas = await getCDramas();
-  const anime = await getAnime();
+  const trending = await getItems('trending_tv');
+  const kDramas = await getItems('k_drama');
+  const cDramas = await getItems('c_drama');
+  const anime = await getItems('anime');
+  const onTheAir = await getItems('on_the_air_tv');
+  const topRated = await getItems('top_rated_tv');
 
   return (
     <div className="container py-8 space-y-8">
@@ -20,6 +22,8 @@ export default async function TVPage() {
       <MovieCarousel title="K-Drama" movies={kDramas} key="k-dramas" />
       <MovieCarousel title="C-Drama" movies={cDramas} />
       <MovieCarousel title="Anime" movies={anime} />
+      <MovieCarousel title="On The Air" movies={onTheAir} />
+      <MovieCarousel title="Top Rated" movies={topRated} />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 
 import type { Genre, Movie, MovieDetails, Show, ShowDetails, BaseItem } from '@/lib/types';
+import { subDays, format } from 'date-fns';
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p';
@@ -29,7 +30,8 @@ async function fetchFromTMDB(endpoint: string, params: Record<string, string> = 
   }
 }
 
-function processItem(item: any, mediaType: 'movie' | 'tv', images?: any): Movie | Show {
+function processItem(item: any, mediaType?: 'movie' | 'tv', images?: any): Movie | Show {
+    const determinedMediaType = mediaType || item.media_type;
     const logo = images?.logos?.find((logo: any) => logo.iso_639_1 === 'en' && !logo.file_path.endsWith('.svg'));
     
     const baseItem: BaseItem = {
@@ -42,10 +44,10 @@ function processItem(item: any, mediaType: 'movie' | 'tv', images?: any): Movie 
         vote_average: item.vote_average,
         genres: item.genres || [],
         logo_path: logo ? `${IMAGE_BASE_URL}/w500${logo.file_path}` : undefined,
-        media_type: mediaType,
+        media_type: determinedMediaType,
     };
 
-    if (mediaType === 'movie') {
+    if (determinedMediaType === 'movie') {
         return {
             ...baseItem,
             media_type: 'movie',
@@ -60,103 +62,54 @@ function processItem(item: any, mediaType: 'movie' | 'tv', images?: any): Movie 
     }
 }
 
-export const getTrending = async (time_window: 'day' | 'week' = 'day', media_type: 'all' | 'movie' | 'tv' = 'all'): Promise<(Movie | Show)[]> => {
-    const data = await fetchFromTMDB(`trending/${media_type}/${time_window}`);
+const today = new Date();
+const airDateLte = format(today, 'yyyy-MM-dd');
+const airDateGte = format(subDays(today, 30), 'yyyy-MM-dd');
+
+const endpoints: { key: string; title: string; url: string; type?: 'movie' | 'tv' }[] = [
+  // Home Page
+  { key: 'trending_today', title: 'Trending Today', url: `/trending/all/day?language=en-US` },
+  { key: 'k_drama_on_air', title: 'On The Air K-Dramas', url: `/tv/on_the_air?with_origin_country=KR&language=en-US`, type: 'tv' },
+
+  // TV Shows
+  { key: 'trending_tv', title: 'Trending TV Shows', url: `/trending/tv/week?language=en-US`, type: 'tv' },
+  { key: 'k_drama', title: 'K-Dramas', url: `/discover/tv?with_origin_country=KR&language=en-US&sort_by=popularity.desc`, type: 'tv' },
+  { key: 'c_drama', title: 'C-Dramas', url: `/discover/tv?with_origin_country=CN&language=en-US&sort_by=popularity.desc`, type: 'tv' },
+  { key: 'anime', title: 'Anime', url: `/discover/tv?with_genres=16&language=en-US&sort_by=popularity.desc`, type: 'tv' },
+  { key: 'on_the_air_tv', title: 'On The Air TV Shows', url: `/tv/on_the_air?language=en-US`, type: 'tv' },
+  { key: 'top_rated_tv', title: 'Top Rated TV Shows', url: `/tv/top_rated?language=en-US`, type: 'tv' },
+  
+  // Movies
+  { key: 'trending_movies', title: 'Trending Movies', url: `/trending/movie/week?language=en-US`, type: 'movie' },
+  { key: 'popular_movies', title: 'Popular Movies', url: `/movie/popular?language=en-US`, type: 'movie' },
+  { key: 'now_playing_movies', title: 'Now Playing Movies', url: `/movie/now_playing?language=en-US`, type: 'movie' },
+  { key: 'upcoming_movies', title: 'Upcoming Movies', url: `/movie/upcoming?language=en-US`, type: 'movie' },
+  { key: 'top_rated_movies', title: 'Top Rated Movies', url: `/movie/top_rated?language=en-US`, type: 'movie' },
+];
+
+export const getItems = async (key: string): Promise<(Movie | Show)[]> => {
+    const endpoint = endpoints.find(e => e.key === key);
+    if (!endpoint) return [];
+
+    const data = await fetchFromTMDB(endpoint.url);
     if (!data?.results) return [];
-    
+
     const items = data.results
-        .filter((item: any) => (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path && item.backdrop_path)
+        .filter((item: any) => item.poster_path && item.backdrop_path)
         .map(async (item: any) => {
-            const images = await fetchFromTMDB(`${item.media_type}/${item.id}/images`);
-            return processItem(item, item.media_type, images);
+            const mediaType = endpoint.type || item.media_type;
+            if (mediaType !== 'movie' && mediaType !== 'tv') return null;
+            const images = await fetchFromTMDB(`${mediaType}/${item.id}/images`);
+            return processItem(item, mediaType, images);
         });
 
-    return Promise.all(items);
+    return (await Promise.all(items)).filter(Boolean) as (Movie | Show)[];
 }
 
-export const getFeaturedMovie = async (): Promise<Movie | Show | undefined> => {
-    const trending = await getTrending('day');
-    return trending[0];
+export const getFeatured = async (): Promise<Movie | Show | undefined> => {
+    const items = await getItems('trending_today');
+    return items[0];
 }
-
-export const getKDramas = async (): Promise<Show[]> => {
-    const data = await fetchFromTMDB('tv/on_the_air', {
-        with_origin_country: 'KR',
-        language: 'en-US',
-    });
-    if (!data?.results) return [];
-    
-    const shows = data.results
-        .filter((show: any) => show.poster_path && show.backdrop_path)
-        .map(async (show: any) => {
-            const images = await fetchFromTMDB(`tv/${show.id}/images`);
-            return processItem(show, 'tv', images) as Show;
-    });
-
-    return Promise.all(shows);
-}
-
-export const getCDramas = async (): Promise<Show[]> => {
-    const data = await fetchFromTMDB('discover/tv', {
-        with_origin_country: 'CN',
-        sort_by: 'popularity.desc',
-        language: 'en-US',
-    });
-    if (!data?.results) return [];
-
-    const shows = data.results.map(async (show: any) => {
-        const images = await fetchFromTMDB(`tv/${show.id}/images`);
-        return processItem(show, 'tv', images) as Show;
-    });
-
-    return Promise.all(shows);
-}
-
-export const getAnime = async (): Promise<Show[]> => {
-    const data = await fetchFromTMDB('discover/tv', {
-        with_origin_country: 'JP',
-        with_genres: '16',
-        sort_by: 'popularity.desc',
-        language: 'en-US',
-    });
-    if (!data?.results) return [];
-
-    const shows = data.results.map(async (show: any) => {
-        const images = await fetchFromTMDB(`tv/${show.id}/images`);
-        return processItem(show, 'tv', images) as Show;
-    });
-
-    return Promise.all(shows);
-}
-
-export const getPopularMovies = async (): Promise<Movie[]> => {
-    const data = await fetchFromTMDB('movie/popular', { language: 'en-US' });
-    if (!data?.results) return [];
-
-    const movies = data.results.map(async (movie: any) => {
-        const images = await fetchFromTMDB(`movie/${movie.id}/images`);
-        return processItem(movie, 'movie', images) as Movie;
-    });
-
-    return Promise.all(movies);
-};
-
-
-export const getTopRated = async (): Promise<(Movie | Show)[]> => {
-    const data = await fetchFromTMDB('discover/movie', {
-        sort_by: 'vote_average.desc',
-        'vote_count.gte': '200',
-        language: 'en-US',
-    });
-    if (!data?.results) return [];
-
-    const items = data.results.map(async (item: any) => {
-        const images = await fetchFromTMDB(`movie/${item.id}/images`);
-        return processItem(item, 'movie', images);
-    });
-
-    return Promise.all(items);
-};
 
 
 export const getMovieById = async (id: number): Promise<MovieDetails | null> => {
