@@ -6,9 +6,9 @@ export const endpoints: { key: string; title: string; url: string; type?: 'movie
   
     // TV Shows
     { key: 'trending_tv', title: 'Trending TV Shows', url: `/trending/tv/week?language=en-US`, type: 'tv' },
-    { key: 'k_drama', title: 'K-Dramas', url: `/discover/tv?with_origin_country=KR&with_genres=18&language=en-US&sort_by=popularity.desc`, type: 'tv' },
-    { key: 'c_drama', title: 'C-Dramas', url: `/discover/tv?with_origin_country=CN&with_genres=18&language=en-US&sort_by=popularity.desc`, type: 'tv' },
-    { key: 'anime', title: 'Anime', url: `/discover/tv?with_genres=16&language=en-US&sort_by=popularity.desc`, type: 'tv' },
+    { key: 'k_drama', title: 'K-Dramas', url: `/discover/tv?with_origin_country=KR&with_genres=18&language=en-US&sort_by=first_air_date.desc`, type: 'tv' },
+    { key: 'c_drama', title: 'C-Dramas', url: `/discover/tv?with_origin_country=CN&with_genres=18&language=en-US&sort_by=first_air_date.desc`, type: 'tv' },
+    { key: 'anime', title: 'Anime', url: `/discover/tv?with_genres=16&language=en-US&sort_by=first_air_date.desc`, type: 'tv' },
     { key: 'on_the_air_tv', title: 'On The Air TV Shows', url: `/tv/on_the_air?language=en-US`, type: 'tv' },
     { key: 'top_rated_tv', title: 'Top Rated TV Shows', url: `/tv/top_rated?language=en-US`, type: 'tv' },
     
