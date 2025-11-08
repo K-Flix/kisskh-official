@@ -16,12 +16,12 @@ export default async function Home() {
     <div className="flex flex-col">
       {featured && <HeroSection movie={featured} />}
       <div className="container py-8 space-y-12">
-        <MovieCarousel title="Trending Today" movies={trending} seeAllHref="/discover" />
-        <MovieCarousel title="Popular K-Dramas" movies={kDramas} seeAllHref="/discover/k-drama" />
-        <MovieCarousel title="Popular C-Dramas" movies={cDramas} seeAllHref="/discover/c-drama" />
+        <MovieCarousel title="Trending Today" movies={trending} seeAllHref="/discover/trending_today" />
+        <MovieCarousel title="Popular K-Dramas" movies={kDramas} seeAllHref="/discover/k_drama" />
+        <MovieCarousel title="Popular C-Dramas" movies={cDramas} seeAllHref="/discover/c_drama" />
         <MovieCarousel title="Anime" movies={anime} seeAllHref="/discover/anime" />
-        <MovieCarousel title="Popular Movies" movies={popularMovies} seeAllHref="/movies" />
-        <MovieCarousel title="Top Rated" movies={topRated} seeAllHref="/movies?sort=top-rated" />
+        <MovieCarousel title="Popular Movies" movies={popularMovies} seeAllHref="/discover/popular_movies" />
+        <MovieCarousel title="Top Rated" movies={topRated} seeAllHref="/discover/top_rated_movies" />
       </div>
     </div>
   );
