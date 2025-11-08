@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -7,6 +6,7 @@ import { SeasonSelector } from '@/components/season-selector';
 import { EpisodeCard } from '@/components/episode-card';
 import { Input } from './ui/input';
 import { Search } from 'lucide-react';
+import { ScrollArea } from './ui/scroll-area';
 
 interface EpisodeListProps {
   seasons: Season[];
@@ -51,13 +51,15 @@ export function EpisodeList({ seasons, onEpisodePlay }: EpisodeListProps) {
           </div>
         </div>
       </div>
-      {selectedSeason && (
-        <div className="space-y-3">
-            {filteredEpisodes?.map((episode) => (
-                <EpisodeCard key={episode.id} episode={episode} onPlay={() => onEpisodePlay(selectedSeason.season_number, episode.episode_number)} />
-            ))}
-        </div>
-      )}
+      <ScrollArea className="h-[480px] pr-4">
+        {selectedSeason && (
+            <div className="space-y-3">
+                {filteredEpisodes?.map((episode) => (
+                    <EpisodeCard key={episode.id} episode={episode} onPlay={() => onEpisodePlay(selectedSeason.season_number, episode.episode_number)} />
+                ))}
+            </div>
+        )}
+      </ScrollArea>
     </div>
   );
 }
