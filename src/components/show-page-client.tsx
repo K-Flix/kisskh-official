@@ -126,12 +126,6 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
         <div className="space-y-12">
             <EpisodeList seasons={show.seasons} onEpisodePlay={handlePlay} />
             
-            <div className="my-8">
-                <Link href="#">
-                    <Image src="https://picsum.photos/seed/meme-ad/1200/200" width={1200} height={200} alt="Ad banner" className="w-full h-auto rounded-lg" data-ai-hint="advertisement banner" />
-                </Link>
-            </div>
-
             <div>
             <h2 className="text-2xl font-bold mb-4 font-headline flex items-center">
                 <span className="w-1 h-7 bg-primary mr-3"></span>

@@ -18,11 +18,6 @@ export default async function Home() {
       {featuredMovie && <HeroSection movie={featuredMovie} />}
       <div className="container py-8 space-y-12">
         <MovieCarousel title="Trending Today" movies={trending} />
-        <div className="my-8">
-            <Link href="#">
-                <Image src="https://picsum.photos/seed/ad/1200/150" width={1200} height={150} alt="Ad banner" className="w-full h-auto rounded-lg" />
-            </Link>
-        </div>
         <MovieCarousel title="Popular K-Dramas" movies={kDramas} />
         <MovieCarousel title="Popular C-Dramas" movies={cDramas} />
         <MovieCarousel title="Anime" movies={anime} />
