@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Movie, Show } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import { PlayCircle, Info } from 'lucide-react';
+import { Play, Info } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import Autoplay from "embla-carousel-autoplay"
 import * as React from 'react';
@@ -64,7 +64,7 @@ export function HeroSection({ movies }: HeroSectionProps) {
                     <div className="flex gap-4">
                     <Button asChild size="lg" className="bg-white text-black hover:bg-white/90">
                         <Link href={movie.media_type === 'tv' ? `/tv/${movie.id}` : `/movie/${movie.id}`}>
-                        <PlayCircle className="mr-2" />
+                        <Play className="mr-2 fill-black" />
                         Play
                         </Link>
                     </Button>
