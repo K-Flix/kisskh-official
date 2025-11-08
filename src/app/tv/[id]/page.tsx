@@ -79,7 +79,7 @@ export default function ShowPage({ params }: ShowPageProps) {
 
   return (
     <div className="flex flex-col">
-       <div className="relative h-[56.25vw] max-h-[80vh] w-full bg-black">
+       <div className="relative h-[56.25vw] max-h-[80vh] w-full bg-background">
         {!playerState ? (
           <>
             <Link href="/tv" className="absolute top-4 left-4 z-20 bg-background/50 p-2 rounded-full hover:bg-background/80 transition-colors">
@@ -129,7 +129,7 @@ export default function ShowPage({ params }: ShowPageProps) {
             </div>
         </div>
         
-        <SimilarShows movie={show} />
+        <SimilarShows item={show} />
 
         {show.similar && show.similar.length > 0 && (
             <MovieCarousel title="You may also like" movies={show.similar} />
@@ -142,7 +142,7 @@ export default function ShowPage({ params }: ShowPageProps) {
 function ShowPageSkeleton() {
     return (
       <div className="flex flex-col">
-        <div className="relative h-[56.25vw] max-h-[80vh] w-full bg-black">
+        <div className="relative h-[56.25vw] max-h-[80vh] w-full bg-background">
           <Skeleton className="w-full h-full" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/30 to-transparent" />
@@ -159,24 +159,28 @@ function ShowPageSkeleton() {
             </div>
             <Skeleton className="h-12 w-full max-w-2xl" />
             <div className="flex gap-4">
-              <Skeleton className="h-12 w-32" />
-              <Skeleton className="h-12 w-12" />
+                <Skeleton className="h-12 w-32" />
+                <Skeleton className="h-12 w-32" />
+                <Skeleton className="h-12 w-12" />
+                <Skeleton className="h-12 w-12" />
             </div>
           </div>
         </div>
         <div className="container py-8 md:py-12 space-y-12">
-            <Skeleton className="h-8 w-40 mb-4" />
             <div className="space-y-4">
-                <Skeleton className="h-10 w-[180px]" />
-                <div className='flex gap-4'>
-                    <Skeleton className="h-40 w-1/4" />
-                    <Skeleton className="h-40 w-1/4" />
-                    <Skeleton className="h-40 w-1/4" />
-                    <Skeleton className="h-40 w-1/4" />
+                <div className="flex justify-between items-center">
+                    <Skeleton className="h-8 w-40" />
+                    <Skeleton className="h-10 w-[180px]" />
+                </div>
+                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+                    <Skeleton className="h-40 w-full" />
+                    <Skeleton className="h-40 w-full" />
+                    <Skeleton className="h-40 w-full" />
+                    <Skeleton className="h-40 w-full" />
                 </div>
             </div>
           <div>
-            <Skeleton className="h-8 w-40 mb-4" />
+            <Skeleton className="h-8 w-32 mb-4" />
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-4 sm:gap-6">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div key={i} className="flex flex-col items-center text-center">

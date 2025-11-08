@@ -6,13 +6,13 @@ import { suggestSimilarShows } from '@/ai/flows/suggest-similar-shows';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Sparkles } from 'lucide-react';
 
 interface SimilarShowsProps {
-  movie: Movie | Show;
+  item: Movie | Show;
 }
 
-export function SimilarShows({ movie }: SimilarShowsProps) {
+export function SimilarShows({ item }: SimilarShowsProps) {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,9 +23,9 @@ export function SimilarShows({ movie }: SimilarShowsProps) {
         setLoading(true);
         setError(null);
         const result = await suggestSimilarShows({
-          title: movie.title,
-          genre: movie.genres.map(g => g.name).join(', '),
-          description: movie.overview,
+          title: item.title,
+          genre: item.genres.map(g => g.name).join(', '),
+          description: item.overview,
         });
         setSuggestions(result.suggestions);
       } catch (err) {
@@ -37,12 +37,15 @@ export function SimilarShows({ movie }: SimilarShowsProps) {
     };
 
     fetchSuggestions();
-  }, [movie]);
+  }, [item]);
 
   return (
     <Card className="bg-card/50">
       <CardHeader>
-        <CardTitle>AI Suggested Shows</CardTitle>
+        <CardTitle className='flex items-center gap-2'>
+            <Sparkles className='text-primary' />
+            AI Suggested Shows
+        </CardTitle>
       </CardHeader>
       <CardContent>
         {loading && (
@@ -62,7 +65,7 @@ export function SimilarShows({ movie }: SimilarShowsProps) {
         {!loading && !error && suggestions.length > 0 && (
           <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 text-sm">
             {suggestions.map((title, index) => (
-              <li key={index} className="p-2 rounded-md bg-secondary/50 truncate">{title}</li>
+              <li key={index} className="p-2 rounded-md bg-secondary/50 truncate hover:bg-secondary transition-colors">{title}</li>
             ))}
           </ul>
         )}

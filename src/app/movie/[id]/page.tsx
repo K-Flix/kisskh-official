@@ -7,12 +7,13 @@ import { useState, useEffect } from 'react';
 import type { MovieDetails } from '@/lib/types';
 import { getMovieById } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
-import { Star, Clock, Calendar, Play, Plus, Video, Download, ArrowLeft, X } from 'lucide-react';
+import { Star, Clock, Calendar, Play, Video, Download, ArrowLeft, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WatchlistButton } from '@/components/watchlist-button';
 import { ActorCard } from '@/components/actor-card';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { Skeleton } from '@/components/ui/skeleton';
+import { SimilarShows } from '@/components/similar-shows';
 
 interface MoviePageProps {
   params: {
@@ -62,7 +63,7 @@ export default function MoviePage({ params }: MoviePageProps) {
 
   return (
     <div className="flex flex-col">
-       <div className="relative h-[56.25vw] max-h-[80vh] w-full bg-black">
+       <div className="relative h-[56.25vw] max-h-[80vh] w-full bg-background">
         {!showPlayer ? (
             <>
                 <Link href="/" className="absolute top-4 left-4 z-20 bg-background/50 p-2 rounded-full hover:bg-background/80 transition-colors">
@@ -136,7 +137,6 @@ export default function MoviePage({ params }: MoviePageProps) {
                         <Download />
                         <span className="sr-only">Download</span>
                     </Button>
-                    <Button variant="ghost">Similar</Button>
                   </div>
                 </div>
             </>
@@ -159,7 +159,7 @@ export default function MoviePage({ params }: MoviePageProps) {
         <div>
             <h2 className="text-2xl font-bold mb-4 font-headline flex items-center">
                 <span className="w-1 h-7 bg-primary mr-3"></span>
-                Actors
+                Cast
             </h2>
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-4 sm:gap-6">
                 {movie.cast.slice(0, 8).map((member) => (
@@ -167,9 +167,11 @@ export default function MoviePage({ params }: MoviePageProps) {
                 ))}
             </div>
         </div>
+
+        <SimilarShows item={movie} />
         
         {movie.similar && movie.similar.length > 0 && (
-            <MovieCarousel title="You may like" movies={movie.similar} />
+            <MovieCarousel title="You may also like" movies={movie.similar} />
         )}
       </div>
     </div>
@@ -180,7 +182,7 @@ export default function MoviePage({ params }: MoviePageProps) {
 function MoviePageSkeleton() {
   return (
     <div className="flex flex-col">
-      <div className="relative h-[56.25vw] max-h-[80vh] w-full bg-black">
+      <div className="relative h-[56.25vw] max-h-[80vh] w-full bg-background">
         <Skeleton className="w-full h-full" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/30 to-transparent" />
@@ -198,13 +200,15 @@ function MoviePageSkeleton() {
           <Skeleton className="h-12 w-full max-w-2xl" />
           <div className="flex gap-4">
             <Skeleton className="h-12 w-32" />
+            <Skeleton className="h-12 w-32" />
+            <Skeleton className="h-12 w-12" />
             <Skeleton className="h-12 w-12" />
           </div>
         </div>
       </div>
       <div className="container py-8 md:py-12 space-y-12">
         <div>
-          <Skeleton className="h-8 w-40 mb-4" />
+          <Skeleton className="h-8 w-32 mb-4" />
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-4 sm:gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="flex flex-col items-center text-center">
