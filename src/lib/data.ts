@@ -2,7 +2,6 @@
 'use server';
 
 import type { Movie, Show, MovieDetails, ShowDetails, CastMember } from '@/lib/types';
-import { subDays, format } from 'date-fns';
 import { endpoints } from './endpoints';
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
@@ -66,16 +65,14 @@ function processItem(item: any, mediaType?: 'movie' | 'tv', images?: any, videos
     }
 }
 
-const today = new Date();
-const ninetyDaysAgo = subDays(today, 90);
-const airDateGte = format(ninetyDaysAgo, 'yyyy-MM-dd');
-const airDateLte = format(today, 'yyyy-MM-dd');
-
 export async function getItems(key: string, page: number = 1): Promise<(Movie | Show)[]> {
     const endpoint = endpoints.find(e => e.key === key);
     if (!endpoint) return [];
 
     const params: Record<string, string> = { page: page.toString() };
+    if(endpoint.sort_by) {
+        params.sort_by = endpoint.sort_by;
+    }
 
     const data = await fetchFromTMDB(endpoint.url, params);
     if (!data?.results) return [];
@@ -87,9 +84,9 @@ export async function getItems(key: string, page: number = 1): Promise<(Movie | 
     return items.filter(Boolean) as (Movie | Show)[];
 }
 
-export async function getFeatured(): Promise<Movie | Show | undefined> {
+export async function getFeatured(): Promise<(Movie | Show)[]> {
     const items = await getItems('trending_today');
-    return items[0];
+    return items.slice(0, 15);
 }
 
 

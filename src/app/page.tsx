@@ -14,7 +14,7 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col">
-      {featured && <HeroSection movie={featured} />}
+      {featured && featured.length > 0 && <HeroSection movies={featured} />}
       <div className="container py-8 space-y-12">
         <MovieCarousel title="Trending Today" movies={trending} seeAllHref="/discover/trending_today" />
         <MovieCarousel title="Popular K-Dramas" movies={kDramas} seeAllHref="/discover/k_drama" />
