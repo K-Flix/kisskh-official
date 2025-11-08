@@ -78,9 +78,19 @@ export const getTrending = async (): Promise<(Movie | Show)[]> => {
     const movies = movieData?.results.map((m: any) => processMovie(m)) || [];
     const shows = tvData?.results.map((s: any) => processShow(s)) || [];
 
-    return [...movies, ...shows].sort((a, b) => b.vote_average - a.vote_average);
-}
+    const combined = [...movies, ...shows];
 
+    const detailedCombined = await Promise.all(combined.map(async (item) => {
+        const type = 'title' in item ? 'movie' : 'tv';
+        const images = await fetchFromTMDB(`${type}/${item.id}/images`);
+        if (type === 'movie') {
+            return processMovie(item, images);
+        }
+        return processShow(item, images);
+    }));
+
+    return detailedCombined.sort((a, b) => b.vote_average - a.vote_average);
+}
 
 export const getTrendingMovies = async (): Promise<Movie[]> => {
     const data = await fetchFromTMDB('trending/movie/week');
@@ -140,9 +150,9 @@ export const getFeaturedMovie = async (): Promise<Movie | Show | undefined> => {
 
 export const getKDramas = async (): Promise<Show[]> => {
     const data = await fetchFromTMDB('discover/tv', {
-        with_original_country: 'KR',
+        with_origin_country: 'KR',
         sort_by: 'popularity.desc',
-        'air_date.gte': new Date(new Date().setMonth(new Date().getMonth() - 2)).toISOString().split('T')[0]
+        language: 'en-US',
     });
     if (!data?.results) return [];
     
@@ -156,9 +166,9 @@ export const getKDramas = async (): Promise<Show[]> => {
 
 export const getCDramas = async (): Promise<Show[]> => {
     const data = await fetchFromTMDB('discover/tv', {
-        with_original_country: 'CN',
+        with_origin_country: 'CN',
         sort_by: 'popularity.desc',
-        'air_date.gte': new Date(new Date().setMonth(new Date().getMonth() - 2)).toISOString().split('T')[0]
+        language: 'en-US',
     });
     if (!data?.results) return [];
 
