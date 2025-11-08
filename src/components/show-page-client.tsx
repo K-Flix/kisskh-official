@@ -7,10 +7,7 @@ import type { ShowDetails } from '@/lib/types';
 import { EpisodeList } from '@/components/episode-list';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ActorCard } from '@/components/actor-card';
-import { Badge } from '@/components/ui/badge';
-import { Star, Play } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { WatchlistButton } from '@/components/watchlist-button';
+import { ShowHero } from './show-hero';
 
 interface ShowPageClientProps {
   show: ShowDetails;
@@ -30,93 +27,52 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
   
   const handlePlayFirstEpisode = () => {
     if (show && show.seasons.length > 0) {
-      const firstSeason = show.seasons.find(s => s.season_number > 0) || show.seasons[0];
-      if (firstSeason && firstSeason.episodes.length > 0) {
-        const firstEpisode = firstSeason.episodes[0];
-        handlePlay(firstSeason.season_number, firstEpisode.episode_number);
+      const firstSeasonWithEpisodes = show.seasons.find(s => s.season_number > 0 && s.episodes.length > 0);
+      const seasonToPlay = firstSeasonWithEpisodes || show.seasons.find(s => s.episodes.length > 0);
+
+      if (seasonToPlay && seasonToPlay.episodes.length > 0) {
+        const firstEpisode = seasonToPlay.episodes[0];
+        handlePlay(seasonToPlay.season_number, firstEpisode.episode_number);
       }
     }
   };
 
+
   const videoUrl = playerState
     ? `https://vidstorm.ru/tv/${show.id}/${playerState.season}/${playerState.episode}`
     : '';
-  
-  const showYear = show.release_date ? new Date(show.release_date).getFullYear() : 'N/A';
-
 
   return (
     <div className="text-white">
-      <div className="relative h-[70vh] w-full">
-        <div className="absolute inset-0">
-          <Image
-            src={show.backdrop_path}
-            alt={`Backdrop for ${show.title}`}
-            fill
-            priority
-            className="object-cover object-center"
-            data-ai-hint="tv show backdrop"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background to-transparent" />
-        </div>
+      <div className="relative h-[50vh] md:h-[75vh] w-full">
+        <Image
+          src={show.backdrop_path}
+          alt={`Backdrop for ${show.title}`}
+          fill
+          priority
+          className="object-cover object-center"
+          data-ai-hint="tv show backdrop"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-black/20" />
         
-        <div className="relative z-10 flex h-full flex-col justify-end container pb-12">
-          <div className="w-full max-w-lg space-y-4">
-            {show.logo_path ? (
-              <div className="relative h-24 w-full max-w-sm">
-                <Image
-                  src={show.logo_path}
-                  alt={`${show.title} logo`}
-                  fill
-                  className="object-contain object-left-bottom"
-                />
-              </div>
-            ) : (
-              <h1 className="text-4xl md:text-5xl font-bold font-headline">
-                {show.title}
-              </h1>
-            )}
-
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1 text-yellow-400">
-                <Star className="h-4 w-4 fill-current" />
-                <span>{show.vote_average.toFixed(1)}</span>
-              </div>
-              <span>{showYear}</span>
-              {show.genres.slice(0, 2).map((genre) => (
-                <Badge key={genre.id} variant="outline" className="border-white/20 bg-white/10 text-white">
-                  {genre.name}
-                </Badge>
-              ))}
+        {playerState ? (
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/50">
+                <div className="w-full h-full max-w-4xl aspect-video">
+                <iframe
+                    src={videoUrl}
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full border-0"
+                ></iframe>
+                </div>
             </div>
-
-            <p className="text-sm text-foreground/80 line-clamp-3">
-              {show.overview}
-            </p>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <Button onClick={handlePlayFirstEpisode} size="lg">
-                <Play className="mr-2 h-5 w-5" />
-                Play
-              </Button>
-              <WatchlistButton movie={show} />
-            </div>
-          </div>
-        </div>
+        ) : (
+            <ShowHero show={show} onPlayClick={handlePlayFirstEpisode} />
+        )}
       </div>
       
       <div className="container py-8 space-y-12">
-        {playerState && (
-            <div className="w-full aspect-video bg-black rounded-lg overflow-hidden shadow-2xl mb-8">
-              <iframe
-                src={videoUrl}
-                allow="autoplay; encrypted-media; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full border-0"
-              ></iframe>
-            </div>
-          )}
         <EpisodeList seasons={show.seasons} onEpisodePlay={handlePlay} />
         
         <div>

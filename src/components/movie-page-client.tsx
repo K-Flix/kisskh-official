@@ -5,11 +5,12 @@ import { useState } from 'react';
 import Image from 'next/image';
 import type { MovieDetails } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
-import { Star, Play, Plus, Film } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WatchlistButton } from '@/components/watchlist-button';
 import { ActorCard } from '@/components/actor-card';
 import { MovieCarousel } from '@/components/movie-carousel';
+import { ShowHero } from './show-hero';
 
 interface MoviePageClientProps {
   movie: MovieDetails;
@@ -23,77 +24,33 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
 
   return (
     <div className="text-white">
-      <div className="relative h-[70vh] w-full">
-        <div className="absolute inset-0">
-          <Image
-            src={movie.backdrop_path}
-            alt={`Backdrop for ${movie.title}`}
-            fill
-            priority
-            className="object-cover object-center"
-            data-ai-hint="movie backdrop"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background to-transparent" />
-        </div>
-
-        <div className="relative z-10 flex h-full flex-col justify-end container pb-12">
-          <div className="w-full max-w-lg space-y-4">
-            {movie.logo_path ? (
-              <div className="relative h-24 w-full max-w-sm">
-                <Image
-                  src={movie.logo_path}
-                  alt={`${movie.title} logo`}
-                  fill
-                  className="object-contain object-left-bottom"
-                />
-              </div>
-            ) : (
-              <h1 className="text-4xl md:text-5xl font-bold font-headline">
-                {movie.title}
-              </h1>
-            )}
-
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1 text-yellow-400">
-                <Star className="h-4 w-4 fill-current" />
-                <span>{movie.vote_average.toFixed(1)}</span>
-              </div>
-              <span>{movieYear}</span>
-              {movie.genres.slice(0, 2).map((genre) => (
-                <Badge key={genre.id} variant="outline" className="border-white/20 bg-white/10 text-white">
-                  {genre.name}
-                </Badge>
-              ))}
-            </div>
-
-            <p className="text-sm text-foreground/80 line-clamp-3">
-              {movie.overview}
-            </p>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <Button onClick={() => setShowPlayer(true)} size="lg">
-                <Play className="mr-2 h-5 w-5" />
-                Play
-              </Button>
-              <WatchlistButton movie={movie} />
-            </div>
+      <div className="relative h-[50vh] md:h-[75vh] w-full">
+        <Image
+          src={movie.backdrop_path}
+          alt={`Backdrop for ${movie.title}`}
+          fill
+          priority
+          className="object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-black/20" />
+        {showPlayer ? (
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/50">
+                <div className="w-full h-full max-w-4xl aspect-video">
+                <iframe
+                    src={videoUrl}
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full border-0"
+                ></iframe>
+                </div>
           </div>
-        </div>
-      </div>
-      
-      <div className="container py-8 space-y-12">
-        {showPlayer && (
-          <div className="w-full aspect-video bg-black rounded-lg overflow-hidden shadow-2xl mb-8">
-            <iframe
-              src={videoUrl}
-              allow="autoplay; encrypted-media; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full border-0"
-            ></iframe>
-          </div>
+        ) : (
+          <ShowHero show={movie} onPlayClick={() => setShowPlayer(true)} />
         )}
-        
+      </div>
+
+      <div className="container py-8 space-y-12">
         <div>
           <h2 className="text-2xl font-bold mb-4 font-headline flex items-center">
             <span className="w-1 h-7 bg-primary mr-3"></span>
@@ -105,12 +62,11 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
             ))}
           </div>
         </div>
-        
+
         {movie.similar && movie.similar.length > 0 && (
           <MovieCarousel title="You may also like" movies={movie.similar} />
         )}
       </div>
-
     </div>
   );
 }
