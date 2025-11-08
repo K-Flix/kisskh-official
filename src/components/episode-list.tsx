@@ -8,10 +8,10 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 
 interface EpisodeListProps {
   seasons: Season[];
-  showId: number;
+  onEpisodePlay: (season: number, episode: number) => void;
 }
 
-export function EpisodeList({ seasons, showId }: EpisodeListProps) {
+export function EpisodeList({ seasons, onEpisodePlay }: EpisodeListProps) {
   const [selectedSeason, setSelectedSeason] = useState<Season | undefined>(seasons[0]);
 
   const handleSeasonChange = (seasonNumber: string) => {
@@ -37,7 +37,9 @@ export function EpisodeList({ seasons, showId }: EpisodeListProps) {
           <CarouselContent>
             {selectedSeason.episodes.map((episode) => (
               <CarouselItem key={episode.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
-                <EpisodeCard episode={episode} />
+                <div onClick={() => onEpisodePlay(selectedSeason.season_number, episode.episode_number)}>
+                    <EpisodeCard episode={episode} />
+                </div>
               </CarouselItem>
             ))}
           </CarouselContent>
