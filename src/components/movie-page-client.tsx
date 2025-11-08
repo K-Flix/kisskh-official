@@ -138,25 +138,14 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                 priority
                 className="object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-r from-background/20 to-black/20" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent" />
                 
                 <ShowHero 
                     show={movie} 
                     onPlayClick={handlePlay} 
                     onTrailerClick={() => setShowTrailer(true)}
                     onSimilarsClick={handleSimilarsClick}
-                >
-                    <WatchlistButton movie={movie} />
-                    <Button asChild variant="secondary" size="icon" className="rounded-full w-11 h-11 bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
-                        <Link href={`https://dl.vidsrc.vip/movie/${movie.id}`} target="_blank" rel="noopener noreferrer">
-                            <Download className="w-5 h-5" />
-                        </Link>
-                    </Button>
-                    <Button onClick={handleSimilarsClick} size="lg" variant="secondary" className="bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
-                        Similars
-                    </Button>
-                </ShowHero>
+                />
             </div>
              <div className="container py-8 space-y-12" ref={similarSectionRef}>
                 <ActorCard actors={movie.cast} />
