@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -11,9 +12,10 @@ import { ScrollArea } from './ui/scroll-area';
 interface EpisodeListProps {
   seasons: Season[];
   onEpisodePlay: (season: number, episode: number) => void;
+  currentEpisode?: { season: number; episode: number };
 }
 
-export function EpisodeList({ seasons, onEpisodePlay }: EpisodeListProps) {
+export function EpisodeList({ seasons, onEpisodePlay, currentEpisode }: EpisodeListProps) {
   const [selectedSeason, setSelectedSeason] = useState<Season | undefined>(seasons.find(s => s.season_number > 0) || seasons[0]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -32,34 +34,50 @@ export function EpisodeList({ seasons, onEpisodePlay }: EpisodeListProps) {
   );
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4 gap-4">
-        <h2 className="text-2xl font-bold font-headline flex items-center shrink-0">
-            <span className="w-1 h-7 bg-primary mr-3"></span>
-            Episodes
-        </h2>
-        <div className='flex items-center gap-2 w-full'>
-          <SeasonSelector seasons={seasons} onSeasonChange={handleSeasonChange} />
-          <div className="relative w-full max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search episode..." 
-              className="pl-10"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-            />
-          </div>
+    <section>
+        <div className="flex items-center space-x-3 mb-6">
+            <div className="w-1.5 h-7 bg-primary rounded-full" />
+            <h2 className="text-2xl font-bold">Episodes</h2>
         </div>
-      </div>
-      <ScrollArea className="h-[480px] pr-4">
+
+        {/* Toolbar */}
+        <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 mb-6 bg-secondary/50 p-3 rounded-lg border border-border/50">
+            <SeasonSelector seasons={seasons} selectedSeason={selectedSeason?.season_number} onSeasonChange={handleSeasonChange} />
+            <div className="relative w-full flex items-center">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"/>
+                <Input
+                    type="text"
+                    placeholder="Search episode..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-background border-0 rounded-md focus:ring-2 focus:ring-primary text-white py-2.5 pl-10 pr-4"
+                />
+            </div>
+        </div>
+      
+      <ScrollArea className="h-[60vh] pr-4 -mr-4">
         {selectedSeason && (
             <div className="space-y-3">
-                {filteredEpisodes?.map((episode) => (
-                    <EpisodeCard key={episode.id} episode={episode} onPlay={() => onEpisodePlay(selectedSeason.season_number, episode.episode_number)} />
-                ))}
+                {filteredEpisodes?.map((episode) => {
+                    const isPlaying = currentEpisode?.season === selectedSeason.season_number && currentEpisode?.episode === episode.episode_number;
+                    return (
+                        <EpisodeCard 
+                            key={episode.id} 
+                            episode={episode} 
+                            onPlay={() => onEpisodePlay(selectedSeason.season_number, episode.episode_number)}
+                            isPlaying={isPlaying}
+                        />
+                    )
+                })}
+                 {filteredEpisodes?.length === 0 && (
+                    <div className="text-center text-muted-foreground py-16">
+                        <p className="text-xl">No episodes found</p>
+                        <p className="text-sm mt-1">Try adjusting your search query.</p>
+                    </div>
+                )}
             </div>
         )}
       </ScrollArea>
-    </div>
+    </section>
   );
 }

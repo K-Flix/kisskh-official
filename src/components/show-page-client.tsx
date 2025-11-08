@@ -26,6 +26,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
 
   const handlePlay = (season: number, episode: number) => {
     setPlayerState({ season, episode });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleClosePlayer = () => {
@@ -45,7 +46,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
   };
 
   const videoUrl = playerState
-    ? `https://vidstorm.ru/tv/${show.id}/${playerState.season}/${playerState.episode}`
+    ? `https://vidsrc.to/embed/tv/${show.id}/${playerState.season}/${playerState.episode}`
     : '';
 
   const trailerUrl = show.trailer_url ? `${show.trailer_url}?autoplay=1&rel=0` : '';
@@ -75,10 +76,10 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
               ></iframe>
               <button 
                 onClick={handleClosePlayer} 
-                className="absolute -top-10 right-0 text-white hover:text-primary transition-colors"
+                className="absolute -top-2 -right-2 md:-top-4 md:-right-4 z-10 text-white bg-background/50 rounded-full p-1 hover:bg-background/80 transition-colors"
                 aria-label="Close player"
               >
-                <X className="w-8 h-8" />
+                <X className="w-6 h-6" />
               </button>
             </div>
           </div>
@@ -88,7 +89,11 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
       </div>
       
       <div className="container py-8 space-y-12">
-        <EpisodeList seasons={show.seasons} onEpisodePlay={handlePlay} />
+        <EpisodeList 
+          seasons={show.seasons} 
+          onEpisodePlay={handlePlay} 
+          currentEpisode={playerState ? { season: playerState.season, episode: playerState.episode } : undefined}
+        />
         
         {show.cast.length > 0 && <ActorCard actors={show.cast} />}
         
