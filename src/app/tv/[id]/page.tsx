@@ -4,6 +4,7 @@ import { ShowHero } from '@/components/show-hero';
 import { EpisodeList } from '@/components/episode-list';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ActorCard } from '@/components/actor-card';
+import { SimilarShows } from '@/components/similar-shows';
 
 interface ShowPageProps {
   params: {
@@ -41,6 +42,8 @@ export default async function ShowPage({ params }: ShowPageProps) {
             </div>
         </div>
         
+        <SimilarShows movie={show} />
+
         {show.similar && show.similar.length > 0 && (
             <MovieCarousel title="You may also like" movies={show.similar} />
         )}

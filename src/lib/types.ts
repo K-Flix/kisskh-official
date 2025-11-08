@@ -9,6 +9,7 @@ export interface Movie {
   genre_ids: number[];
   logo_path?: string;
   media_type?: 'movie' | 'tv';
+  genres: Genre[];
 }
 
 export interface Show {
@@ -22,6 +23,7 @@ export interface Show {
     genre_ids: number[];
     logo_path?: string;
     media_type?: 'tv';
+    genres: Genre[];
 }
 
 export interface Genre {

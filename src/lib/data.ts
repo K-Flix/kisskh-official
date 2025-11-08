@@ -33,7 +33,7 @@ function processMovie(movie: any, images?: any): Movie {
     const logo = images?.logos?.find((logo: any) => logo.iso_639_1 === 'en' && !logo.file_path.endsWith('.svg'));
     return {
         ...movie,
-        title: movie.title || movie.name,
+        title: movie.title || movie.name || 'Untitled',
         poster_path: movie.poster_path ? `${IMAGE_BASE_URL}/w500${movie.poster_path}` : '/placeholder.svg',
         backdrop_path: movie.backdrop_path ? `${IMAGE_BASE_URL}/w1280${movie.backdrop_path}` : '/placeholder.svg',
         logo_path: logo ? `${IMAGE_BASE_URL}/w500${logo.file_path}` : undefined,
@@ -46,7 +46,7 @@ function processShow(show: any, images?: any): Show {
     const logo = images?.logos?.find((logo: any) => logo.iso_639_1 === 'en' && !logo.file_path.endsWith('.svg'));
     return {
         id: show.id,
-        title: show.name,
+        title: show.name || show.title || 'Untitled',
         poster_path: show.poster_path ? `${IMAGE_BASE_URL}/w500${show.poster_path}` : '/placeholder.svg',
         backdrop_path: show.backdrop_path ? `${IMAGE_BASE_URL}/w1280${show.backdrop_path}` : '/placeholder.svg',
         overview: show.overview,
@@ -76,8 +76,8 @@ export const getMoviesByGenre = async (genreId: number): Promise<Movie[]> => {
     return movies;
 }
 
-export const getTrending = async (): Promise<(Movie | Show)[]> => {
-    const data = await fetchFromTMDB('trending/all/week');
+export const getTrending = async (media_type: 'all' | 'movie' | 'tv' = 'all'): Promise<(Movie | Show)[]> => {
+    const data = await fetchFromTMDB(`trending/${media_type}/week`);
     if (!data?.results) return [];
     
     const combined = data.results
