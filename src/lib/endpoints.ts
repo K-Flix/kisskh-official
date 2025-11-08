@@ -2,7 +2,7 @@
 export const endpoints: { key: string; title: string; url: string; sort_by?:string; type?: 'movie' | 'tv' }[] = [
     // Home Page
     { key: 'trending_today', title: 'Trending Today', url: `/trending/all/day?language=en-US` },
-    { key: 'k_drama_on_air', title: 'Popular K-Dramas', url: `/discover/tv?with_origin_country=KR&language=en-US&sort_by=popularity.desc&air_date.gte=2024-01-01`, type: 'tv' },
+    { key: 'k_drama_on_air', title: 'Popular K-Dramas', url: `/discover/tv?with_origin_country=KR&language=en-US`, sort_by: 'first_air_date.desc', type: 'tv' },
   
     // TV Shows
     { key: 'trending_tv', title: 'Trending TV Shows', url: `/trending/tv/week?language=en-US`, type: 'tv' },
