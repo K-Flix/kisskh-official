@@ -8,7 +8,7 @@ import { EpisodeList } from '@/components/episode-list';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ActorCard } from '@/components/actor-card';
 import { Badge } from '@/components/ui/badge';
-import { Star, Play, ArrowLeft } from 'lucide-react';
+import { Star, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WatchlistButton } from '@/components/watchlist-button';
 
@@ -107,6 +107,16 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
       </div>
       
       <div className="container py-8 space-y-12">
+        {playerState && (
+            <div className="w-full aspect-video bg-black rounded-lg overflow-hidden shadow-2xl mb-8">
+              <iframe
+                src={videoUrl}
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full border-0"
+              ></iframe>
+            </div>
+          )}
         <EpisodeList seasons={show.seasons} onEpisodePlay={handlePlay} />
         
         <div>
@@ -126,22 +136,6 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
         )}
       </div>
 
-      {playerState && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-           <button onClick={() => setPlayerState(null)} className="absolute top-4 left-4 z-10 text-white">
-            <ArrowLeft className="w-8 h-8" />
-            <span className="sr-only">Back</span>
-          </button>
-          <div className="w-full max-w-4xl aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
-            <iframe
-              src={videoUrl}
-              allow="autoplay; encrypted-media; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full border-0"
-            ></iframe>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
