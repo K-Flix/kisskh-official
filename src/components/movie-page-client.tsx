@@ -7,10 +7,11 @@ import type { MovieDetails } from '@/lib/types';
 import { ActorCard } from '@/components/actor-card';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ShowHero } from './show-hero';
-import { X } from 'lucide-react';
+import { X, ArrowLeft } from 'lucide-react';
 import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
+import Link from 'next/link';
 
 interface MoviePageClientProps {
   movie: MovieDetails;
@@ -67,81 +68,102 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
     <div className="text-white">
       {showPlayer ? (
         <div className="w-full">
-            <div className="relative aspect-video w-full max-w-4xl mx-auto md:mt-8">
-              <iframe
-                src={videoUrl}
-                allow="autoplay; encrypted-media; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full border-0 md:rounded-lg bg-black"
-                key={selectedServer}
-              ></iframe>
-              <button
-                onClick={() => setShowPlayer(false)}
-                className="absolute top-2 right-2 md:-top-3 md:-right-3 z-10 text-white bg-background/50 rounded-full p-1 hover:bg-background/80 transition-colors"
-                aria-label="Close player"
-              >
-                <X className="w-6 h-6" />
-              </button>
+            <div className="md:mt-8">
+                <div className="container relative flex justify-between items-center h-14 px-4">
+                    <Link href="/" className="flex items-center gap-2 text-white">
+                        <ArrowLeft className="w-6 h-6"/>
+                        <div className="flex flex-col">
+                            <span className="text-xs text-muted-foreground">You're watching</span>
+                            <span className="font-semibold">{movie.title}</span>
+                        </div>
+                    </Link>
+                    <button
+                        onClick={() => setShowPlayer(false)}
+                        className="z-10 text-white bg-background/50 rounded-full p-1 hover:bg-background/80 transition-colors"
+                        aria-label="Close player"
+                    >
+                        <X className="w-6 h-6" />
+                    </button>
+                </div>
+                <div className="relative aspect-video w-full max-w-4xl mx-auto">
+                <iframe
+                    src={videoUrl}
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full border-0 md:rounded-lg bg-black"
+                    key={selectedServer}
+                ></iframe>
+                </div>
+                <div className="container max-w-4xl mx-auto mt-4">
+                <div className="flex flex-wrap items-center gap-2 p-2 bg-secondary/50 rounded-lg">
+                    <span className="text-sm font-semibold text-gray-300 mr-2 shrink-0">Servers:</span>
+                    {servers.map(({ name, displayName }) => (
+                    <Button
+                        key={name}
+                        onClick={() => setSelectedServer(name)}
+                        size="sm"
+                        variant={selectedServer === name ? 'default' : 'secondary'}
+                        className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                        selectedServer === name
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-zinc-700/80 hover:bg-zinc-600'
+                        }`}
+                    >
+                        {displayName}
+                    </Button>
+                    ))}
+                </div>
+                </div>
             </div>
-            <div className="container max-w-4xl mx-auto mt-4">
-              <div className="flex flex-wrap items-center gap-2 p-2 bg-secondary/50 rounded-lg">
-                <span className="text-sm font-semibold text-gray-300 mr-2 shrink-0">Servers:</span>
-                {servers.map(({ name, displayName }) => (
-                  <Button
-                    key={name}
-                    onClick={() => setSelectedServer(name)}
-                    size="sm"
-                    variant={selectedServer === name ? 'default' : 'secondary'}
-                    className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
-                      selectedServer === name
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-zinc-700/80 hover:bg-zinc-600'
-                    }`}
-                  >
-                    {displayName}
-                  </Button>
-                ))}
-              </div>
+            <div className="container py-8 space-y-12">
+                <ActorCard actors={movie.cast} />
+                {movie.similar && movie.similar.length > 0 && (
+                <MovieCarousel title="You may also like" movies={movie.similar} />
+                )}
             </div>
         </div>
       ) : (
-        <div className="relative h-[60vh] md:h-[90vh] w-full">
-            <Image
-            src={movie.backdrop_path}
-            alt={`Backdrop for ${movie.title}`}
-            fill
-            priority
-            className="object-cover object-center"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-black/20" />
-            
-            <ShowHero show={movie} onPlayClick={handlePlay} onTrailerClick={() => setShowTrailer(true)}>
-                {'runtime' in movie && movie.runtime ? (
-                    <Badge variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{movie.runtime} min</Badge>
-                ) : null}
-            </ShowHero>
-        </div>
+        <>
+            <div className="relative h-[60vh] md:h-[90vh] w-full">
+                <Link href="/" className="absolute top-4 left-4 z-50 flex items-center justify-center bg-background/50 p-2 rounded-full hover:bg-background/80 transition-colors">
+                    <ArrowLeft className="w-6 h-6 text-white"/>
+                    <span className="sr-only">Back</span>
+                </Link>
+                <Image
+                src={movie.backdrop_path}
+                alt={`Backdrop for ${movie.title}`}
+                fill
+                priority
+                className="object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-black/20" />
+                
+                <ShowHero show={movie} onPlayClick={handlePlay} onTrailerClick={() => setShowTrailer(true)}>
+                    {'runtime' in movie && movie.runtime ? (
+                        <Badge variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{movie.runtime} min</Badge>
+                    ) : null}
+                </ShowHero>
+            </div>
+             <div className="container py-8 space-y-12">
+                <ActorCard actors={movie.cast} />
+                {movie.similar && movie.similar.length > 0 && (
+                <MovieCarousel title="You may also like" movies={movie.similar} />
+                )}
+            </div>
+        </>
       )}
 
-      <div className="container py-8 space-y-12">
-        <ActorCard actors={movie.cast} />
-
-        {movie.similar && movie.similar.length > 0 && (
-          <MovieCarousel title="You may also like" movies={movie.similar} />
-        )}
-      </div>
-
-        <Dialog open={showTrailer} onOpenChange={setShowTrailer}>
-            <DialogContent className="bg-black border-0 p-0 max-w-4xl w-full aspect-video">
-                 <iframe
-                    src={trailerUrl}
-                    allow="autoplay; encrypted-media; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full border-0 rounded-lg"
-                ></iframe>
-            </DialogContent>
-        </Dialog>
+      <Dialog open={showTrailer} onOpenChange={setShowTrailer}>
+          <DialogContent className="bg-black border-0 p-0 max-w-4xl w-full aspect-video">
+               <iframe
+                  src={trailerUrl}
+                  allow="autoplay; encrypted-media; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full border-0 rounded-lg"
+              ></iframe>
+          </DialogContent>
+      </Dialog>
     </div>
   );
 }
