@@ -17,9 +17,11 @@ export default async function DiscoverPage() {
         </div>
         <Separator />
       <MovieCarousel title="Trending" movies={trending} />
-      <MovieCarousel title="K-Drama" movies={kDramas} key="k-dramas" />
+      <MovieCarousel title="K-Drama" movies={kDramas} />
       <MovieCarousel title="C-Drama" movies={cDramas} />
       <MovieCarousel title="Anime" movies={anime} />
     </div>
   );
 }
+
+    

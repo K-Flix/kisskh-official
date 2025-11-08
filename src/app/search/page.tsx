@@ -1,3 +1,4 @@
+
 import { Suspense } from 'react';
 import { searchMovies } from '@/lib/data';
 import { MovieCard } from '@/components/movie-card';
@@ -57,3 +58,5 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
     </div>
   );
 }
+
+    

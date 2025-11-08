@@ -1,5 +1,5 @@
 
-import type { Genre, Movie, MovieDetails, Show, ShowDetails, BaseItem } from '@/lib/types';
+import type { Genre, Movie, Show, MovieDetails, ShowDetails, BaseItem, CastMember, Season, Episode } from '@/lib/types';
 import { subDays, format } from 'date-fns';
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
@@ -62,9 +62,19 @@ function processItem(item: any, mediaType?: 'movie' | 'tv', images?: any): Movie
     }
 }
 
+const formatDate = (date: Date) => {
+    const d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    return [year, month.padStart(2, '0'), day.padStart(2, '0')].join('-');
+};
+
 const today = new Date();
-const airDateLte = format(today, 'yyyy-MM-dd');
-const airDateGte = format(subDays(today, 30), 'yyyy-MM-dd');
+const ninetyDaysAgo = new Date(new Date().setDate(today.getDate() - 90));
+const airDateGte = formatDate(ninetyDaysAgo);
+const airDateLte = formatDate(today);
 
 const endpoints: { key: string; title: string; url: string; type?: 'movie' | 'tv' }[] = [
   // Home Page
@@ -73,9 +83,9 @@ const endpoints: { key: string; title: string; url: string; type?: 'movie' | 'tv
 
   // TV Shows
   { key: 'trending_tv', title: 'Trending TV Shows', url: `/trending/tv/week?language=en-US`, type: 'tv' },
-  { key: 'k_drama', title: 'K-Dramas', url: `/discover/tv?with_origin_country=KR&language=en-US&sort_by=popularity.desc`, type: 'tv' },
-  { key: 'c_drama', title: 'C-Dramas', url: `/discover/tv?with_origin_country=CN&language=en-US&sort_by=popularity.desc`, type: 'tv' },
-  { key: 'anime', title: 'Anime', url: `/discover/tv?with_genres=16&language=en-US&sort_by=popularity.desc`, type: 'tv' },
+  { key: 'k_drama', title: 'Recent K-Dramas', url: `/discover/tv?with_origin_country=KR&with_genres=18&language=en-US&sort_by=popularity.desc&air_date.gte=${airDateGte}&air_date.lte=${airDateLte}`, type: 'tv' },
+  { key: 'c_drama', title: 'Recent C-Dramas', url: `/discover/tv?with_origin_country=CN&with_genres=18&language=en-US&sort_by=popularity.desc&air_date.gte=${airDateGte}&air_date.lte=${airDateLte}`, type: 'tv' },
+  { key: 'anime', title: 'Recent Anime', url: `/discover/tv?with_genres=16&language=en-US&sort_by=popularity.desc&air_date.gte=${airDateGte}&air_date.lte=${airDateLte}`, type: 'tv' },
   { key: 'on_the_air_tv', title: 'On The Air TV Shows', url: `/tv/on_the_air?language=en-US`, type: 'tv' },
   { key: 'top_rated_tv', title: 'Top Rated TV Shows', url: `/tv/top_rated?language=en-US`, type: 'tv' },
   
@@ -173,5 +183,7 @@ export const searchMovies = async (query: string): Promise<(Movie | Show)[]> => 
             return processItem(item, item.media_type, images);
         });
 
-    return Promise.all(results);
+    return (await Promise.all(results)).filter(Boolean) as (Movie | Show)[];
 }
+
+    

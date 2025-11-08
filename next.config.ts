@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 import('dotenv').then(dotenv => dotenv.config());
 
@@ -24,7 +25,7 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'https',
+        protocol: 'https
         hostname: 'picsum.photos',
         port: '',
         pathname: '/**',
@@ -37,6 +38,16 @@ const nextConfig: NextConfig = {
       }
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/tmdb/:path*',
+        destination: 'https://api.themoviedb.org/3/:path*',
+      },
+    ]
+  },
 };
 
 export default nextConfig;
+
+    
