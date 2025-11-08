@@ -25,80 +25,81 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
   const videoUrl = `https://vidstorm.ru/movie/${movie.id}`;
 
   return (
-    <>
-      <div className="relative h-[60vh] md:h-[80vh] w-full">
+    <div className="container py-8 md:py-12 space-y-8">
+      <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden">
         {showPlayer ? (
-            <div className='w-full h-full bg-black flex items-center justify-center'>
-                 <div className="container h-full">
-                    <iframe
-                        src={videoUrl}
-                        allow="autoplay; encrypted-media; picture-in-picture"
-                        allowFullScreen
-                        className="w-full h-full border-0"
-                    ></iframe>
-                </div>
-            </div>
+            <iframe
+                src={videoUrl}
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full border-0"
+            ></iframe>
         ) : (
-            <>
             <Image
                 src={movie.backdrop_path}
                 alt={`Backdrop for ${movie.title}`}
                 fill
                 priority
-                className="object-cover object-top"
+                className="object-cover object-center"
                 data-ai-hint="movie backdrop"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent" />
-            </>
         )}
+      </div>
 
-          <div className="absolute inset-0 z-10 flex flex-col justify-end h-full container pb-8 md:pb-16 space-y-4">
-            <h1 className="text-4xl md:text-5xl font-bold font-headline text-white drop-shadow-lg max-w-2xl">
-              {movie.title}
-            </h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="md:col-span-2 space-y-6">
+          <div className="space-y-3">
+              <h1 className="text-4xl font-bold font-headline">
+                {movie.title}
+              </h1>
 
-            <div className="flex items-center gap-4 text-sm text-foreground/80">
-              <div className="flex items-center gap-1">
-                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                <span>{movie.vote_average.toFixed(1)}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                <span>{movieYear}</span>
-              </div>
-              {movie.runtime > 0 && (
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
-                  <span>{runtimeHours}h {runtimeMinutes}m</span>
+                  <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                  <span>{movie.vote_average.toFixed(1)}</span>
                 </div>
-              )}
-                {movie.genres.slice(0, 2).map((genre) => (
-                    <Badge key={genre.id} variant="outline" className="backdrop-blur-sm bg-transparent border-white/50 text-white">{genre.name}</Badge>
-                ))}
-            </div>
-
-            <p className="max-w-xl text-foreground/80 md:text-base drop-shadow-md line-clamp-3">
-              {movie.overview}
-            </p>
-            <div className="flex flex-wrap gap-2 md:gap-4 items-center">
-              <Button onClick={() => setShowPlayer(true)} size="lg" className="bg-white text-black hover:bg-white/90">
-                <Play className="mr-2" />
-                Play
-              </Button>
-              <WatchlistButton movie={movie} />
-               <Button variant="outline" className="bg-transparent border-white/50 hover:bg-white/10 text-white">
-                Episodes
-              </Button>
-               <Button variant="outline" className="bg-transparent border-white/50 hover:bg-white/10 text-white">
-                Similar
-              </Button>
-            </div>
+                <div className="flex items-center gap-1">
+                  <Calendar className="w-4 h-4" />
+                  <span>{movieYear}</span>
+                </div>
+                {movie.runtime > 0 && (
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
+                    <span>{runtimeHours}h {runtimeMinutes}m</span>
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex flex-wrap gap-2">
+                  {movie.genres.map((genre) => (
+                      <Badge key={genre.id} variant="outline">{genre.name}</Badge>
+                  ))}
+              </div>
           </div>
+
+
+          <div className="flex flex-wrap gap-2 md:gap-4 items-center">
+            <Button onClick={() => setShowPlayer(true)} size="lg">
+              <Play className="mr-2" />
+              Play
+            </Button>
+            <WatchlistButton movie={movie} />
+              <Button variant="outline" size="lg">
+              Episodes
+            </Button>
+              <Button variant="outline" size="lg">
+              Similar
+            </Button>
+          </div>
+
+           <p className="text-muted-foreground md:text-base leading-relaxed">
+            {movie.overview}
+          </p>
+
+        </div>
       </div>
       
-
-      <div className="container py-8 md:py-12 space-y-12">
+      <div className="space-y-12">
         <div className="my-8">
             <Link href="#">
                 <Image src="https://picsum.photos/seed/meme-ad/1200/200" width={1200} height={200} alt="Ad banner" className="w-full h-auto rounded-lg" data-ai-hint="advertisement banner" />
@@ -121,6 +122,6 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
           <MovieCarousel title="You may like" movies={movie.similar} />
         )}
       </div>
-    </>
+    </div>
   );
 }
