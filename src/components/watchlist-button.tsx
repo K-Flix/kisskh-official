@@ -36,7 +36,7 @@ export function WatchlistButton({ movie }: WatchlistButtonProps) {
             variant="outline"
             size="lg"
             onClick={handleClick}
-            className="border-white/20 bg-white/10 backdrop-blur-sm px-3"
+            className="border-white/20 bg-white/10 backdrop-blur-sm px-3 hover:bg-white/20"
             aria-label={isBookmarked ? 'Remove from watchlist' : 'Add to watchlist'}
           >
             {isBookmarked ? <BookmarkCheck className="h-5 w-5" /> : <BookmarkPlus className="h-5 w-5" />}

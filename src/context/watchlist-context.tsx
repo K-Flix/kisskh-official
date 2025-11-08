@@ -1,7 +1,8 @@
+
 'use client';
 
 import type { ReactNode } from 'react';
-import { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import type { Movie, Show } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
@@ -58,7 +59,6 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
         toast({
           title: 'Removed from Watchlist',
           description: `${movie.title} has been removed from your watchlist.`,
-          variant: 'destructive',
         });
       }
       return prev.filter((item) => item.id !== movieId);
@@ -69,8 +69,10 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
     return watchlist.some((item) => item.id === movieId);
   }, [watchlist]);
 
+  const value = useMemo(() => ({ watchlist, addToWatchlist, removeFromWatchlist, isInWatchlist }), [watchlist, addToWatchlist, removeFromWatchlist, isInWatchlist]);
+
   return (
-    <WatchlistContext.Provider value={{ watchlist, addToWatchlist, removeFromWatchlist, isInWatchlist }}>
+    <WatchlistContext.Provider value={value}>
       {children}
     </WatchlistContext.Provider>
   );

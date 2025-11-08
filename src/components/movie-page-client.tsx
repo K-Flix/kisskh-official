@@ -7,9 +7,7 @@ import type { MovieDetails } from '@/lib/types';
 import { ActorCard } from '@/components/actor-card';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ShowHero } from './show-hero';
-import { X, Play } from 'lucide-react';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
-import { Button } from './ui/button';
+import { X } from 'lucide-react';
 import { Dialog, DialogContent } from './ui/dialog';
 
 interface MoviePageClientProps {
@@ -19,10 +17,6 @@ interface MoviePageClientProps {
 export function MoviePageClient({ movie }: MoviePageClientProps) {
   const [showPlayer, setShowPlayer] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
-
-  const handleClosePlayer = () => {
-    setShowPlayer(false);
-  }
 
   const videoUrl = `https://vidstorm.ru/movie/${movie.id}`;
   const trailerUrl = movie.trailer_url ? `${movie.trailer_url}?autoplay=1&rel=0` : '';
@@ -49,9 +43,12 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                     allowFullScreen
                     className="w-full h-full border-0 rounded-lg"
                 ></iframe>
-                <button onClick={handleClosePlayer} className="absolute -top-10 right-0 text-white hover:text-primary transition-colors">
+                <button 
+                  onClick={() => setShowPlayer(false)} 
+                  className="absolute -top-10 right-0 text-white hover:text-primary transition-colors"
+                  aria-label="Close player"
+                >
                     <X className="w-8 h-8" />
-                    <span className="sr-only">Close player</span>
                 </button>
                 </div>
           </div>
@@ -61,29 +58,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
       </div>
 
       <div className="container py-8 space-y-12">
-        <div>
-          <h2 className="text-2xl font-bold mb-4 font-headline flex items-center">
-            <span className="w-1 h-7 bg-primary mr-3"></span>
-            Cast
-          </h2>
-          <Carousel
-            opts={{
-              align: 'start',
-              loop: false,
-            }}
-            className="w-full"
-          >
-            <CarouselContent>
-              {movie.cast.map((member) => (
-                <CarouselItem key={member.credit_id} className="basis-1/3 sm:basis-1/4 md:basis-1/6 lg:basis-[12.5%]">
-                  <ActorCard actor={member} />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="ml-12" />
-            <CarouselNext className="mr-12" />
-          </Carousel>
-        </div>
+        {movie.cast.length > 0 && <ActorCard actors={movie.cast} />}
 
         {movie.similar && movie.similar.length > 0 && (
           <MovieCarousel title="You may also like" movies={movie.similar} />

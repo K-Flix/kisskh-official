@@ -9,7 +9,6 @@ import { MovieCarousel } from '@/components/movie-carousel';
 import { ActorCard } from '@/components/actor-card';
 import { ShowHero } from './show-hero';
 import { X } from 'lucide-react';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
 import { Dialog, DialogContent } from './ui/dialog';
 
 interface ShowPageClientProps {
@@ -74,9 +73,12 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                   allowFullScreen
                   className="w-full h-full border-0 rounded-lg"
               ></iframe>
-              <button onClick={handleClosePlayer} className="absolute -top-10 right-0 text-white hover:text-primary transition-colors">
+              <button 
+                onClick={handleClosePlayer} 
+                className="absolute -top-10 right-0 text-white hover:text-primary transition-colors"
+                aria-label="Close player"
+              >
                 <X className="w-8 h-8" />
-                <span className="sr-only">Close player</span>
               </button>
             </div>
           </div>
@@ -88,29 +90,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
       <div className="container py-8 space-y-12">
         <EpisodeList seasons={show.seasons} onEpisodePlay={handlePlay} />
         
-        <div>
-            <h2 className="text-2xl font-bold mb-4 font-headline flex items-center">
-                <span className="w-1 h-7 bg-primary mr-3"></span>
-                Cast
-            </h2>
-            <Carousel
-                opts={{
-                align: 'start',
-                loop: false,
-                }}
-                className="w-full"
-            >
-                <CarouselContent>
-                {show.cast.map((member) => (
-                    <CarouselItem key={member.credit_id} className="basis-1/3 sm:basis-1/4 md:basis-1/6 lg:basis-[12.5%]">
-                        <ActorCard actor={member} />
-                    </CarouselItem>
-                ))}
-                </CarouselContent>
-                <CarouselPrevious className="ml-12" />
-                <CarouselNext className="mr-12" />
-            </Carousel>
-        </div>
+        {show.cast.length > 0 && <ActorCard actors={show.cast} />}
         
         {show.similar && show.similar.length > 0 && (
           <MovieCarousel title="You may also like" movies={show.similar} />

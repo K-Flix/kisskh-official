@@ -1,5 +1,5 @@
 
-import type { Genre, Movie, Show, MovieDetails, ShowDetails, BaseItem, CastMember, Season, Episode } from '@/lib/types';
+import type { Movie, Show, MovieDetails, ShowDetails, CastMember } from '@/lib/types';
 import { subDays, format } from 'date-fns';
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
@@ -35,7 +35,7 @@ function processItem(item: any, mediaType?: 'movie' | 'tv', images?: any, videos
     const logo = images?.logos?.find((logo: any) => logo.iso_639_1 === 'en' && !logo.file_path.endsWith('.svg'));
     const trailer = videos?.results?.find((video: any) => video.site === 'YouTube' && video.type === 'Trailer');
     
-    const baseItem: BaseItem = {
+    const baseItem = {
         id: item.id,
         title: item.title || item.name || 'Untitled',
         poster_path: item.poster_path ? `${IMAGE_BASE_URL}/w500${item.poster_path}` : '/placeholder.svg',
@@ -59,25 +59,14 @@ function processItem(item: any, mediaType?: 'movie' | 'tv', images?: any, videos
         return {
             ...baseItem,
             media_type: 'tv',
-            title: item.name || item.title || 'Untitled',
         } as Show;
     }
 }
 
-const formatDate = (date: Date) => {
-    const d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    return [year, month.padStart(2, '0'), day.padStart(2, '0')].join('-');
-};
-
 const today = new Date();
 const ninetyDaysAgo = subDays(today, 90);
-const airDateGte = formatDate(ninetyDaysAgo);
-const airDateLte = formatDate(today);
-
+const airDateGte = format(ninetyDaysAgo, 'yyyy-MM-dd');
+const airDateLte = format(today, 'yyyy-MM-dd');
 
 const endpoints: { key: string; title: string; url: string; type?: 'movie' | 'tv' }[] = [
   // Home Page
@@ -109,14 +98,9 @@ export const getItems = async (key: string): Promise<(Movie | Show)[]> => {
 
     const items = data.results
         .filter((item: any) => item.poster_path && item.backdrop_path)
-        .map(async (item: any) => {
-            const mediaType = endpoint.type || item.media_type;
-            if (mediaType !== 'movie' && mediaType !== 'tv') return null;
-            const images = await fetchFromTMDB(`${mediaType}/${item.id}/images`);
-            return processItem(item, mediaType, images);
-        });
+        .map((item: any) => processItem(item, endpoint.type || item.media_type));
 
-    return (await Promise.all(items)).filter(Boolean) as (Movie | Show)[];
+    return items.filter(Boolean) as (Movie | Show)[];
 }
 
 export const getFeatured = async (): Promise<Movie | Show | undefined> => {
@@ -181,10 +165,7 @@ export const searchMovies = async (query: string): Promise<(Movie | Show)[]> => 
 
     const results = data.results
         .filter((item: any) => (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path)
-        .map(async (item: any) => {
-            const details = await fetchFromTMDB(`${item.media_type}/${item.id}`, { append_to_response: 'images,videos' });
-            return processItem(item, item.media_type, details?.images, details?.videos);
-        });
+        .map((item: any) => processItem(item, item.media_type));
 
-    return (await Promise.all(results)).filter(Boolean) as (Movie | Show)[];
+    return results.filter(Boolean) as (Movie | Show)[];
 }
