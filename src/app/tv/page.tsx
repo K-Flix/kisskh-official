@@ -6,7 +6,7 @@ import { use } from 'react';
 import { Separator } from '@/components/ui/separator';
 
 export default function TVPage() {
-  const trending = use(getTrending('tv'));
+  const trending = use(getTrending('day', 'tv'));
   const kDramas = use(getKDramas());
   const cDramas = use(getCDramas());
 
