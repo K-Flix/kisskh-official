@@ -6,7 +6,7 @@ import { MovieCarousel } from '@/components/movie-carousel';
 export default async function Home() {
   const featured = await getFeatured();
   const trending = await getItems('trending_today');
-  const kDramas = await getItems('k_drama_on_air');
+  const kDramas = await getItems('k_drama');
   const cDramas = await getItems('c_drama');
   const anime = await getItems('anime');
   const popularMovies = await getItems('popular_movies');
