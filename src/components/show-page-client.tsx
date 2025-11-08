@@ -144,7 +144,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                 <ActorCard actors={show.cast} />
                 
                 {show.similar && show.similar.length > 0 && (
-                <MovieCarousel title="You may also like" movies={show.similar} />
+                  <MovieCarousel title="Similars" movies={show.similar} />
                 )}
             </div>
         </div>
@@ -178,7 +178,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                 <ActorCard actors={show.cast} />
                 
                 {show.similar && show.similar.length > 0 && (
-                <MovieCarousel title="You may also like" movies={show.similar} />
+                  <MovieCarousel title="Similars" movies={show.similar} />
                 )}
             </div>
         </>

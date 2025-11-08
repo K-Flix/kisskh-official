@@ -4,7 +4,7 @@
 import Image from 'next/image';
 import type { MovieDetails, ShowDetails } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
-import { Star, Calendar, Play, Video } from 'lucide-react';
+import { Star, Calendar, Play, Video, Plus, BookmarkPlus, BookmarkCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WatchlistButton } from '@/components/watchlist-button';
 
@@ -12,9 +12,10 @@ interface ShowHeroProps {
   show: ShowDetails | MovieDetails;
   onPlayClick: () => void;
   onTrailerClick: () => void;
+  children?: React.ReactNode;
 }
 
-export function ShowHero({ show, onPlayClick, onTrailerClick }: ShowHeroProps) {
+export function ShowHero({ show, onPlayClick, onTrailerClick, children }: ShowHeroProps) {
   const showYear = show.release_date ? new Date(show.release_date).getFullYear() : 'N/A';
 
   return (
@@ -46,9 +47,7 @@ export function ShowHero({ show, onPlayClick, onTrailerClick }: ShowHeroProps) {
             <Calendar className="w-4 h-4" />
             <span>{showYear}</span>
           </div>
-          { 'runtime' in show && show.runtime ? (
-            <Badge variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{show.runtime} min</Badge>
-          ) : null}
+          {children}
           {show.genres.slice(0, 3).map((genre) => (
             <Badge key={genre.id} variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{genre.name}</Badge>
           ))}
@@ -59,16 +58,16 @@ export function ShowHero({ show, onPlayClick, onTrailerClick }: ShowHeroProps) {
       </p>
       <div className="flex flex-wrap gap-2 md:gap-4 items-center">
         <Button onClick={onPlayClick} size="lg" className="bg-white text-black hover:bg-white/90">
-            <Play className="mr-2" />
+            <Play className="mr-2 fill-black" />
             Play
         </Button>
+        <WatchlistButton movie={show} />
         {show.trailer_url && (
             <Button onClick={onTrailerClick} size="lg" variant="secondary" className="bg-gray-500/50 text-white hover:bg-gray-500/40">
                 <Video className="mr-2"/>
                 Trailer
             </Button>
         )}
-        <WatchlistButton movie={show} />
       </div>
     </div>
   );
