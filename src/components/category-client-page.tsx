@@ -1,11 +1,12 @@
-
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { MovieCard } from '@/components/movie-card';
 import { Movie, Show } from '@/lib/types';
 import { getItems } from '@/lib/data';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ChevronUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface CategoryClientPageProps {
   initialItems: (Movie | Show)[];
@@ -17,6 +18,7 @@ export function CategoryClientPage({ initialItems, slug }: CategoryClientPagePro
   const [page, setPage] = useState(2);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(initialItems.length > 0);
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const observer = useRef<IntersectionObserver>();
 
   const lastItemRef = useCallback(
@@ -46,6 +48,23 @@ export function CategoryClientPage({ initialItems, slug }: CategoryClientPagePro
     setLoading(false);
   };
 
+  const handleScroll = () => {
+    if (window.scrollY > 400) {
+      setShowBackToTop(true);
+    } else {
+      setShowBackToTop(false);
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
@@ -61,6 +80,17 @@ export function CategoryClientPage({ initialItems, slug }: CategoryClientPagePro
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       )}
+       <Button
+        size="icon"
+        onClick={scrollToTop}
+        className={cn(
+          'fixed bottom-8 right-8 z-50 rounded-full transition-opacity duration-300',
+          showBackToTop ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        )}
+        aria-label="Back to top"
+      >
+        <ChevronUp className="w-6 h-6" />
+      </Button>
     </>
   );
 }
