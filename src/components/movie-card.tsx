@@ -1,16 +1,18 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import type { Movie } from '@/lib/types';
+import type { Movie, Show } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { WatchlistButton } from '@/components/watchlist-button';
 
 interface MovieCardProps {
-  movie: Movie;
+  movie: Movie | Show;
 }
 
 export function MovieCard({ movie }: MovieCardProps) {
+  const href = movie.media_type === 'tv' ? `/tv/${movie.id}` : `/movie/${movie.id}`;
+  
   return (
-    <Link href={`/movie/${movie.id}`} className="group block">
+    <Link href={href} className="group block">
       <Card className="overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/30">
         <CardContent className="p-0 relative">
           <div className="aspect-[2/3] w-full relative">

@@ -32,9 +32,11 @@ function processMovie(movie: any, images?: any): Movie {
     const logo = images?.logos?.find((logo: any) => logo.iso_639_1 === 'en' && !logo.file_path.endsWith('.svg'));
     return {
         ...movie,
+        title: movie.title || movie.name,
         poster_path: movie.poster_path ? `${IMAGE_BASE_URL}/w500${movie.poster_path}` : '/placeholder.svg',
         backdrop_path: movie.backdrop_path ? `${IMAGE_BASE_URL}/w1280${movie.backdrop_path}` : '/placeholder.svg',
         logo_path: logo ? `${IMAGE_BASE_URL}/w500${logo.file_path}` : undefined,
+        release_date: movie.release_date || movie.first_air_date,
     }
 }
 
@@ -72,16 +74,18 @@ export const getMoviesByGenre = async (genreId: number): Promise<Movie[]> => {
 }
 
 export const getTrending = async (): Promise<(Movie | Show)[]> => {
-    const movieData = await fetchFromTMDB('trending/movie/week');
-    const tvData = await fetchFromTMDB('trending/tv/week');
+    const data = await fetchFromTMDB('trending/all/week');
+    if (!data?.results) return [];
     
-    const movies = movieData?.results.map((m: any) => processMovie(m)) || [];
-    const shows = tvData?.results.map((s: any) => processShow(s)) || [];
+    const combined = data.results.map((item: any) => {
+        if (item.media_type === 'tv') {
+            return processShow(item);
+        }
+        return processMovie(item);
+    });
 
-    const combined = [...movies, ...shows];
-
-    const detailedCombined = await Promise.all(combined.map(async (item) => {
-        const type = 'title' in item ? 'movie' : 'tv';
+    const detailedCombined = await Promise.all(combined.map(async (item: any) => {
+        const type = 'title' in item && item.media_type !== 'tv' ? 'movie' : 'tv';
         const images = await fetchFromTMDB(`${type}/${item.id}/images`);
         if (type === 'movie') {
             return processMovie(item, images);
@@ -92,29 +96,6 @@ export const getTrending = async (): Promise<(Movie | Show)[]> => {
     return detailedCombined.sort((a, b) => b.vote_average - a.vote_average);
 }
 
-export const getTrendingMovies = async (): Promise<Movie[]> => {
-    const data = await fetchFromTMDB('trending/movie/week');
-    if (!data?.results) return [];
-
-    const movies = await Promise.all(data.results.map(async (movie: any) => {
-        const images = await fetchFromTMDB(`movie/${movie.id}/images`);
-        return processMovie(movie, images);
-    }));
-
-    return movies;
-}
-
-export const getAllMovies = async (): Promise<Movie[]> => {
-    const data = await fetchFromTMDB('movie/popular');
-    if (!data?.results) return [];
-    
-    const movies = await Promise.all(data.results.map(async (movie: any) => {
-        const images = await fetchFromTMDB(`movie/${movie.id}/images`);
-        return processMovie(movie, images);
-    }));
-
-    return movies;
-}
 
 export const getMovieById = async (id: number): Promise<MovieDetails | null> => {
     const movieData = await fetchFromTMDB(`movie/${id}`);
@@ -130,17 +111,22 @@ export const getMovieById = async (id: number): Promise<MovieDetails | null> => 
     };
 }
 
-export const searchMovies = async (query: string): Promise<Movie[]> => {
+export const searchMovies = async (query: string): Promise<(Movie | Show)[]> => {
     if (!query) return [];
-    const data = await fetchFromTMDB('search/movie', { query });
+    const data = await fetchFromTMDB('search/multi', { query });
     if (!data?.results) return [];
 
-    const movies = await Promise.all(data.results.map(async (movie: any) => {
-        const images = await fetchFromTMDB(`movie/${movie.id}/images`);
-        return processMovie(movie, images);
-    }));
+    const results = data.results
+        .filter((item: any) => item.media_type === 'movie' || item.media_type === 'tv')
+        .map(async (item: any) => {
+            const images = await fetchFromTMDB(`${item.media_type}/${item.id}/images`);
+            if (item.media_type === 'tv') {
+                return processShow(item, images);
+            }
+            return processMovie(item, images);
+        });
 
-    return movies;
+    return Promise.all(results);
 }
 
 export const getFeaturedMovie = async (): Promise<Movie | Show | undefined> => {

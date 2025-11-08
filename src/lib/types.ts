@@ -8,6 +8,7 @@ export interface Movie {
   vote_average: number;
   genre_ids: number[];
   logo_path?: string;
+  media_type?: 'movie' | 'tv';
 }
 
 export interface Show {
@@ -20,6 +21,7 @@ export interface Show {
     vote_average: number;
     genre_ids: number[];
     logo_path?: string;
+    media_type?: 'tv';
 }
 
 export interface Genre {
