@@ -26,8 +26,8 @@ export default async function ShowPage({ params }: ShowPageProps) {
 
   return (
     <div className="relative">
-      <Link href="/tv" className="absolute top-4 left-4 z-20 bg-background/50 p-2 rounded-full hover:bg-background/80 transition-colors">
-        <ArrowLeft className="w-6 h-6"/>
+      <Link href="/tv" className="absolute top-4 left-4 z-20 flex items-center justify-center bg-background/50 p-2 rounded-full hover:bg-background/80 transition-colors">
+        <ArrowLeft className="w-6 h-6 text-white"/>
         <span className="sr-only">Back to TV shows</span>
       </Link>
       <ShowPageClient show={show} />

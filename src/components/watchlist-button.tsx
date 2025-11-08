@@ -1,3 +1,4 @@
+
 'use client';
 
 import { BookmarkPlus, BookmarkCheck } from 'lucide-react';
@@ -35,12 +36,12 @@ export function WatchlistButton({ movie }: WatchlistButtonProps) {
         <TooltipTrigger asChild>
           <Button
             variant="outline"
-            size="icon"
+            size="lg"
             onClick={handleClick}
-            className="border-2 border-white/50 bg-black/30 text-white hover:bg-accent hover:text-accent-foreground backdrop-blur-sm"
+            className="border-white/20 bg-white/10 backdrop-blur-sm px-3"
             aria-label={isBookmarked ? 'Remove from watchlist' : 'Add to watchlist'}
           >
-            {isBookmarked ? <BookmarkCheck /> : <BookmarkPlus />}
+            {isBookmarked ? <BookmarkCheck className="h-5 w-5" /> : <BookmarkPlus className="h-5 w-5" />}
           </Button>
         </TooltipTrigger>
         <TooltipContent>
