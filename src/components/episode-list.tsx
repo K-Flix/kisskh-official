@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { Season } from '@/lib/types';
+import type { Season, ShowDetails } from '@/lib/types';
 import { SeasonSelector } from '@/components/season-selector';
 import { EpisodeCard } from '@/components/episode-card';
 import { Input } from './ui/input';
@@ -10,12 +10,13 @@ import { Search } from 'lucide-react';
 import { ScrollArea } from './ui/scroll-area';
 
 interface EpisodeListProps {
+  showId: number;
   seasons: Season[];
   onEpisodePlay: (season: number, episode: number) => void;
   currentEpisode?: { season: number; episode: number };
 }
 
-export function EpisodeList({ seasons, onEpisodePlay, currentEpisode }: EpisodeListProps) {
+export function EpisodeList({ showId, seasons, onEpisodePlay, currentEpisode }: EpisodeListProps) {
   const [selectedSeason, setSelectedSeason] = useState<Season | undefined>(seasons.find(s => s.season_number > 0) || seasons[0]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -62,7 +63,9 @@ export function EpisodeList({ seasons, onEpisodePlay, currentEpisode }: EpisodeL
                     const isPlaying = currentEpisode?.season === selectedSeason.season_number && currentEpisode?.episode === episode.episode_number;
                     return (
                         <EpisodeCard 
-                            key={episode.id} 
+                            key={episode.id}
+                            showId={showId}
+                            seasonNumber={selectedSeason.season_number}
                             episode={episode} 
                             onPlay={() => onEpisodePlay(selectedSeason.season_number, episode.episode_number)}
                             isPlaying={isPlaying}

@@ -135,7 +135,8 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                 </div>
             </div>
             <div className="container py-8 space-y-12">
-                <EpisodeList 
+                <EpisodeList
+                showId={show.id}
                 seasons={show.seasons} 
                 onEpisodePlay={handlePlay} 
                 currentEpisode={playerState ? { season: playerState.season, episode: playerState.episode } : undefined}
@@ -169,7 +170,8 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                 <ShowHero show={show} onPlayClick={handlePlayFirstEpisode} onTrailerClick={() => setShowTrailer(true)} />
             </div>
              <div className="container py-8 space-y-12">
-                <EpisodeList 
+                <EpisodeList
+                showId={show.id}
                 seasons={show.seasons} 
                 onEpisodePlay={handlePlay} 
                 currentEpisode={playerState ? { season: playerState.season, episode: playerState.episode } : undefined}

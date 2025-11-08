@@ -146,8 +146,10 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                     onTrailerClick={() => setShowTrailer(true)}
                     onSimilarsClick={handleSimilarsClick}
                 >
-                    <Button variant="secondary" size="icon" className="rounded-full w-11 h-11 bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
-                        <Download className="w-5 h-5" />
+                    <Button asChild variant="secondary" size="icon" className="rounded-full w-11 h-11 bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
+                        <Link href={`https://dl.vidsrc.vip/movie/${movie.id}`} target="_blank" rel="noopener noreferrer">
+                            <Download className="w-5 h-5" />
+                        </Link>
                     </Button>
                     <Button onClick={handleSimilarsClick} size="lg" variant="secondary" className="bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
                         Similars

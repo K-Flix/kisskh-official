@@ -3,14 +3,19 @@ import Image from 'next/image';
 import type { Episode } from '@/lib/types';
 import { Download, PlayCircle } from 'lucide-react';
 import { Button } from './ui/button';
+import Link from 'next/link';
 
 interface EpisodeCardProps {
   episode: Episode;
+  showId: number;
+  seasonNumber: number;
   onPlay: () => void;
   isPlaying: boolean;
 }
 
-export function EpisodeCard({ episode, onPlay, isPlaying }: EpisodeCardProps) {
+export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying }: EpisodeCardProps) {
+  const downloadUrl = `https://dl.vidsrc.vip/tv/${showId}/${seasonNumber}/${episode.episode_number}`;
+
   return (
     <div 
         onClick={onPlay}
@@ -38,6 +43,7 @@ export function EpisodeCard({ episode, onPlay, isPlaying }: EpisodeCardProps) {
         </p>
       </div>
       <Button
+          asChild
           variant="ghost"
           size="icon"
           className="ml-auto flex-shrink-0 w-12 h-12 rounded-full bg-background/50 hover:bg-background/80"
@@ -45,7 +51,9 @@ export function EpisodeCard({ episode, onPlay, isPlaying }: EpisodeCardProps) {
           title={`Download episode ${episode.episode_number}`}
           onClick={(e) => e.stopPropagation()} // Prevents playing the episode
       >
-          <Download className="w-5 h-5 text-gray-300"/>
+          <Link href={downloadUrl} target="_blank" rel="noopener noreferrer">
+            <Download className="w-5 h-5 text-gray-300"/>
+          </Link>
       </Button>
     </div>
   )
