@@ -14,6 +14,47 @@ interface HeroSectionProps {
   movies: (Movie | Show)[];
 }
 
+function HeroContent({ movie }: { movie: Movie | Show }) {
+  return (
+    <>
+      {movie.logo_path ? (
+        <div className="relative w-full max-w-sm h-24 md:h-32 -ml-2">
+            <Image
+            src={movie.logo_path}
+            alt={`${movie.title} logo`}
+            fill
+            className="object-contain object-left-bottom"
+            data-ai-hint="movie logo"
+            />
+        </div>
+        ) : (
+        <h1 className="text-4xl md:text-6xl font-bold font-headline text-white drop-shadow-lg">
+            {movie.title}
+        </h1>
+        )}
+
+        <p className="max-w-xl text-foreground/80 md:text-lg drop-shadow-md line-clamp-3">
+        {movie.overview}
+        </p>
+        <div className="flex gap-4">
+        <Button asChild size="lg" className="bg-white text-black hover:bg-white/90">
+            <Link href={movie.media_type === 'tv' ? `/tv/${movie.id}` : `/movie/${movie.id}`}>
+            <Play className="mr-2 fill-black" />
+            Play
+            </Link>
+        </Button>
+        <Button asChild size="lg" variant="secondary" className="bg-gray-500/50 text-white hover:bg-gray-500/40 border border-white/20">
+             <Link href={movie.media_type === 'tv' ? `/tv/${movie.id}` : `/movie/${movie.id}`}>
+            <Info className="mr-2" />
+            See More
+            </Link>
+        </Button>
+        </div>
+    </>
+  )
+}
+
+
 export function HeroSection({ movies }: HeroSectionProps) {
   const plugin = React.useRef(
     Autoplay({ delay: 10000, stopOnInteraction: true })
@@ -29,7 +70,9 @@ export function HeroSection({ movies }: HeroSectionProps) {
       <CarouselContent>
         {movies.map((movie) => (
           <CarouselItem key={movie.id}>
-            <div className="relative h-[60vh] md:h-[80vh] w-full">
+            {/* Mobile Layout: Content below image */}
+            <div className="md:hidden">
+              <div className="relative h-[60vh] w-full">
                 <Image
                     src={movie.backdrop_path}
                     alt={`Backdrop for ${movie.title}`}
@@ -39,41 +82,26 @@ export function HeroSection({ movies }: HeroSectionProps) {
                     data-ai-hint="movie backdrop"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
-                <div className="relative z-10 flex flex-col justify-end h-full container pb-12 md:pb-24 space-y-4">
-                    
-                    {movie.logo_path ? (
-                    <div className="relative w-full max-w-sm h-24 md:h-32">
-                        <Image
-                        src={movie.logo_path}
-                        alt={`${movie.title} logo`}
-                        fill
-                        className="object-contain object-left-bottom"
-                        data-ai-hint="movie logo"
-                        />
-                    </div>
-                    ) : (
-                    <h1 className="text-4xl md:text-6xl font-bold font-headline text-white drop-shadow-lg">
-                        {movie.title}
-                    </h1>
-                    )}
+              </div>
+              <div className="container -mt-16 relative z-10 space-y-3 pb-6">
+                <HeroContent movie={movie} />
+              </div>
+            </div>
 
-                    <p className="max-w-xl text-foreground/80 md:text-lg drop-shadow-md line-clamp-3">
-                    {movie.overview}
-                    </p>
-                    <div className="flex gap-4">
-                    <Button asChild size="lg" className="bg-white text-black hover:bg-white/90">
-                        <Link href={movie.media_type === 'tv' ? `/tv/${movie.id}` : `/movie/${movie.id}`}>
-                        <Play className="mr-2 fill-black" />
-                        Play
-                        </Link>
-                    </Button>
-                    <Button asChild size="lg" variant="secondary" className="bg-gray-500/50 text-white hover:bg-gray-500/40 border border-white/20">
-                         <Link href={movie.media_type === 'tv' ? `/tv/${movie.id}` : `/movie/${movie.id}`}>
-                        <Info className="mr-2" />
-                        See More
-                        </Link>
-                    </Button>
-                    </div>
+            {/* Desktop Layout: Content over image */}
+            <div className="hidden md:block relative h-[85vh] w-full">
+                <Image
+                    src={movie.backdrop_path}
+                    alt={`Backdrop for ${movie.title}`}
+                    fill
+                    priority
+                    className="object-cover object-center"
+                    data-ai-hint="movie backdrop"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-black/30 to-transparent" />
+                 <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent" />
+                <div className="relative z-10 flex flex-col justify-center h-full container pb-12 md:pb-24 space-y-4 max-w-screen-md">
+                   <HeroContent movie={movie} />
                 </div>
             </div>
           </CarouselItem>
