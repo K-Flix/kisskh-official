@@ -70,20 +70,21 @@ export function HeroSection({ movies }: HeroSectionProps) {
       <CarouselContent>
         {movies.map((movie) => (
           <CarouselItem key={movie.id}>
-            {/* Mobile Layout: Content below image */}
-            <div className="md:hidden">
-              <div className="relative w-full aspect-[16/9]">
-                <Image
-                    src={movie.backdrop_path}
-                    alt={`Backdrop for ${movie.title}`}
-                    fill
-                    priority
-                    className="object-cover"
-                    data-ai-hint="movie backdrop"
-                />
-              </div>
-              <div className="container relative z-10 space-y-3 py-6 bg-background">
-                <HeroContent movie={movie} />
+            {/* Mobile Layout: Content over image */}
+            <div className="md:hidden relative h-[50vh] w-full">
+              <Image
+                  src={movie.backdrop_path}
+                  alt={`Backdrop for ${movie.title}`}
+                  fill
+                  priority
+                  className="object-cover"
+                  data-ai-hint="movie backdrop"
+              />
+               <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+              <div className="relative z-10 flex flex-col justify-end h-full container pb-8">
+                <div className="space-y-3">
+                  <HeroContent movie={movie} />
+                </div>
               </div>
             </div>
 
