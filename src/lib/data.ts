@@ -91,22 +91,29 @@ function getDynamicParams() {
     };
 }
 
-export async function getItems(key: string, page: number = 1, featured: boolean = false): Promise<(Movie | Show)[]> {
+export async function getItems(key: string, page: number = 1, featured: boolean = false, isCategoryPage: boolean = false): Promise<(Movie | Show)[]> {
     const endpoint = endpoints.find(e => e.key === key);
     if (!endpoint) return [];
 
-    const dynamicParams = getDynamicParams();
     const finalParams: Record<string, string> = { 
         page: page.toString(), 
         ...endpoint.params,
     };
 
-    if (key === 'k_drama_on_air' || key === 'c_drama' || key === 'anime') {
-        finalParams['air_date.gte'] = dynamicParams['air_date.gte'];
-        finalParams['air_date.lte'] = dynamicParams['air_date.lte'];
-    }
+    const specialCategories = ['k_drama_on_air', 'k_drama', 'c_drama', 'anime'];
 
-    if(endpoint.sort_by) {
+    if (specialCategories.includes(key)) {
+        if (isCategoryPage) {
+            // For "See All" pages, sort by newest, no date restriction.
+            finalParams.sort_by = 'first_air_date.desc';
+        } else {
+            // For homepage carousels, filter by recent air dates and sort by popularity.
+            const dynamicParams = getDynamicParams();
+            finalParams['air_date.gte'] = dynamicParams['air_date.gte'];
+            finalParams['air_date.lte'] = dynamicParams['air_date.lte'];
+            finalParams.sort_by = 'popularity.desc';
+        }
+    } else if(endpoint.sort_by) {
         finalParams.sort_by = endpoint.sort_by;
     }
 

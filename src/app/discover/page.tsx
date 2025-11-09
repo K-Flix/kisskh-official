@@ -27,7 +27,7 @@ function DiscoverSkeleton() {
 }
 
 async function DiscoverContent({ category, title }: { category: string, title: string }) {
-    const initialItems = await getItems(category, 1);
+    const initialItems = await getItems(category, 1, false, true);
 
     if (initialItems.length === 0) {
         return (

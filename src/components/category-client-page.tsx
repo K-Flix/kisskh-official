@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
@@ -38,7 +39,7 @@ export function CategoryClientPage({ initialItems, slug }: CategoryClientPagePro
   const loadMoreItems = async () => {
     if (loading || !hasMore) return;
     setLoading(true);
-    const newItems = await getItems(slug, page);
+    const newItems = await getItems(slug, page, false, true);
     if (newItems.length > 0) {
       setItems((prev) => [...prev, ...newItems]);
       setPage((prev) => prev + 1);
