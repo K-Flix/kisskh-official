@@ -223,3 +223,5 @@ export async function searchMovies(query: string, page: number = 1): Promise<(Mo
     .filter(Boolean)
     .sort((a: any, b: any) => (b.popularity || 0) - (a.popularity || 0)) as (Movie | Show)[];
 }
+
+    
