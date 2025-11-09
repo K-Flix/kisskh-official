@@ -12,12 +12,13 @@ export const endpoints: Endpoint[] = [
     // Home Page & Generic
     { key: 'trending_today', title: 'Trending Today', url: `trending/all/day`, params: { language: 'en-US' } },
     { key: 'k_drama_on_air', title: 'K-Drama', url: `discover/tv`, params: { with_origin_country: 'KR', language: 'en-US', with_genres: '18' }, type: 'tv' },
-    { key: 'c_drama', title: 'C-Drama', url: `discover/tv`, params: { with_origin_country: 'CN', language: 'en-US' }, type: 'tv' },
+    { key: 'c_drama_on_air', title: 'C-Drama', url: `discover/tv`, params: { with_origin_country: 'CN', language: 'en-US' }, type: 'tv' },
     { key: 'anime', title: 'Anime', url: `discover/tv`, params: { with_genres: '16', language: 'en-US' }, type: 'tv' },
   
     // TV Shows
     { key: 'trending_tv', title: 'Trending TV Shows', url: `trending/tv/week`, params: { language: 'en-US' }, type: 'tv' },
     { key: 'k_drama', title: 'K-Dramas', url: `discover/tv`, params: { with_origin_country: 'KR', language: 'en-US', with_genres: '18' }, type: 'tv' },
+    { key: 'c_drama', title: 'C-Dramas', url: `discover/tv`, params: { with_origin_country: 'CN', language: 'en-US' }, type: 'tv' },
     { key: 'on_the_air_tv', title: 'On The Air TV Shows', url: `tv/on_the_air`, params: { language: 'en-US' }, type: 'tv' },
     { key: 'top_rated_tv', title: 'Top Rated TV Shows', url: `tv/top_rated`, params: { language: 'en-US' }, type: 'tv' },
     
