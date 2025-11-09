@@ -11,7 +11,7 @@ import { ShowHero } from './show-hero';
 import { X, ArrowLeft } from 'lucide-react';
 import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface ShowPageClientProps {
   show: ShowDetails;
@@ -36,6 +36,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
   const [playerState, setPlayerState] = useState<PlayerState | null>(null);
   const [showTrailer, setShowTrailer] = useState(false);
   const [selectedServer, setSelectedServer] = useState('Vidstorm');
+  const router = useRouter();
 
   const handlePlay = (season: number, episode: number) => {
     setPlayerState({ season, episode });
@@ -96,9 +97,9 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
         <div className="w-full">
             <div className="md:mt-8">
                 <div className="container relative flex justify-between items-center h-14 px-4">
-                     <Link href="/tv" className="flex items-center gap-2 text-white">
+                     <button onClick={() => router.back()} className="flex items-center gap-2 text-white">
                         <ArrowLeft className="w-6 h-6"/>
-                    </Link>
+                    </button>
                     <button
                         onClick={handleClosePlayer}
                         className="z-10 text-white bg-background/50 rounded-full p-1 hover:bg-background/80 transition-colors"
@@ -155,17 +156,17 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
         </div>
       ) : (
         <>
-            <div className="relative h-screen w-full">
-                <Link href="/tv" className="absolute top-4 left-4 z-50 flex items-center justify-center bg-background/50 p-2 rounded-full hover:bg-background/80 transition-colors">
+            <div className="relative h-[75vh] md:h-screen w-full">
+                <button onClick={() => router.back()} className="absolute top-4 left-4 z-50 flex items-center justify-center bg-background/50 p-2 rounded-full hover:bg-background/80 transition-colors">
                     <ArrowLeft className="w-6 h-6 text-white"/>
-                    <span className="sr-only">Back to TV shows</span>
-                </Link>
+                    <span className="sr-only">Back</span>
+                </button>
                 <Image
                     src={show.backdrop_path}
                     alt={`Backdrop for ${show.title}`}
                     fill
                     priority
-                    className="object-cover object-center"
+                    className="object-cover object-top"
                     data-ai-hint="tv show backdrop"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />

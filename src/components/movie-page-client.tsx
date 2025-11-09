@@ -137,7 +137,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                 alt={`Backdrop for ${movie.title}`}
                 fill
                 priority
-                className="object-cover object-center"
+                className="object-cover object-top"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
                 
