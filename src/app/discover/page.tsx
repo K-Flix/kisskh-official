@@ -56,10 +56,10 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
     }
 
     // Fallback to default discover page if no category is specified
-    const trending = await getItems('trending_today');
-    const kDramas = await getItems('k_drama');
-    const cDramas = await getItems('c_drama');
-    const anime = await getItems('anime');
+    const trending = await getItems('trending_today', 1, false, true);
+    const kDramas = await getItems('k_drama', 1, false, true);
+    const cDramas = await getItems('c_drama', 1, false, true);
+    const anime = await getItems('anime', 1, false, true);
 
     return (
         <div className="container py-8 space-y-8">
