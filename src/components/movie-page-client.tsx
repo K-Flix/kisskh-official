@@ -127,7 +127,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
         </div>
       ) : (
         <>
-            <div className="relative h-[60vh] md:h-[90vh] w-full">
+            <div className="relative h-[75vh] md:h-screen w-full">
                 <button onClick={() => router.back()} className="absolute top-4 left-4 z-50 flex items-center justify-center bg-background/50 p-2 rounded-full hover:bg-background/80 transition-colors">
                     <ArrowLeft className="w-6 h-6 text-white"/>
                     <span className="sr-only">Back</span>
@@ -139,7 +139,8 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                 priority
                 className="object-cover object-top"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent" />
                 
                 <ShowHero 
                     show={movie} 
