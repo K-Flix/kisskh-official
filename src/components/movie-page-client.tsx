@@ -127,7 +127,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
         </div>
       ) : (
         <>
-            <div className="relative h-screen w-full">
+            <div className="relative h-[50vh] md:h-[85vh] w-full">
                 <button onClick={() => router.back()} className="absolute top-6 left-4 md:left-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
                     <ArrowLeft className="w-6 h-6 text-white"/>
                     <span className="sr-only">Back</span>
@@ -139,13 +139,13 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                         alt={`Backdrop for ${movie.title}`}
                         fill
                         priority
-                        className="object-cover"
+                        className="object-cover object-top"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent md:bg-gradient-to-r md:from-background md:to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
                 </div>
                 
-                <div className="relative z-10 flex h-full items-end md:items-center">
-                    <div className="container pb-12 md:pb-0">
+                <div className="relative z-10 flex h-full items-end">
+                    <div className="container pb-8 md:pb-24">
                          <ShowHero 
                             show={movie} 
                             onPlayClick={handlePlay} 
