@@ -22,7 +22,7 @@ export function ShowHero({ show, onPlayClick, onTrailerClick, children }: ShowHe
   const isMovie = show.media_type === 'movie';
 
   return (
-    <div className="relative z-10 flex flex-col space-y-4 max-w-md">
+    <div className="relative z-10 flex flex-col space-y-4 max-w-2xl">
       
       {show.logo_path ? (
           <div className="relative w-full max-w-sm h-24 md:h-32 -ml-2">
@@ -69,18 +69,20 @@ export function ShowHero({ show, onPlayClick, onTrailerClick, children }: ShowHe
       <p className="max-w-xl text-foreground/90 text-sm md:text-base drop-shadow-md line-clamp-3">
         {show.overview}
       </p>
-      <div className="flex flex-wrap gap-2 md:gap-4 items-center">
-        {/* Play button - changes based on screen size */}
-        <Button onClick={onPlayClick} size="lg" className="bg-white text-black hover:bg-white/90 hidden md:inline-flex">
-            <Play className="mr-2 fill-black" />
-            Play
-        </Button>
-        <Button onClick={onPlayClick} size="icon" className="rounded-full w-11 h-11 bg-white text-black hover:bg-white/90 md:hidden">
-            <Play className="fill-black" />
-        </Button>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-wrap gap-2 md:gap-4 items-center">
+            {/* Play button - changes based on screen size */}
+            <Button onClick={onPlayClick} size="lg" className="bg-white text-black hover:bg-white/90 hidden md:inline-flex">
+                <Play className="mr-2 fill-black" />
+                Play
+            </Button>
+            <Button onClick={onPlayClick} size="icon" className="rounded-full w-11 h-11 bg-white text-black hover:bg-white/90 md:hidden">
+                <Play className="fill-black" />
+            </Button>
 
-        <WatchlistButton movie={show} />
-        {children}
+            <WatchlistButton movie={show} />
+            {children}
+        </div>
         {show.trailer_url && (
              <Tooltip delayDuration={200}>
                 <TooltipTrigger asChild>
