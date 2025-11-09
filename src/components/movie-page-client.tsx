@@ -7,7 +7,7 @@ import type { MovieDetails } from '@/lib/types';
 import { ActorCard } from '@/components/actor-card';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ShowHero } from './show-hero';
-import { X, ArrowLeft, Download, Film } from 'lucide-react';
+import { X, ArrowLeft, Download, Film, Video } from 'lucide-react';
 import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import Link from 'next/link';
@@ -128,7 +128,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
         </div>
       ) : (
         <>
-            <div className="relative h-screen md:h-[85vh] w-full">
+            <div className="relative h-[50vh] md:h-[85vh] w-full">
                 <button onClick={() => router.back()} className="absolute top-6 left-4 md:left-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
                     <ArrowLeft className="w-6 h-6 text-white"/>
                     <span className="sr-only">Back</span>
@@ -172,7 +172,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                     </div>
                 </div>
             </div>
-             <div className="container py-8 space-y-12 -mt-16 md:mt-0 relative z-10" ref={similarSectionRef}>
+             <div className="container py-8 space-y-12 md:mt-0 relative z-10" ref={similarSectionRef}>
                 {movie.cast && movie.cast.length > 0 && <ActorCard actors={movie.cast} />}
                 {movie.similar && movie.similar.length > 0 && (
                   <MovieCarousel title="Similars" movies={movie.similar} />

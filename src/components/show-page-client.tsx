@@ -163,7 +163,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
         </div>
       ) : (
         <>
-            <div className="relative h-screen md:h-[85vh] w-full">
+            <div className="relative h-[50vh] md:h-[85vh] w-full">
                 <button onClick={() => router.back()} className="absolute top-6 left-4 md:left-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
                     <ArrowLeft className="w-6 h-6 text-white"/>
                     <span className="sr-only">Back</span>
@@ -193,7 +193,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                     </div>
                 </div>
             </div>
-             <div className="container py-8 space-y-12 -mt-16 md:mt-0 relative z-10">
+             <div className="container py-8 space-y-12 md:mt-0 relative z-10">
                 <div ref={episodesSectionRef}>
                     <EpisodeList
                         showId={show.id}
