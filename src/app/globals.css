@@ -71,3 +71,9 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+    .embla__container {
+        transition: transform 0.5s ease;
+    }
+}
