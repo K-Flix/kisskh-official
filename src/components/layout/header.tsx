@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { Logo } from '../logo';
 import { SearchDialog } from '../search-dialog';
+import { ThemeSwitcher } from '../theme-switcher';
 
 const navLinks = [
   { href: '/', children: 'Home' },
@@ -54,8 +55,12 @@ export function Header() {
         </div>
 
         <div className="flex flex-1 items-center justify-end space-x-2">
+           <ThemeSwitcher />
           <div className="hidden md:block w-full flex-1 md:w-auto md:flex-none">
-            <SearchInput />
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
+              <SearchInput />
+            </div>
           </div>
           <Button variant="ghost" size="icon" className="md:hidden text-white hover:bg-white/10 hover:text-white" onClick={() => setSearchOpen(true)}>
             <Search />
