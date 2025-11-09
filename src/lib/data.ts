@@ -16,6 +16,10 @@ const options = {
 };
 
 async function fetchFromTMDB(endpoint: string, params: Record<string, string> = {}) {
+  if (!process.env.TMDB_API_READ_ACCESS_TOKEN) {
+    console.error('TMDB_API_READ_ACCESS_TOKEN is not defined');
+    return null;
+  }
   const url = new URL(`${API_BASE_URL}/${endpoint}`);
   Object.entries(params).forEach(([key, value]) => url.searchParams.append(key, value));
   
