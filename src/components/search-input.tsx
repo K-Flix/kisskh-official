@@ -85,8 +85,8 @@ export function SearchInput({ onSearch, isDialog = false }: SearchInputProps) {
   }, [closePopover]);
 
   const inputClassName = isDialog 
-    ? "w-full h-12 pl-12 pr-12 bg-white/10 text-white placeholder:text-gray-300 border-white/20 focus:bg-white/20 focus:ring-primary text-base"
-    : "w-full pl-10 pr-20 bg-white/20 text-white placeholder:text-gray-300 border-white/30 focus:bg-white/30 focus:ring-primary";
+    ? "w-full h-12 pl-12 pr-12 bg-black/30 text-white placeholder:text-gray-300 border-white/20 focus:bg-black/40 focus:ring-primary text-base backdrop-blur-sm"
+    : "w-full pl-10 pr-20 bg-black/30 text-white placeholder:text-gray-300 border-white/20 focus:bg-black/40 focus:ring-primary backdrop-blur-sm";
 
   return (
     <form onSubmit={handleSearchSubmit} className="relative w-full max-w-xl" ref={containerRef}>
