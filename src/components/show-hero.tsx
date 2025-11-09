@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Star, Calendar, Play, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WatchlistButton } from '@/components/watchlist-button';
+import { Tooltip, TooltipTrigger, TooltipContent } from './ui/tooltip';
 
 interface ShowHeroProps {
   show: ShowDetails | MovieDetails;
@@ -76,10 +77,16 @@ export function ShowHero({ show, onPlayClick, onTrailerClick, children }: ShowHe
         <WatchlistButton movie={show} />
         {children}
         {show.trailer_url && (
-            <Button onClick={onTrailerClick} size="lg" variant="secondary" className="bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
-                <Video className="mr-2"/>
-                Trailer
-            </Button>
+             <Tooltip delayDuration={200}>
+                <TooltipTrigger asChild>
+                    <Button onClick={onTrailerClick} size="icon" variant="secondary" className="rounded-full w-11 h-11 bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
+                        <Video/>
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>Watch Trailer</p>
+                </TooltipContent>
+            </Tooltip>
         )}
       </div>
     </div>

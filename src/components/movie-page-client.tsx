@@ -12,6 +12,7 @@ import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 interface MoviePageClientProps {
   movie: MovieDetails;
@@ -151,12 +152,19 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                             onPlayClick={handlePlay} 
                             onTrailerClick={() => setShowTrailer(true)}
                         >
-                            <Button asChild variant="secondary" className="bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
-                                <Link href={downloadUrl} target="_blank">
-                                    <Download />
-                                    Download
-                                </Link>
-                            </Button>
+                            <Tooltip delayDuration={200}>
+                                <TooltipTrigger asChild>
+                                    <Button asChild variant="secondary" size="icon" className="rounded-full w-11 h-11 bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
+                                        <Link href={downloadUrl} target="_blank">
+                                            <Download />
+                                        </Link>
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Download</p>
+                                </TooltipContent>
+                            </Tooltip>
+                            
                             <Button onClick={handleSimilarsClick} variant="secondary" className="bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
                                 <Film />
                                 Similars
