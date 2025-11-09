@@ -70,10 +70,15 @@ export function ShowHero({ show, onPlayClick, onTrailerClick, children }: ShowHe
         {show.overview}
       </p>
       <div className="flex flex-wrap gap-2 md:gap-4 items-center">
-        <Button onClick={onPlayClick} size="lg" className="bg-white text-black hover:bg-white/90">
+        {/* Play button - changes based on screen size */}
+        <Button onClick={onPlayClick} size="lg" className="bg-white text-black hover:bg-white/90 hidden md:inline-flex">
             <Play className="mr-2 fill-black" />
             Play
         </Button>
+        <Button onClick={onPlayClick} size="icon" className="rounded-full w-11 h-11 bg-white text-black hover:bg-white/90 md:hidden">
+            <Play className="fill-black" />
+        </Button>
+
         <WatchlistButton movie={show} />
         {children}
         {show.trailer_url && (

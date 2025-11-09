@@ -8,7 +8,7 @@ import { EpisodeList } from '@/components/episode-list';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ActorCard } from '@/components/actor-card';
 import { ShowHero } from './show-hero';
-import { X, ArrowLeft, Tv, Film } from 'lucide-react';
+import { X, ArrowLeft } from 'lucide-react';
 import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
@@ -163,7 +163,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
         </div>
       ) : (
         <>
-            <div className="relative h-[50vh] md:h-[85vh] w-full">
+            <div className="relative h-screen md:h-[85vh] w-full">
                 <button onClick={() => router.back()} className="absolute top-6 left-4 md:left-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
                     <ArrowLeft className="w-6 h-6 text-white"/>
                     <span className="sr-only">Back</span>
@@ -183,12 +183,10 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                 <div className="relative z-10 flex h-full items-end">
                     <div className="container pb-8 md:pb-24">
                         <ShowHero show={show} onPlayClick={handlePlayFirstEpisode} onTrailerClick={() => setShowTrailer(true)}>
-                            <Button onClick={() => handleScrollTo(episodesSectionRef)} variant="secondary" className="bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
-                                <Tv />
+                            <Button onClick={() => handleScrollTo(episodesSectionRef)} variant="secondary" className="bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm px-4">
                                 Episodes
                             </Button>
-                            <Button onClick={() => handleScrollTo(similarsSectionRef)} variant="secondary" className="bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
-                                <Film />
+                            <Button onClick={() => handleScrollTo(similarsSectionRef)} variant="secondary" className="bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm px-4">
                                 Similars
                             </Button>
                         </ShowHero>
