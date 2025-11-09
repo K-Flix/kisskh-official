@@ -25,10 +25,10 @@ export function MovieCarousel({ title, movies, seeAllHref }: MovieCarouselProps)
   return (
     <div className="space-y-4">
       <div className='flex justify-between items-center'>
-        <h2 className="text-2xl font-bold font-headline flex items-center">
-            <span className="w-1 h-7 bg-primary mr-3"></span>
-            {title}
-        </h2>
+        <div className="flex items-center space-x-3">
+          <div className="w-1.5 h-7 bg-primary rounded-full" />
+          <h2 className="text-2xl font-bold">{title}</h2>
+        </div>
         {seeAllHref && (
           <Button variant="link" asChild>
               <Link href={seeAllHref}>See All &gt;</Link>

@@ -38,10 +38,10 @@ function SingleActorCard({ actor }: ActorCardProps) {
 export function ActorCard({ actors }: { actors: CastMember[] }) {
     return (
         <div>
-          <h2 className="text-2xl font-bold mb-4 font-headline flex items-center">
-            <span className="w-1 h-7 bg-primary mr-3"></span>
-            Cast
-          </h2>
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="w-1.5 h-7 bg-primary rounded-full" />
+            <h2 className="text-2xl font-bold">Cast</h2>
+          </div>
           <Carousel
             opts={{
               align: 'start',
