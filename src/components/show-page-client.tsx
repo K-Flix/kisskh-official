@@ -1,14 +1,14 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
 import type { ShowDetails } from '@/lib/types';
 import { EpisodeList } from '@/components/episode-list';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ActorCard } from '@/components/actor-card';
 import { ShowHero } from './show-hero';
-import { X, ArrowLeft } from 'lucide-react';
+import { X, ArrowLeft, Tv, Film } from 'lucide-react';
 import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
@@ -36,6 +36,8 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
   const [playerState, setPlayerState] = useState<PlayerState | null>(null);
   const [showTrailer, setShowTrailer] = useState(false);
   const [selectedServer, setSelectedServer] = useState('Vidstorm');
+  const episodesSectionRef = useRef<HTMLDivElement>(null);
+  const similarsSectionRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const handlePlay = (season: number, episode: number) => {
@@ -61,6 +63,11 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
       }
     }
   };
+
+  const handleScrollTo = (ref: React.RefObject<HTMLDivElement>) => {
+    ref.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
 
   const getPlayerUrl = () => {
     if (!playerState) return '';
@@ -175,24 +182,37 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                 
                 <div className="relative z-10 flex h-full items-end">
                     <div className="container pb-8 md:pb-24">
-                         <ShowHero show={show} onPlayClick={handlePlayFirstEpisode} onTrailerClick={() => setShowTrailer(true)} />
+                        <ShowHero show={show} onPlayClick={handlePlayFirstEpisode} onTrailerClick={() => setShowTrailer(true)}>
+                            <Button onClick={() => handleScrollTo(episodesSectionRef)} variant="secondary" className="bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
+                                <Tv />
+                                Episodes
+                            </Button>
+                            <Button onClick={() => handleScrollTo(similarsSectionRef)} variant="secondary" className="bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
+                                <Film />
+                                Similars
+                            </Button>
+                        </ShowHero>
                     </div>
                 </div>
             </div>
              <div className="container py-8 space-y-12 -mt-16 md:mt-0 relative z-10">
-                <EpisodeList
-                    showId={show.id}
-                    seasons={show.seasons}
-                    showBackdropPath={show.backdrop_path}
-                    onEpisodePlay={handlePlay}
-                    currentEpisode={playerState ? { season: playerState.season, episode: playerState.episode } : undefined}
-                />
+                <div ref={episodesSectionRef}>
+                    <EpisodeList
+                        showId={show.id}
+                        seasons={show.seasons}
+                        showBackdropPath={show.backdrop_path}
+                        onEpisodePlay={handlePlay}
+                        currentEpisode={playerState ? { season: playerState.season, episode: playerState.episode } : undefined}
+                    />
+                </div>
                 
                 {show.cast && show.cast.length > 0 && <ActorCard actors={show.cast} />}
                 
-                {show.similar && show.similar.length > 0 && (
-                  <MovieCarousel title="Similars" movies={show.similar} />
-                )}
+                <div ref={similarsSectionRef}>
+                    {show.similar && show.similar.length > 0 && (
+                      <MovieCarousel title="Similars" movies={show.similar} />
+                    )}
+                </div>
             </div>
         </>
       )}
