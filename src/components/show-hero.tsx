@@ -16,7 +16,7 @@ interface ShowHeroProps {
   children?: React.ReactNode;
 }
 
-export function ShowHero({ show, onPlayClick, onTrailerClick, onSimilarsClick, children }: ShowHeroProps) {
+export function ShowHero({ show, onPlayClick, onTrailerClick, children }: ShowHeroProps) {
   const showYear = show.release_date ? new Date(show.release_date).getFullYear() : 'N/A';
   const isMovie = show.media_type === 'movie';
 
@@ -51,9 +51,9 @@ export function ShowHero({ show, onPlayClick, onTrailerClick, onSimilarsClick, c
           </div>
           {isMovie && 'runtime' in show && show.runtime ? (
               <Badge variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{show.runtime} min</Badge>
-          ) : !isMovie && 'number_of_seasons' in show && (
-            <Badge variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{show.number_of_seasons} seasons</Badge>
-          )}
+          ) : !isMovie && 'number_of_seasons' in show && show.number_of_seasons ? (
+            <Badge variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{show.number_of_seasons} {show.number_of_seasons > 1 ? 'seasons' : 'season'}</Badge>
+          ) : null}
 
           {show.genres.slice(0, 3).map((genre) => (
             <Badge key={genre.id} variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{genre.name}</Badge>

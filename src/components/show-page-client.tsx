@@ -146,7 +146,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                 currentEpisode={playerState ? { season: playerState.season, episode: playerState.episode } : undefined}
                 />
                 
-                <ActorCard actors={show.cast} />
+                {show.cast && show.cast.length > 0 && <ActorCard actors={show.cast} />}
                 
                 {show.similar && show.similar.length > 0 && (
                   <MovieCarousel title="Similars" movies={show.similar} />
@@ -181,7 +181,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                     currentEpisode={playerState ? { season: playerState.season, episode: playerState.episode } : undefined}
                 />
                 
-                <ActorCard actors={show.cast} />
+                {show.cast && show.cast.length > 0 && <ActorCard actors={show.cast} />}
                 
                 {show.similar && show.similar.length > 0 && (
                   <MovieCarousel title="Similars" movies={show.similar} />

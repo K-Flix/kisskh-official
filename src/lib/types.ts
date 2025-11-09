@@ -14,17 +14,18 @@ export interface BaseItem {
   vote_average: number;
   genres: Genre[];
   logo_path?: string;
-  media_type: 'movie' | 'tv';
   trailer_url?: string;
+  media_type: 'movie' | 'tv';
 }
 
 export interface Movie extends BaseItem {
   media_type: 'movie';
-  genre_ids: number[];
+  runtime?: number;
 }
 
 export interface Show extends BaseItem {
   media_type: 'tv';
+  number_of_seasons?: number;
 }
 
 export interface CastMember {
@@ -36,7 +37,7 @@ export interface CastMember {
 
 export interface MovieDetails extends Movie {
   cast: CastMember[];
-  similar: (Movie | Show)[];
+  similar: Movie[];
   runtime: number;
 }
 
@@ -61,12 +62,37 @@ export interface Season {
 export interface ShowDetails extends Show {
   cast: CastMember[];
   seasons: Season[];
-  similar: (Movie | Show)[];
+  similar: Show[];
+  number_of_seasons: number;
 }
 
-export interface ImageDetails {
-  logos: {
-    file_path: string;
-    iso_639_1: string;
-  }[];
+// Represents a raw item from the TMDB API
+export interface TmdbItem {
+    id: number;
+    title?: string;
+    name?: string;
+    poster_path?: string;
+    backdrop_path?: string;
+    overview?: string;
+    release_date?: string;
+    first_air_date?: string;
+    vote_average?: number;
+    genres?: Genre[];
+    media_type?: 'movie' | 'tv';
+    images?: {
+        logos?: { file_path: string; iso_639_1: string; }[];
+    };
+    videos?: {
+        results?: { site: string; type: string; key: string; }[];
+    };
+    runtime?: number;
+    number_of_seasons?: number;
+    credits?: {
+        cast?: any[];
+    };
+    seasons?: any[];
+    similar?: {
+        results?: TmdbItem[];
+    };
+    popularity?: number;
 }

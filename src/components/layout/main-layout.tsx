@@ -8,7 +8,8 @@ import Link from 'next/link';
 function Footer() {
   return (
     <footer className="w-full border-t border-white/10 mt-12">
-      <div className="container flex items-center justify-center py-4 text-sm text-muted-foreground">
+      <div className="container flex flex-col sm:flex-row items-center justify-between py-4 text-sm text-muted-foreground gap-4">
+        <span>&copy; {new Date().getFullYear()} Streamzz. All Rights Reserved.</span>
         <div className="flex space-x-4">
           <Link href="/" className="hover:text-primary">Privacy Policy</Link>
           <Link href="/" className="hover:text-primary">Terms of Service</Link>

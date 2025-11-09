@@ -1,7 +1,7 @@
 
 'use server';
 
-import type { Movie, Show, MovieDetails, ShowDetails } from '@/lib/types';
+import type { Movie, Show, MovieDetails, ShowDetails, TmdbItem } from '@/lib/types';
 import { endpoints } from './endpoints';
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
@@ -32,40 +32,46 @@ async function fetchFromTMDB(endpoint: string, params: Record<string, string> = 
   }
 }
 
-function processItem(item: any, mediaType?: 'movie' | 'tv'): Movie | Show | null {
-    if (!item) return null;
-    const determinedMediaType = mediaType || item.media_type;
+function processItem(item: TmdbItem, mediaTypeOverride?: 'movie' | 'tv'): Movie | Show | null {
+    if (!item || !item.id) return null;
     
-    if (determinedMediaType !== 'movie' && determinedMediaType !== 'tv') {
+    const mediaType = mediaTypeOverride || item.media_type;
+    
+    if (mediaType !== 'movie' && mediaType !== 'tv') {
         return null;
     }
 
-    const logo = item.images?.logos?.find((logo: any) => logo.iso_639_1 === 'en' && !logo.file_path.endsWith('.svg'));
-    const trailer = item.videos?.results?.find((video: any) => video.site === 'YouTube' && video.type === 'Trailer');
+    if (!item.poster_path || !item.backdrop_path) {
+        return null;
+    }
+
+    const logo = item.images?.logos?.find((l: any) => l.iso_639_1 === 'en' && !l.file_path.endsWith('.svg'));
+    const trailer = item.videos?.results?.find((v: any) => v.site === 'YouTube' && v.type === 'Trailer');
     
     const baseItem = {
         id: item.id,
         title: item.title || item.name || 'Untitled',
-        poster_path: item.poster_path ? `${IMAGE_BASE_URL}/w500${item.poster_path}` : '/placeholder.svg',
-        backdrop_path: item.backdrop_path ? `${IMAGE_BASE_URL}/w1280${item.backdrop_path}` : '/placeholder.svg',
-        overview: item.overview,
-        release_date: item.release_date || item.first_air_date,
-        vote_average: item.vote_average,
+        poster_path: `${IMAGE_BASE_URL}/w500${item.poster_path}`,
+        backdrop_path: `${IMAGE_BASE_URL}/w1280${item.backdrop_path}`,
+        overview: item.overview || '',
+        release_date: item.release_date || item.first_air_date || '',
+        vote_average: item.vote_average || 0,
         genres: item.genres || [],
         logo_path: logo ? `${IMAGE_BASE_URL}/w500${logo.file_path}` : undefined,
         trailer_url: trailer ? `https://www.youtube.com/embed/${trailer.key}` : undefined,
     };
 
-    if (determinedMediaType === 'movie') {
+    if (mediaType === 'movie') {
         return {
             ...baseItem,
             media_type: 'movie',
-            genre_ids: item.genre_ids || [],
+            runtime: item.runtime,
         } as Movie;
-    } else {
+    } else { // mediaType === 'tv'
         return {
             ...baseItem,
             media_type: 'tv',
+            number_of_seasons: item.number_of_seasons,
         } as Show;
     }
 }
@@ -74,41 +80,30 @@ export async function getItems(key: string, page: number = 1, featured: boolean 
     const endpoint = endpoints.find(e => e.key === key);
     if (!endpoint) return [];
 
-    const params: Record<string, string> = { page: page.toString() };
+    const params: Record<string, string> = { page: page.toString(), ...endpoint.params };
     if(endpoint.sort_by) {
         params.sort_by = endpoint.sort_by;
     }
-    // Add endpoint-specific params
-    Object.assign(params, endpoint.params);
 
     const data = await fetchFromTMDB(endpoint.url, params);
     if (!data?.results) return [];
     
     let items = data.results
-        .map((item: any) => processItem(item, endpoint.type || item.media_type))
+        .map((item: TmdbItem) => processItem(item, endpoint.type || item.media_type))
         .filter(Boolean) as (Movie | Show)[];
     
-    items = items.filter((item: any) => item.poster_path && item.backdrop_path && item.poster_path !== '/placeholder.svg' && item.backdrop_path !== '/placeholder.svg');
-
     if (featured && items.length > 0) {
         const detailedItems = await Promise.all(
-            items.slice(0, 5).map(async (item: any) => {
+            items.slice(0, 5).map(async (item: Movie | Show) => {
                 const details = await fetchFromTMDB(`${item.media_type}/${item.id}`, { append_to_response: 'images,videos' });
-                if (!details) return item;
-                // re-process to add logos and trailers
-                return processItem({...item, ...details}, item.media_type);
+                return details ? processItem({ ...item, ...details }, item.media_type) : item;
             })
         );
-        items = detailedItems.filter(Boolean) as (Movie | Show)[];
+        return detailedItems.filter(Boolean) as (Movie | Show)[];
     }
 
     return items;
 }
-
-export async function getFeatured(): Promise<(Movie | Show)[]> {
-    return getItems('trending_today', 1, true);
-}
-
 
 export async function getMovieById(id: number): Promise<MovieDetails | null> {
     const data = await fetchFromTMDB(`movie/${id}`, { append_to_response: 'credits,images,similar,videos' });
@@ -117,14 +112,22 @@ export async function getMovieById(id: number): Promise<MovieDetails | null> {
     const movie = processItem(data, 'movie') as Movie;
     if (!movie) return null;
     
+    const cast = (data.credits?.cast || []).map((member: any) => ({
+      credit_id: member.credit_id,
+      name: member.name,
+      character: member.character,
+      profile_path: member.profile_path ? `${IMAGE_BASE_URL}/w300${member.profile_path}` : null
+    }));
+
+    const similar = (data.similar?.results || [])
+        .map((item: TmdbItem) => processItem(item, 'movie'))
+        .filter(Boolean) as Movie[];
+    
     return {
         ...movie,
         runtime: data.runtime,
-        cast: (data.credits?.cast || []).map((member: any) => ({
-          ...member,
-          profile_path: member.profile_path ? `${IMAGE_BASE_URL}/w300${member.profile_path}` : null
-        })),
-        similar: data.similar?.results?.map((item: any) => processItem(item, 'movie')).filter(Boolean) || [],
+        cast,
+        similar,
     };
 }
 
@@ -148,15 +151,22 @@ export async function getShowById(id: number): Promise<ShowDetails | null> {
             };
     }));
 
-    const similar = (data.similar?.results || []).map((item: any) => processItem(item, 'tv')).filter(Boolean) as Show[];
+    const cast = (data.credits?.cast || []).map((member: any) => ({
+        credit_id: member.credit_id,
+        name: member.name,
+        character: member.character,
+        profile_path: member.profile_path ? `${IMAGE_BASE_URL}/w300${member.profile_path}` : null
+    }));
+
+    const similar = (data.similar?.results || [])
+        .map((item: TmdbItem) => processItem(item, 'tv'))
+        .filter(Boolean) as Show[];
 
     return {
         ...show,
-        seasons: seasons,
-        cast: (data.credits?.cast || []).map((member: any) => ({
-          ...member,
-          profile_path: member.profile_path ? `${IMAGE_BASE_URL}/w300${member.profile_path}` : null
-        })),
+        number_of_seasons: data.number_of_seasons,
+        seasons,
+        cast,
         similar,
     };
 };
@@ -168,15 +178,8 @@ export async function searchMovies(query: string, page: number = 1): Promise<(Mo
 
   if (!data?.results) return [];
 
-  const processedResults = data.results
-    .map((item: any) => processItem(item, item.media_type))
-    .filter(Boolean) as (Movie | Show)[];
-  
-  processedResults.sort((a, b) => {
-    const aPopularity = (a as any).popularity || 0;
-    const bPopularity = (b as any).popularity || 0;
-    return bPopularity - aPopularity;
-  });
-
-  return processedResults;
+  return data.results
+    .map((item: TmdbItem) => processItem(item, item.media_type))
+    .filter(Boolean)
+    .sort((a: any, b: any) => (b.popularity || 0) - (a.popularity || 0)) as (Movie | Show)[];
 }

@@ -16,12 +16,12 @@ export default async function Home() {
     <div className="flex flex-col">
       {featured && featured.length > 0 && <HeroSection movies={featured} />}
       <div className="container py-8 space-y-12">
-        <MovieCarousel title="Trending Today" movies={trending} seeAllHref="/discover/trending_today" />
-        <MovieCarousel title="Popular K-Dramas" movies={kDramas} seeAllHref="/discover/k_drama" />
-        <MovieCarousel title="Popular C-Dramas" movies={cDramas} seeAllHref="/discover/c_drama" />
-        <MovieCarousel title="Anime" movies={anime} seeAllHref="/discover/anime" />
-        <MovieCarousel title="Popular Movies" movies={popularMovies} seeAllHref="/discover/popular_movies" />
-        <MovieCarousel title="Top Rated" movies={topRated} seeAllHref="/discover/top_rated_movies" />
+        <MovieCarousel title="Trending Today" movies={trending} seeAllHref="/discover?category=trending_today&title=Trending Today" />
+        <MovieCarousel title="Popular K-Dramas" movies={kDramas} seeAllHref="/discover?category=k_drama&title=K-Dramas" />
+        <MovieCarousel title="Popular C-Dramas" movies={cDramas} seeAllHref="/discover?category=c_drama&title=C-Dramas" />
+        <MovieCarousel title="Anime" movies={anime} seeAllHref="/discover?category=anime&title=Anime" />
+        <MovieCarousel title="Popular Movies" movies={popularMovies} seeAllHref="/discover?category=popular_movies&title=Popular Movies" />
+        <MovieCarousel title="Top Rated" movies={topRated} seeAllHref="/discover?category=top_rated_movies&title=Top Rated Movies" />
       </div>
     </div>
   );
