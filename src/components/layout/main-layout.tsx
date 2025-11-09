@@ -11,9 +11,9 @@ function Footer() {
       <div className="container flex flex-col sm:flex-row items-center justify-between py-4 text-sm text-muted-foreground gap-4">
         <span>&copy; {new Date().getFullYear()} kisskh. All Rights Reserved.</span>
         <div className="flex space-x-4">
-          <Link href="/" className="hover:text-primary">Privacy Policy</Link>
-          <Link href="/" className="hover:text-primary">Terms of Service</Link>
-          <Link href="/" className="hover:text-primary">FAQ</Link>
+          <Link href="/privacy-policy" className="hover:text-primary">Privacy Policy</Link>
+          <Link href="/terms-of-service" className="hover:text-primary">Terms of Service</Link>
+          <Link href="/faq" className="hover:text-primary">FAQ</Link>
         </div>
       </div>
     </footer>
