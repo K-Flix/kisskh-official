@@ -22,7 +22,7 @@ export function SearchResultsPopover({ results, query, isLoading, onClose, onSel
   };
 
   return (
-    <div className="absolute top-full mt-2 w-full bg-background border border-border rounded-lg shadow-lg z-50 max-h-[70vh] flex flex-col">
+    <div className="absolute top-full mt-2 w-full bg-secondary border border-border rounded-lg shadow-lg z-50 max-h-[70vh] flex flex-col">
       <div className="overflow-y-auto flex-grow">
         {isLoading && results.length === 0 ? (
           <div className="flex items-center justify-center p-8">
@@ -39,7 +39,7 @@ export function SearchResultsPopover({ results, query, isLoading, onClose, onSel
               const year = item.release_date ? new Date(item.release_date).getFullYear() : 'N/A';
               return (
                 <li key={item.id}>
-                  <Link href={href} onClick={handleLinkClick} className="flex items-center gap-4 p-3 hover:bg-secondary/50 transition-colors">
+                  <Link href={href} onClick={handleLinkClick} className="flex items-center gap-4 p-3 hover:bg-background/50 transition-colors">
                     <div className="relative w-12 h-16 flex-shrink-0 bg-muted rounded-md overflow-hidden">
                       <Image
                         src={item.poster_path}

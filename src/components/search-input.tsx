@@ -85,12 +85,12 @@ export function SearchInput({ onSearch, isDialog = false }: SearchInputProps) {
   }, [closePopover]);
 
   const inputClassName = isDialog 
-    ? "w-full pl-10 pr-20 bg-transparent text-white placeholder:text-gray-300 border-0 border-b-2 border-white/30 rounded-none focus:ring-0 focus:border-primary text-lg"
+    ? "w-full h-12 pl-12 pr-12 bg-white/10 text-white placeholder:text-gray-300 border-white/20 focus:bg-white/20 focus:ring-primary text-base"
     : "w-full pl-10 pr-20 bg-white/20 text-white placeholder:text-gray-300 border-white/30 focus:bg-white/30 focus:ring-primary";
 
   return (
-    <form onSubmit={handleSearchSubmit} className="relative w-full max-w-sm" ref={containerRef}>
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
+    <form onSubmit={handleSearchSubmit} className="relative w-full max-w-xl" ref={containerRef}>
+      <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
       <Input
         ref={inputRef}
         type="text"
@@ -100,7 +100,7 @@ export function SearchInput({ onSearch, isDialog = false }: SearchInputProps) {
         onFocus={() => setIsFocused(true)}
         className={inputClassName}
       />
-      <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+      <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
         {isPending ? (
             <Loader2 className="h-5 w-5 animate-spin text-gray-300" />
         ) : query && (
