@@ -1,7 +1,7 @@
 
 'use server';
 
-import type { Movie, Show, MovieDetails, ShowDetails, TmdbItem, CastMember } from '@/lib/types';
+import type { Movie, Show, MovieDetails, ShowDetails, TmdbItem } from '@/lib/types';
 import { endpoints } from './endpoints';
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';

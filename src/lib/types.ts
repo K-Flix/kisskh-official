@@ -94,3 +94,17 @@ export interface TmdbItem {
     };
     popularity?: number;
 }
+
+export type TmdbMovieResult = {
+  id: number;
+  media_type?: 'movie' | 'tv';
+  title?: string;
+  name?: string;
+  overview: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  vote_average: number;
+  release_date?: string;
+  first_air_date?: string;
+  genre_ids: number[];
+};
