@@ -7,7 +7,7 @@ export default async function Home() {
   const featured = await getItems('trending_today', 1, true);
   const trending = await getItems('trending_today');
   const kDramas = await getItems('k_drama_on_air');
-  const cDramas = await getItems('c_drama_on_air');
+  const cDramas = await getItems('c_drama');
   const anime = await getItems('anime');
   const popularMovies = await getItems('popular_movies');
   const topRated = await getItems('top_rated_movies');
