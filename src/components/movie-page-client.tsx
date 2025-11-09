@@ -127,26 +127,25 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
         </div>
       ) : (
         <>
-            <div className="relative h-auto md:h-[85vh] w-full">
-                <button onClick={() => router.back()} className="absolute top-4 left-4 z-50 flex items-center justify-center bg-background/50 p-2 rounded-full hover:bg-background/80 transition-colors">
+            <div className="relative h-screen w-full">
+                <button onClick={() => router.back()} className="absolute top-6 left-4 md:left-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
                     <ArrowLeft className="w-6 h-6 text-white"/>
                     <span className="sr-only">Back</span>
                 </button>
                 
-                <div className="relative h-[50vh] md:h-full w-full">
+                <div className="absolute inset-0 h-full w-full">
                     <Image
                         src={movie.backdrop_path}
                         alt={`Backdrop for ${movie.title}`}
                         fill
                         priority
-                        className="object-cover object-top"
+                        className="object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 md:via-transparent to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent md:bg-gradient-to-r md:from-background md:to-transparent" />
                 </div>
                 
-                <div className="md:absolute md:inset-0 flex items-center">
-                    <div className="container relative md:static -mt-24 md:mt-0">
+                <div className="relative z-10 flex h-full items-end md:items-center">
+                    <div className="container pb-12 md:pb-0">
                          <ShowHero 
                             show={movie} 
                             onPlayClick={handlePlay} 
@@ -166,7 +165,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                     </div>
                 </div>
             </div>
-             <div className="container py-8 space-y-12" ref={similarSectionRef}>
+             <div className="container py-8 space-y-12 -mt-16 md:mt-0 relative z-10" ref={similarSectionRef}>
                 {movie.cast && movie.cast.length > 0 && <ActorCard actors={movie.cast} />}
                 {movie.similar && movie.similar.length > 0 && (
                   <MovieCarousel title="Similars" movies={movie.similar} />
