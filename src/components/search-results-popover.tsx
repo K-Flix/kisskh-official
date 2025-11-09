@@ -12,11 +12,13 @@ interface SearchResultsPopoverProps {
   query: string;
   isLoading: boolean;
   onClose: () => void;
+  onSelect?: () => void;
 }
 
-export function SearchResultsPopover({ results, query, isLoading, onClose }: SearchResultsPopoverProps) {
+export function SearchResultsPopover({ results, query, isLoading, onClose, onSelect }: SearchResultsPopoverProps) {
   const handleLinkClick = () => {
     onClose();
+    onSelect?.();
   };
 
   return (

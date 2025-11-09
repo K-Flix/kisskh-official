@@ -6,10 +6,11 @@ import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { SearchInput } from '../search-input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu } from 'lucide-react';
+import { Menu, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { Logo } from '../logo';
+import { SearchDialog } from '../search-dialog';
 
 const navLinks = [
   { href: '/', children: 'Home' },
@@ -34,6 +35,7 @@ function NavLink({ href, children, onClick }: { href: string; children: React.Re
 
 export function Header() {
   const [isSheetOpen, setSheetOpen] = useState(false);
+  const [isSearchOpen, setSearchOpen] = useState(false);
 
   return (
     <header className="absolute top-0 z-40 w-full bg-gradient-to-b from-black/80 to-transparent">
@@ -51,10 +53,15 @@ export function Header() {
           </nav>
         </div>
 
-        <div className="flex flex-1 items-center justify-end space-x-4">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
+        <div className="flex flex-1 items-center justify-end space-x-2">
+          <div className="hidden md:block w-full flex-1 md:w-auto md:flex-none">
             <SearchInput />
           </div>
+          <Button variant="ghost" size="icon" className="md:hidden text-white hover:bg-white/10 hover:text-white" onClick={() => setSearchOpen(true)}>
+            <Search />
+            <span className="sr-only">Search</span>
+          </Button>
+
           <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden text-white hover:bg-white/10 hover:text-white">
@@ -77,6 +84,7 @@ export function Header() {
           </Sheet>
         </div>
       </div>
+      <SearchDialog open={isSearchOpen} onOpenChange={setSearchOpen} />
     </header>
   );
 }

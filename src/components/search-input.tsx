@@ -10,7 +10,12 @@ import type { Movie, Show } from '@/lib/types';
 import { useDebounce } from '@/hooks/use-debounce';
 import { SearchResultsPopover } from './search-results-popover';
 
-export function SearchInput() {
+interface SearchInputProps {
+    onSearch?: () => void;
+    isDialog?: boolean;
+}
+
+export function SearchInput({ onSearch, isDialog = false }: SearchInputProps) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<(Movie | Show)[]>([]);
   const [isFocused, setIsFocused] = useState(false);
@@ -20,6 +25,12 @@ export function SearchInput() {
   const containerRef = useRef<HTMLFormElement>(null);
 
   const debouncedQuery = useDebounce(query, 300);
+
+  useEffect(() => {
+    if (isDialog) {
+        inputRef.current?.focus();
+    }
+  }, [isDialog]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -49,6 +60,7 @@ export function SearchInput() {
       router.push(`/search?q=${encodeURIComponent(query.trim())}`);
       inputRef.current?.blur();
       setIsFocused(false);
+      onSearch?.();
     }
   };
 
@@ -72,9 +84,13 @@ export function SearchInput() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [closePopover]);
 
+  const inputClassName = isDialog 
+    ? "w-full pl-10 pr-20 bg-transparent text-white placeholder:text-gray-300 border-0 border-b-2 border-white/30 rounded-none focus:ring-0 focus:border-primary text-lg"
+    : "w-full pl-10 pr-20 bg-white/20 text-white placeholder:text-gray-300 border-white/30 focus:bg-white/30 focus:ring-primary";
+
   return (
     <form onSubmit={handleSearchSubmit} className="relative w-full max-w-sm" ref={containerRef}>
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
       <Input
         ref={inputRef}
         type="text"
@@ -82,14 +98,14 @@ export function SearchInput() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => setIsFocused(true)}
-        className="w-full pl-10 pr-20 bg-white/20 text-white placeholder:text-gray-300 border-white/30 focus:bg-white/30 focus:ring-primary"
+        className={inputClassName}
       />
       <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
         {isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin text-gray-300" />
+            <Loader2 className="h-5 w-5 animate-spin text-gray-300" />
         ) : query && (
             <button type="button" onClick={handleClear} className="text-gray-300 hover:text-white">
-                <X className="h-4 w-4" />
+                <X className="h-5 w-5" />
             </button>
         )}
       </div>
@@ -100,6 +116,7 @@ export function SearchInput() {
             query={debouncedQuery}
             isLoading={isPending}
             onClose={closePopover}
+            onSelect={onSearch}
         />
       )}
     </form>
