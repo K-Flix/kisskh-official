@@ -13,7 +13,7 @@ export const endpoints: Endpoint[] = [
     { key: 'trending_today', title: 'Trending Today', url: `trending/all/day`, params: { language: 'en-US' } },
     { key: 'k_drama_on_air', title: 'K-Drama', url: `discover/tv`, params: { with_origin_country: 'KR', language: 'en-US', with_genres: '18' }, type: 'tv' },
     { key: 'c_drama_on_air', title: 'C-Drama', url: `discover/tv`, params: { with_origin_country: 'CN', language: 'en-US', with_genres: '18' }, type: 'tv' },
-    { key: 'anime', title: 'Anime', url: `discover/tv`, params: { with_genres: '16', language: 'en-US' }, type: 'tv' },
+    { key: 'anime', title: 'Anime', url: `discover/tv`, params: { with_genres: '16', language: 'en-US', with_origin_country: 'JP' }, type: 'tv' },
   
     // TV Shows
     { key: 'trending_tv', title: 'Trending TV Shows', url: `trending/tv/week`, params: { language: 'en-US' }, type: 'tv' },
@@ -29,3 +29,4 @@ export const endpoints: Endpoint[] = [
     { key: 'upcoming_movies', title: 'Upcoming Movies', url: `movie/upcoming`, params: { language: 'en-US' }, type: 'movie' },
     { key: 'top_rated_movies', title: 'Top Rated Movies', url: `movie/top_rated`, params: { language: 'en-US' }, type: 'movie' },
   ];
+
