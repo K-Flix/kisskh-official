@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef, useTransition, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { X, Loader2 } from 'lucide-react';
+import { X, Loader2, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { searchMovies } from '@/lib/data';
 import type { Movie, Show } from '@/lib/types';
@@ -85,11 +85,12 @@ export function SearchInput({ onSearch, isDialog = false }: SearchInputProps) {
   }, [closePopover]);
 
   const inputClassName = isDialog 
-    ? "w-full h-12 px-4 pr-12 bg-black/30 text-white placeholder:text-gray-300 border-white/20 focus:bg-black/40 focus:ring-primary text-base backdrop-blur-sm"
+    ? "w-full h-12 px-4 pl-10 pr-12 bg-black/30 text-white placeholder:text-gray-300 border-white/20 focus:bg-black/40 focus:ring-primary text-base backdrop-blur-sm"
     : "w-full pl-10 pr-10 bg-black/30 text-white placeholder:text-gray-300 border-white/20 focus:bg-black/40 focus:ring-primary backdrop-blur-sm";
 
   return (
     <form onSubmit={handleSearchSubmit} className="relative w-full max-w-xl" ref={containerRef}>
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
       <Input
         ref={inputRef}
         type="text"
