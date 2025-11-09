@@ -11,7 +11,7 @@ type Endpoint = {
 export const endpoints: Endpoint[] = [
     // Home Page
     { key: 'trending_today', title: 'Trending Today', url: `trending/all/day`, params: { language: 'en-US' } },
-    { key: 'k_drama_on_air', title: 'Popular K-Dramas', url: `discover/tv`, params: { with_origin_country: 'KR', language: 'en-US', 'air_date.lte': new Date().toISOString().split('T')[0] }, sort_by: 'popularity.desc', type: 'tv' },
+    { key: 'k_drama_on_air', title: 'Popular K-Dramas', url: `discover/tv`, params: { with_origin_country: 'KR', language: 'en-US', 'air_date.gte': '__DATE_30_DAYS_AGO__', 'air_date.lte': '__TODAY__' }, sort_by: 'popularity.desc', type: 'tv' },
   
     // TV Shows
     { key: 'trending_tv', title: 'Trending TV Shows', url: `trending/tv/week`, params: { language: 'en-US' }, type: 'tv' },
