@@ -38,7 +38,6 @@ export interface CastMember {
 export interface MovieDetails extends Movie {
   cast: CastMember[];
   similar: Movie[];
-  runtime: number;
 }
 
 export interface Episode {
@@ -63,7 +62,6 @@ export interface ShowDetails extends Show {
   cast: CastMember[];
   seasons: Season[];
   similar: Show[];
-  number_of_seasons: number;
 }
 
 // Represents a raw item from the TMDB API

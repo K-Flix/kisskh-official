@@ -1,7 +1,7 @@
 
 'use server';
 
-import type { Movie, Show, MovieDetails, ShowDetails, TmdbItem } from '@/lib/types';
+import type { Movie, Show, MovieDetails, ShowDetails, TmdbItem, CastMember } from '@/lib/types';
 import { endpoints } from './endpoints';
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
@@ -108,11 +108,11 @@ export async function getItems(key: string, page: number = 1, featured: boolean 
 export async function getMovieById(id: number): Promise<MovieDetails | null> {
     const data = await fetchFromTMDB(`movie/${id}`, { append_to_response: 'credits,images,similar,videos' });
     if (!data) return null;
-    
+
     const logo = data.images?.logos?.find((l: any) => l.iso_639_1 === 'en' && !l.file_path.endsWith('.svg'));
     const trailer = data.videos?.results?.find((v: any) => v.site === 'YouTube' && v.type === 'Trailer');
 
-    const movie: Movie = {
+    const movie: MovieDetails = {
         id: data.id,
         title: data.title || 'Untitled',
         poster_path: data.poster_path ? `${IMAGE_BASE_URL}/w500${data.poster_path}` : '/placeholder.svg',
@@ -124,25 +124,19 @@ export async function getMovieById(id: number): Promise<MovieDetails | null> {
         logo_path: logo ? `${IMAGE_BASE_URL}/w500${logo.file_path}` : undefined,
         trailer_url: trailer ? `https://www.youtube.com/embed/${trailer.key}` : undefined,
         media_type: 'movie',
-        runtime: data.runtime
+        runtime: data.runtime,
+        cast: (data.credits?.cast || []).map((member: any) => ({
+            credit_id: member.credit_id,
+            name: member.name,
+            character: member.character,
+            profile_path: member.profile_path ? `${IMAGE_BASE_URL}/w300${member.profile_path}` : null
+        })),
+        similar: (data.similar?.results || [])
+            .map((item: TmdbItem) => processItem(item, 'movie'))
+            .filter(Boolean) as Movie[],
     };
-
-    const cast = (data.credits?.cast || []).map((member: any) => ({
-      credit_id: member.credit_id,
-      name: member.name,
-      character: member.character,
-      profile_path: member.profile_path ? `${IMAGE_BASE_URL}/w300${member.profile_path}` : null
-    }));
-
-    const similar = (data.similar?.results || [])
-        .map((item: TmdbItem) => processItem(item, 'movie'))
-        .filter(Boolean) as Movie[];
     
-    return {
-        ...movie,
-        cast,
-        similar,
-    };
+    return movie;
 }
 
 export async function getShowById(id: number): Promise<ShowDetails | null> {
