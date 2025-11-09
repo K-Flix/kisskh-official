@@ -49,9 +49,12 @@ export function ShowHero({ show, onPlayClick, onTrailerClick, onSimilarsClick, c
             <Calendar className="w-4 h-4" />
             <span>{showYear}</span>
           </div>
-          {isMovie && ('runtime' in show && show.runtime) ? (
+          {isMovie && 'runtime' in show && show.runtime ? (
               <Badge variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{show.runtime} min</Badge>
-          ) : null}
+          ) : !isMovie && 'number_of_seasons' in show && (
+            <Badge variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{show.number_of_seasons} seasons</Badge>
+          )}
+
           {show.genres.slice(0, 3).map((genre) => (
             <Badge key={genre.id} variant="outline" className="backdrop-blur-sm bg-black/20 border-white/50 text-white">{genre.name}</Badge>
           ))}
@@ -67,7 +70,7 @@ export function ShowHero({ show, onPlayClick, onTrailerClick, onSimilarsClick, c
         </Button>
         <WatchlistButton movie={show} />
         {children}
-        {show.trailer_url && !isMovie && (
+        {show.trailer_url && (
             <Button onClick={onTrailerClick} size="lg" variant="secondary" className="bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
                 <Video className="mr-2"/>
                 Trailer

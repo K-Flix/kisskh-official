@@ -10,9 +10,7 @@ import { ShowHero } from './show-hero';
 import { X, ArrowLeft, Download, Film } from 'lucide-react';
 import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
-import { Badge } from './ui/badge';
 import Link from 'next/link';
-import { WatchlistButton } from './watchlist-button';
 
 interface MoviePageClientProps {
   movie: MovieDetails;
@@ -145,7 +143,6 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                     show={movie} 
                     onPlayClick={handlePlay} 
                     onTrailerClick={() => setShowTrailer(true)}
-                    onSimilarsClick={handleSimilarsClick}
                 >
                     <Button asChild variant="secondary" className="bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
                         <Link href={downloadUrl} target="_blank">

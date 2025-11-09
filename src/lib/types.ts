@@ -25,7 +25,6 @@ export interface Movie extends BaseItem {
 
 export interface Show extends BaseItem {
   media_type: 'tv';
-  title: string;
 }
 
 export interface CastMember {
@@ -37,7 +36,7 @@ export interface CastMember {
 
 export interface MovieDetails extends Movie {
   cast: CastMember[];
-  similar: Movie[];
+  similar: (Movie | Show)[];
   runtime: number;
 }
 
@@ -62,7 +61,7 @@ export interface Season {
 export interface ShowDetails extends Show {
   cast: CastMember[];
   seasons: Season[];
-  similar: Show[];
+  similar: (Movie | Show)[];
 }
 
 export interface ImageDetails {

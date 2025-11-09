@@ -1,7 +1,7 @@
 
 'use server';
 
-import type { Movie, Show, MovieDetails, ShowDetails, CastMember } from '@/lib/types';
+import type { Movie, Show, MovieDetails, ShowDetails } from '@/lib/types';
 import { endpoints } from './endpoints';
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
@@ -22,7 +22,7 @@ async function fetchFromTMDB(endpoint: string, params: Record<string, string> = 
   try {
     const response = await fetch(url.toString(), options);
     if (!response.ok) {
-      console.error(`Failed to fetch from TMDB endpoint: ${endpoint}`, await response.json());
+      console.error(`Failed to fetch from TMDB endpoint: ${endpoint}`, await response.text());
       return null;
     }
     return response.json();
@@ -32,10 +32,16 @@ async function fetchFromTMDB(endpoint: string, params: Record<string, string> = 
   }
 }
 
-function processItem(item: any, mediaType?: 'movie' | 'tv', images?: any, videos?: any): Movie | Show {
+function processItem(item: any, mediaType?: 'movie' | 'tv'): Movie | Show | null {
+    if (!item) return null;
     const determinedMediaType = mediaType || item.media_type;
-    const logo = images?.logos?.find((logo: any) => logo.iso_639_1 === 'en' && !logo.file_path.endsWith('.svg'));
-    const trailer = videos?.results?.find((video: any) => video.site === 'YouTube' && video.type === 'Trailer');
+    
+    if (determinedMediaType !== 'movie' && determinedMediaType !== 'tv') {
+        return null;
+    }
+
+    const logo = item.images?.logos?.find((logo: any) => logo.iso_639_1 === 'en' && !logo.file_path.endsWith('.svg'));
+    const trailer = item.videos?.results?.find((video: any) => video.site === 'YouTube' && video.type === 'Trailer');
     
     const baseItem = {
         id: item.id,
@@ -47,7 +53,6 @@ function processItem(item: any, mediaType?: 'movie' | 'tv', images?: any, videos
         vote_average: item.vote_average,
         genres: item.genres || [],
         logo_path: logo ? `${IMAGE_BASE_URL}/w500${logo.file_path}` : undefined,
-        media_type: determinedMediaType,
         trailer_url: trailer ? `https://www.youtube.com/embed/${trailer.key}` : undefined,
     };
 
@@ -73,25 +78,31 @@ export async function getItems(key: string, page: number = 1, featured: boolean 
     if(endpoint.sort_by) {
         params.sort_by = endpoint.sort_by;
     }
+    // Add endpoint-specific params
+    Object.assign(params, endpoint.params);
 
     const data = await fetchFromTMDB(endpoint.url, params);
     if (!data?.results) return [];
     
     let items = data.results
-        .filter((item: any) => item.poster_path && item.backdrop_path)
-        .map((item: any) => processItem(item, endpoint.type || item.media_type));
+        .map((item: any) => processItem(item, endpoint.type || item.media_type))
+        .filter(Boolean) as (Movie | Show)[];
+    
+    items = items.filter((item: any) => item.poster_path && item.backdrop_path && item.poster_path !== '/placeholder.svg' && item.backdrop_path !== '/placeholder.svg');
 
-    if (featured) {
+    if (featured && items.length > 0) {
         const detailedItems = await Promise.all(
-            items.slice(0, 15).map(async (item: any) => {
+            items.slice(0, 5).map(async (item: any) => {
                 const details = await fetchFromTMDB(`${item.media_type}/${item.id}`, { append_to_response: 'images,videos' });
-                return processItem(item, item.media_type, details?.images, details?.videos);
+                if (!details) return item;
+                // re-process to add logos and trailers
+                return processItem({...item, ...details}, item.media_type);
             })
         );
-        items = detailedItems;
+        items = detailedItems.filter(Boolean) as (Movie | Show)[];
     }
 
-    return items.filter(Boolean) as (Movie | Show)[];
+    return items;
 }
 
 export async function getFeatured(): Promise<(Movie | Show)[]> {
@@ -103,7 +114,8 @@ export async function getMovieById(id: number): Promise<MovieDetails | null> {
     const data = await fetchFromTMDB(`movie/${id}`, { append_to_response: 'credits,images,similar,videos' });
     if (!data) return null;
     
-    const movie = processItem(data, 'movie', data.images, data.videos) as Movie;
+    const movie = processItem(data, 'movie') as Movie;
+    if (!movie) return null;
     
     return {
         ...movie,
@@ -112,7 +124,7 @@ export async function getMovieById(id: number): Promise<MovieDetails | null> {
           ...member,
           profile_path: member.profile_path ? `${IMAGE_BASE_URL}/w300${member.profile_path}` : null
         })),
-        similar: data.similar?.results?.map((item: any) => processItem(item, 'movie')) || [],
+        similar: data.similar?.results?.map((item: any) => processItem(item, 'movie')).filter(Boolean) || [],
     };
 }
 
@@ -120,7 +132,8 @@ export async function getShowById(id: number): Promise<ShowDetails | null> {
     const data = await fetchFromTMDB(`tv/${id}`, { append_to_response: 'credits,images,similar,videos' });
     if (!data) return null;
 
-    const show = processItem(data, 'tv', data.images, data.videos) as Show;
+    const show = processItem(data, 'tv') as Show;
+    if (!show) return null;
     
     const seasons = await Promise.all((data.seasons || [])
         .filter((s:any) => s.season_number > 0 && s.episode_count > 0)
@@ -135,7 +148,7 @@ export async function getShowById(id: number): Promise<ShowDetails | null> {
             };
     }));
 
-    const similar = (data.similar?.results || []).map((item: any) => processItem(item, 'tv'));
+    const similar = (data.similar?.results || []).map((item: any) => processItem(item, 'tv')).filter(Boolean) as Show[];
 
     return {
         ...show,
@@ -156,7 +169,6 @@ export async function searchMovies(query: string, page: number = 1): Promise<(Mo
   if (!data?.results) return [];
 
   const processedResults = data.results
-    .filter((item: any) => (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path && item.backdrop_path)
     .map((item: any) => processItem(item, item.media_type))
     .filter(Boolean) as (Movie | Show)[];
   
