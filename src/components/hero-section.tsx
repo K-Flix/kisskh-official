@@ -43,7 +43,7 @@ function HeroContent({ movie }: { movie: Movie | Show }) {
             Play
             </Link>
         </Button>
-        <Button asChild size="lg" variant="secondary" className="bg-gray-500/50 text-white hover:bg-gray-500/40 border border-white/20">
+        <Button asChild size="lg" variant="secondary" className="bg-black/30 text-white hover:bg-black/50 border border-white/20 backdrop-blur-sm">
              <Link href={movie.media_type === 'tv' ? `/tv/${movie.id}` : `/movie/${movie.id}`}>
             <Info className="mr-2" />
             See More
