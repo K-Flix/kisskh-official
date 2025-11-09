@@ -109,9 +109,24 @@ export async function getMovieById(id: number): Promise<MovieDetails | null> {
     const data = await fetchFromTMDB(`movie/${id}`, { append_to_response: 'credits,images,similar,videos' });
     if (!data) return null;
     
-    const movie = processItem(data, 'movie') as Movie;
-    if (!movie) return null;
-    
+    const logo = data.images?.logos?.find((l: any) => l.iso_639_1 === 'en' && !l.file_path.endsWith('.svg'));
+    const trailer = data.videos?.results?.find((v: any) => v.site === 'YouTube' && v.type === 'Trailer');
+
+    const movie: Movie = {
+        id: data.id,
+        title: data.title || 'Untitled',
+        poster_path: data.poster_path ? `${IMAGE_BASE_URL}/w500${data.poster_path}` : '/placeholder.svg',
+        backdrop_path: data.backdrop_path ? `${IMAGE_BASE_URL}/w1280${data.backdrop_path}`: '/placeholder.svg',
+        overview: data.overview || '',
+        release_date: data.release_date || '',
+        vote_average: data.vote_average || 0,
+        genres: data.genres || [],
+        logo_path: logo ? `${IMAGE_BASE_URL}/w500${logo.file_path}` : undefined,
+        trailer_url: trailer ? `https://www.youtube.com/embed/${trailer.key}` : undefined,
+        media_type: 'movie',
+        runtime: data.runtime
+    };
+
     const cast = (data.credits?.cast || []).map((member: any) => ({
       credit_id: member.credit_id,
       name: member.name,
@@ -125,7 +140,6 @@ export async function getMovieById(id: number): Promise<MovieDetails | null> {
     
     return {
         ...movie,
-        runtime: data.runtime,
         cast,
         similar,
     };
