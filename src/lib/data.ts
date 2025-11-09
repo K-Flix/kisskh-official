@@ -82,12 +82,12 @@ function processItem(item: TmdbItem, mediaTypeOverride?: 'movie' | 'tv'): Movie 
 
 function getDynamicParams() {
     const today = new Date();
-    const thirtyDaysAgo = new Date(today);
-    thirtyDaysAgo.setDate(today.getDate() - 30);
+    const ninetyDaysAgo = new Date(today);
+    ninetyDaysAgo.setDate(today.getDate() - 90);
   
     return {
       'air_date.lte': today.toISOString().split('T')[0],
-      'air_date.gte': thirtyDaysAgo.toISOString().split('T')[0],
+      'air_date.gte': ninetyDaysAgo.toISOString().split('T')[0],
     };
 }
 
