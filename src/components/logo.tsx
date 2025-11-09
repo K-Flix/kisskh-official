@@ -3,7 +3,7 @@ export function Logo() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 226.857 40" preserveAspectRatio="xMidYMid meet" focusable="false" className="w-auto h-7">
       <g id="Group_48" data-name="Group 48" transform="translate(-560.653 310.696)">
-        <path id="Path_16" data-name="Path 16" d="M1209.024-269.236h-59.486a6.292,6.292,0,0,1-5.878-8.536l10.285-26.935a6.292,6.292,0,0,1,5.878-4.047h59.486a6.292,6.292,0,0,1,5.878,8.536L1214.9-273.284A6.291,6.291,0,0,1,1209.024-269.236Z" transform="translate(-438.096 -1.46)" fill="#f77e0b"></path>
+        <path id="Path_16" data-name="Path 16" d="M1209.024-269.236h-59.486a6.292,6.292,0,0,1-5.878-8.536l10.285-26.935a6.292,6.292,0,0,1,5.878-4.047h59.486a6.292,6.292,0,0,1,5.878,8.536L1214.9-273.284A6.291,6.291,0,0,1,1209.024-269.236Z" transform="translate(-438.096 -1.46)" className="fill-primary"></path>
         <g id="Group_32" data-name="Group 32" transform="translate(560.653 -310.696)">
           <path id="Path_17" data-name="Path 17" d="M560.858-272.2l14.944-37a2.176,2.176,0,0,1,2.056-1.5h8.778q1.5,0,.833,1.5l-3.222,7.944,11.5-8.611a3.76,3.76,0,0,1,2.278-.833h10.722q2.111,0,.056,1.556l-29.944,22.167a1.772,1.772,0,0,0-.722.944L572.525-272.2a2.177,2.177,0,0,1-2.056,1.5h-8.778Q560.191-270.7,560.858-272.2Z" transform="translate(-560.653 310.696)" fill="#fff"></path>
         </g>
@@ -31,3 +31,5 @@ export function Logo() {
     </svg>
   )
 }
+
+    
