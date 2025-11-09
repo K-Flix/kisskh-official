@@ -97,17 +97,21 @@ export async function getItems(key: string, page: number = 1, featured: boolean 
     const endpoint = endpoints.find(e => e.key === key);
     if (!endpoint) return [];
 
-    const finalParams: Record<string, string> = { 
+    let finalParams: Record<string, string> = { 
         page: page.toString(), 
         ...endpoint.params,
     };
 
     const specialCategories = ['k_drama_on_air', 'k_drama', 'c_drama', 'anime'];
+    const currentCategoryKey = key === 'k_drama_on_air' ? 'k_drama' : key;
 
-    if (specialCategories.includes(key)) {
+
+    if (specialCategories.includes(currentCategoryKey)) {
         if (isCategoryPage) {
             // For "See All" pages, sort by newest, no date restriction.
             finalParams.sort_by = 'first_air_date.desc';
+            // Important: The endpoint.params already contain the correct country/genre filters.
+            // We do not need to add or remove them here, just override the sorting.
         } else {
             // For homepage carousels, filter by recent air dates and sort by popularity.
             const dynamicParams = getDynamicParams();
