@@ -69,31 +69,31 @@ export function ShowHero({ show, onPlayClick, onTrailerClick, children }: ShowHe
       <p className="max-w-xl text-foreground/90 text-sm md:text-base drop-shadow-md line-clamp-3">
         {show.overview}
       </p>
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-wrap gap-2 md:gap-4 items-center">
-            {/* Play button - changes based on screen size */}
-            <Button onClick={onPlayClick} size="lg" className="bg-white text-black hover:bg-white/90 hidden md:inline-flex">
-                <Play className="mr-2 fill-black" />
-                Play
-            </Button>
-            <Button onClick={onPlayClick} size="icon" className="rounded-full w-11 h-11 bg-white text-black hover:bg-white/90 md:hidden">
-                <Play className="fill-black" />
-            </Button>
+      <div className="flex items-center gap-2 md:gap-4">
+        {/* Play button - changes based on screen size */}
+        <Button onClick={onPlayClick} size="lg" className="bg-white text-black hover:bg-white/90 hidden md:inline-flex">
+            <Play className="mr-2 fill-black" />
+            Play
+        </Button>
+        <Button onClick={onPlayClick} size="icon" className="rounded-full w-11 h-11 bg-white text-black hover:bg-white/90 md:hidden">
+            <Play className="fill-black" />
+        </Button>
 
-            <WatchlistButton movie={show} />
-            {children}
-        </div>
+        <WatchlistButton movie={show} />
+        
+        {children}
+
         {show.trailer_url && (
-             <Tooltip delayDuration={200}>
-                <TooltipTrigger asChild>
-                    <Button onClick={onTrailerClick} size="icon" variant="secondary" className="rounded-full w-11 h-11 bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
-                        <Video/>
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                    <p>Watch Trailer</p>
-                </TooltipContent>
-            </Tooltip>
+          <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                  <Button onClick={onTrailerClick} size="icon" variant="secondary" className="rounded-full w-11 h-11 bg-black/20 text-white hover:bg-black/40 border border-white/20 backdrop-blur-sm">
+                      <Video/>
+                  </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                  <p>Watch Trailer</p>
+              </TooltipContent>
+          </Tooltip>
         )}
       </div>
     </div>
