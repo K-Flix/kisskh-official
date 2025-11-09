@@ -16,7 +16,7 @@ export const endpoints: { key: string; title: string; url: string; sort_by?:stri
     { key: 'trending_movies', title: 'Trending Movies', url: `/trending/movie/week?language=en-US`, type: 'movie' },
     { key: 'popular_movies', title: 'Popular Movies', url: `/movie/popular?language=en-US`, type: 'movie' },
     { key: 'now_playing_movies', title: 'Now Playing Movies', url: `/movie/now_playing?language=en-US`, type: 'movie' },
-    { key: 'upcoming_movies', title: 'Upcoming Movies', url: `/movie/upcoming?language-en-US`, type: 'movie' },
+    { key: 'upcoming_movies', title: 'Upcoming Movies', url: `/movie/upcoming?language=en-US`, type: 'movie' },
     { key: 'top_rated_movies', title: 'Top Rated Movies', url: `/movie/top_rated?language=en-US`, type: 'movie' },
   ];
   
