@@ -7,19 +7,21 @@ import { endpoints } from './endpoints';
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p';
 
-const options = {
-  method: 'GET',
-  headers: {
-    accept: 'application/json',
-    Authorization: `Bearer ${process.env.TMDB_API_READ_ACCESS_TOKEN}`
-  }
-};
-
 async function fetchFromTMDB(endpoint: string, params: Record<string, string> = {}) {
-  if (!process.env.TMDB_API_READ_ACCESS_TOKEN) {
+  const apiKey = process.env.TMDB_API_READ_ACCESS_TOKEN;
+  if (!apiKey) {
     console.error('TMDB_API_READ_ACCESS_TOKEN is not defined');
     return null;
   }
+  
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: `Bearer ${apiKey}`
+    }
+  };
+  
   const url = new URL(`${API_BASE_URL}/${endpoint}`);
   Object.entries(params).forEach(([key, value]) => url.searchParams.append(key, value));
   
@@ -223,5 +225,3 @@ export async function searchMovies(query: string, page: number = 1): Promise<(Mo
     .filter(Boolean)
     .sort((a: any, b: any) => (b.popularity || 0) - (a.popularity || 0)) as (Movie | Show)[];
 }
-
-    
