@@ -80,16 +80,37 @@ function processItem(item: TmdbItem, mediaTypeOverride?: 'movie' | 'tv'): Movie 
     }
 }
 
+function getDynamicParams() {
+    const today = new Date();
+    const thirtyDaysAgo = new Date(today);
+    thirtyDaysAgo.setDate(today.getDate() - 30);
+  
+    return {
+      'air_date.lte': today.toISOString().split('T')[0],
+      'air_date.gte': thirtyDaysAgo.toISOString().split('T')[0],
+    };
+}
+
 export async function getItems(key: string, page: number = 1, featured: boolean = false): Promise<(Movie | Show)[]> {
     const endpoint = endpoints.find(e => e.key === key);
     if (!endpoint) return [];
 
-    const params: Record<string, string> = { page: page.toString(), ...endpoint.params };
-    if(endpoint.sort_by) {
-        params.sort_by = endpoint.sort_by;
+    const dynamicParams = getDynamicParams();
+    const finalParams: Record<string, string> = { 
+        page: page.toString(), 
+        ...endpoint.params,
+    };
+
+    if (key === 'k_drama_on_air' || key === 'c_drama' || key === 'anime') {
+        finalParams['air_date.gte'] = dynamicParams['air_date.gte'];
+        finalParams['air_date.lte'] = dynamicParams['air_date.lte'];
     }
 
-    const data = await fetchFromTMDB(endpoint.url, params);
+    if(endpoint.sort_by) {
+        finalParams.sort_by = endpoint.sort_by;
+    }
+
+    const data = await fetchFromTMDB(endpoint.url, finalParams);
     if (!data?.results) return [];
     
     let items = data.results
