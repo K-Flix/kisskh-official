@@ -26,7 +26,7 @@ async function fetchFromTMDB(endpoint: string, params: Record<string, string> = 
   Object.entries(params).forEach(([key, value]) => url.searchParams.append(key, value));
   
   try {
-    const response = await fetch(url.toString(), options);
+    const response = await fetch(url.toString(), { ...options, next: { revalidate: 3600 } }); // Revalidate every hour
     if (!response.ok) {
       console.error(`Failed to fetch from TMDB endpoint: ${endpoint}`, await response.text());
       return null;
@@ -103,15 +103,11 @@ export async function getItems(key: string, page: number = 1, featured: boolean 
     };
 
     const specialCategories = ['k_drama_on_air', 'k_drama', 'c_drama', 'anime'];
-    const currentCategoryKey = key === 'k_drama_on_air' ? 'k_drama' : key;
-
-
-    if (specialCategories.includes(currentCategoryKey)) {
+    
+    if (specialCategories.includes(key)) {
         if (isCategoryPage) {
             // For "See All" pages, sort by newest, no date restriction.
             finalParams.sort_by = 'first_air_date.desc';
-            // Important: The endpoint.params already contain the correct country/genre filters.
-            // We do not need to add or remove them here, just override the sorting.
         } else {
             // For homepage carousels, filter by recent air dates and sort by popularity.
             const dynamicParams = getDynamicParams();
@@ -119,7 +115,7 @@ export async function getItems(key: string, page: number = 1, featured: boolean 
             finalParams['air_date.lte'] = dynamicParams['air_date.lte'];
             finalParams.sort_by = 'popularity.desc';
         }
-    } else if(endpoint.sort_by) {
+    } else if (endpoint.sort_by) {
         finalParams.sort_by = endpoint.sort_by;
     }
 

@@ -9,17 +9,15 @@ type Endpoint = {
 }
 
 export const endpoints: Endpoint[] = [
-    // Home Page
+    // Home Page & Generic
     { key: 'trending_today', title: 'Trending Today', url: `trending/all/day`, params: { language: 'en-US' } },
-    { key: 'k_drama_on_air', title: 'K-Drama', url: `discover/tv`, params: { with_origin_country: 'KR', language: 'en-US', with_genres: '18' }, sort_by: 'popularity.desc', type: 'tv' },
-    { key: 'c_drama', title: 'C-Drama', url: `discover/tv`, params: { with_origin_country: 'CN', language: 'en-US' }, sort_by: 'popularity.desc', type: 'tv' },
-    { key: 'anime', title: 'Anime', url: `discover/tv`, params: { with_genres: '16', language: 'en-US' }, sort_by: 'popularity.desc', type: 'tv' },
+    { key: 'k_drama_on_air', title: 'K-Drama', url: `discover/tv`, params: { with_origin_country: 'KR', language: 'en-US', with_genres: '18' }, type: 'tv' },
+    { key: 'c_drama', title: 'C-Drama', url: `discover/tv`, params: { with_origin_country: 'CN', language: 'en-US' }, type: 'tv' },
+    { key: 'anime', title: 'Anime', url: `discover/tv`, params: { with_genres: '16', language: 'en-US' }, type: 'tv' },
   
     // TV Shows
     { key: 'trending_tv', title: 'Trending TV Shows', url: `trending/tv/week`, params: { language: 'en-US' }, type: 'tv' },
-    { key: 'k_drama', title: 'K-Dramas', url: `discover/tv`, params: { with_origin_country: 'KR', language: 'en-US' }, sort_by: 'popularity.desc', type: 'tv' },
-    // C-Drama and Anime are already defined for home, but can be reused if needed on discover page etc.
-    
+    { key: 'k_drama', title: 'K-Dramas', url: `discover/tv`, params: { with_origin_country: 'KR', language: 'en-US', with_genres: '18' }, type: 'tv' },
     { key: 'on_the_air_tv', title: 'On The Air TV Shows', url: `tv/on_the_air`, params: { language: 'en-US' }, type: 'tv' },
     { key: 'top_rated_tv', title: 'Top Rated TV Shows', url: `tv/top_rated`, params: { language: 'en-US' }, type: 'tv' },
     
@@ -30,4 +28,3 @@ export const endpoints: Endpoint[] = [
     { key: 'upcoming_movies', title: 'Upcoming Movies', url: `movie/upcoming`, params: { language: 'en-US' }, type: 'movie' },
     { key: 'top_rated_movies', title: 'Top Rated Movies', url: `movie/top_rated`, params: { language: 'en-US' }, type: 'movie' },
   ];
-
