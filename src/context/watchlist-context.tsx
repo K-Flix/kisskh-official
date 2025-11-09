@@ -21,7 +21,7 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      const storedWatchlist = localStorage.getItem('streamverse-watchlist');
+      const storedWatchlist = localStorage.getItem('kisskh-watchlist');
       if (storedWatchlist) {
         setWatchlist(JSON.parse(storedWatchlist));
       }
@@ -33,7 +33,7 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      localStorage.setItem('streamverse-watchlist', JSON.stringify(watchlist));
+      localStorage.setItem('kisskh-watchlist', JSON.stringify(watchlist));
     } catch (error) {
       console.error('Failed to save watchlist to localStorage', error);
     }
