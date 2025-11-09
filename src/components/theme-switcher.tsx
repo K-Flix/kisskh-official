@@ -13,7 +13,7 @@ const colors = [
   { name: 'Blue', hsl: '221.2 83.2% 53.3%' },
   { name: 'Rose', hsl: '346.8 77.2% 49.8%' },
   { name: 'Green', hsl: '142.1 76.2% 36.3%' },
-  { name: 'Yellow', hsl: '47.9 95.8% 53.1%' },
+  { name: 'Cyan', hsl: '187 100% 37.8%' },
   { name: 'Violet', hsl: '262.1 83.3% 57.8%' },
 ];
 
