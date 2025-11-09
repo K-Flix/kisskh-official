@@ -95,7 +95,7 @@ export function HeroSection({ movies }: HeroSectionProps) {
                     alt={`Backdrop for ${movie.title}`}
                     fill
                     priority
-                    className="object-cover object-center"
+                    className="object-cover object-top"
                     data-ai-hint="movie backdrop"
                 />
                  <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
