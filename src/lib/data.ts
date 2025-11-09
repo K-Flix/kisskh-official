@@ -8,9 +8,9 @@ const API_BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p';
 
 async function fetchFromTMDB(endpoint: string, params: Record<string, string> = {}) {
-  const apiKey = process.env.TMDB_API_READ_ACCESS_TOKEN;
+  const apiKey = process.env.TMDB_API_KEY;
   if (!apiKey) {
-    console.error('TMDB_API_READ_ACCESS_TOKEN is not defined');
+    console.error('TMDB_API_KEY is not defined');
     return null;
   }
   
@@ -18,11 +18,11 @@ async function fetchFromTMDB(endpoint: string, params: Record<string, string> = 
     method: 'GET',
     headers: {
       accept: 'application/json',
-      Authorization: `Bearer ${apiKey}`
     }
   };
   
   const url = new URL(`${API_BASE_URL}/${endpoint}`);
+  url.searchParams.append('api_key', apiKey);
   Object.entries(params).forEach(([key, value]) => url.searchParams.append(key, value));
   
   try {
