@@ -30,3 +30,4 @@ export const endpoints: Endpoint[] = [
     { key: 'upcoming_movies', title: 'Upcoming Movies', url: `movie/upcoming`, params: { language: 'en-US' }, type: 'movie' },
     { key: 'top_rated_movies', title: 'Top Rated Movies', url: `movie/top_rated`, params: { language: 'en-US' }, type: 'movie' },
   ];
+

@@ -75,3 +75,4 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
         </div>
     );
 }
+
