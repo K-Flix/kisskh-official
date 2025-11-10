@@ -55,7 +55,8 @@ export function DiscoverClientPage({ initialItems, initialFilters, genres, count
         }
     });
 
-    const keyToFetch = categoryKey === 'discover_all' && Object.keys(filters).length === 0 ? 'trending_today' : categoryKey;
+    const hasFilters = Object.keys(filters).length > 0;
+    const keyToFetch = categoryKey === 'trending_today' && hasFilters ? 'discover_all' : categoryKey;
 
     const newItems = await getItems(keyToFetch, page, false, true, filters);
     if (newItems.length > 0) {
@@ -99,13 +100,9 @@ export function DiscoverClientPage({ initialItems, initialFilters, genres, count
     const category = current.get('category');
     const title = current.get('title');
     
-    let newPath = '/discover';
-    // If we were on a category page, resetting should keep us there without filters
-    if(category && title) {
-      newPath = `/discover?category=${category}&title=${title}`;
-    }
-    router.push(newPath);
-  }, [router, searchParams]);
+    // Always reset to the base discover page, which will default to 'trending_today'
+    router.push('/discover');
+  }, [router]);
 
   const handleScroll = () => {
     if (window.scrollY > 400) {
