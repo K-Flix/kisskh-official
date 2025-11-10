@@ -54,13 +54,13 @@ export function DiscoverClientPage({
   const loadMoreItems = async () => {
     if (loading || !hasMore) return;
     setLoading(true);
-    const currentParams = new URLSearchParams(Array.from(searchParams.entries()));
+    
     const filters: Record<string, string> = {};
-    currentParams.forEach((value, key) => {
+    searchParams.forEach((value, key) => {
       filters[key] = value;
     });
 
-    const newItems = await getItems('discover_all', page, false, true, filters);
+    const newItems = await getItems('discover_all', page, false, false, filters);
     if (newItems.length > 0) {
       setItems((prev) => [...prev, ...newItems]);
       setPage((prev) => prev + 1);
@@ -88,6 +88,7 @@ export function DiscoverClientPage({
     const search = current.toString();
     const query = search ? `?${search}` : "";
 
+    // Use router.push to trigger a re-render with new server-side props
     router.push(`/discover${query}`);
   }, [searchParams, router]);
 
@@ -100,12 +101,11 @@ export function DiscoverClientPage({
       (networkIds && current.get('with_networks') === networkIds) || 
       (providerIds && current.get('with_watch_providers') === providerIds);
   
-    if (isAlreadySelected) {
-      current.delete('with_networks');
-      current.delete('with_watch_providers');
-    } else {
-      current.delete('with_networks');
-      current.delete('with_watch_providers');
+    // Clear any existing network/provider filters before setting new ones
+    current.delete('with_networks');
+    current.delete('with_watch_providers');
+
+    if (!isAlreadySelected) {
       if (networkIds) current.set('with_networks', networkIds);
       if (providerIds) current.set('with_watch_providers', providerIds);
     }
@@ -186,9 +186,9 @@ export function DiscoverClientPage({
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
             {items.map((item, index) => {
             if (items.length === index + 1) {
-                return <div ref={lastItemRef} key={item.id}><MovieCard movie={item} /></div>;
+                return <div ref={lastItemRef} key={`${item.id}-${index}`}><MovieCard movie={item} /></div>;
             }
-            return <MovieCard key={item.id} movie={item} />;
+            return <MovieCard key={`${item.id}-${index}`} movie={item} />;
             })}
         </div>
       ) : (

@@ -45,14 +45,12 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
     const flatFilters: Record<string, string> = {};
     for (const key in searchParams) {
         const value = searchParams[key];
-        if (Array.isArray(value)) {
-            flatFilters[key] = value[0];
-        } else if (value) {
+        if (typeof value === 'string') {
             flatFilters[key] = value;
         }
     }
     
-    const initialItems = await getItems('discover_all', 1, false, true, flatFilters);
+    const initialItems = await getItems('discover_all', 1, false, false, flatFilters);
     const genres = await getGenres();
     const countries = await getCountries();
 

@@ -111,7 +111,7 @@ export async function getItems(
   
       let finalParams = {
         page: page.toString(),
-        sort_by: 'popularity.desc',
+        sort_by: filters.sort_by || 'popularity.desc',
         ...apiFilters,
       };
 
@@ -125,12 +125,13 @@ export async function getItems(
       } else { // 'multi'
         const [movieData, tvData] = await Promise.all([
           fetchFromTMDB('discover/movie', finalParams),
-          fetchFromTMDB('discover/tv', finalParams)
+          fetchFromTMDB('discover/tv', { ...finalParams, with_networks: filters.with_networks })
         ]);
 
         const movies = (movieData?.results || []).map((item: TmdbItem) => processItem(item, 'movie')).filter(Boolean) as Movie[];
         const tvShows = (tvData?.results || []).map((item: TmdbItem) => processItem(item, 'tv')).filter(Boolean) as Show[];
 
+        // Combine and sort by popularity
         return [...movies, ...tvShows].sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
       }
     }
@@ -144,19 +145,17 @@ export async function getItems(
         ...filters,
     };
   
-    const specialCategories = ['k_drama_on_air', 'k_drama', 'c_drama', 'anime'];
-    
-    if (specialCategories.includes(key)) {
-      if (isCategoryPage) {
+    // Special handling for drama categories to sort by date on category pages
+    const dramaKeys = ['k_drama', 'c_drama'];
+    if (isCategoryPage && dramaKeys.includes(key)) {
         finalParams.sort_by = 'first_air_date.desc';
-      } else {
+    } else if (key === 'k_drama_on_air') {
         const dynamicParams = getDynamicParams();
         finalParams['air_date.gte'] = dynamicParams['air_date.gte'];
         finalParams['air_date.lte'] = dynamicParams['air_date.lte'];
         finalParams.sort_by = 'popularity.desc';
-      }
     } else if (endpoint.sort_by) {
-      finalParams.sort_by = endpoint.sort_by;
+        finalParams.sort_by = endpoint.sort_by;
     }
   
     const data = await fetchFromTMDB(endpoint.url, finalParams);
