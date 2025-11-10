@@ -2,6 +2,12 @@
 import { getItems } from '@/lib/data';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { HeroSection } from '@/components/hero-section';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Movies - kisskh',
+  description: 'Browse popular, top-rated, now playing, and upcoming movies.',
+};
 
 export default async function MoviesPage() {
   const featured = await getItems('trending_movies', 1, true);

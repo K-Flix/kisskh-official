@@ -2,6 +2,12 @@
 import { getItems } from '@/lib/data';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { HeroSection } from '@/components/hero-section';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'TV Shows - kisskh',
+    description: 'Browse trending, K-Dramas, C-Dramas, anime, and top-rated TV shows.',
+};
 
 export default async function TVPage() {
   const featured = await getItems('trending_tv', 1, true);

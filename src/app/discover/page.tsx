@@ -6,12 +6,21 @@ import { networksConfig } from '@/lib/networks';
 import { NetworkCard } from '@/components/network-card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { DiscoverClientPage } from '@/components/discover-client-page';
+import type { Metadata } from 'next';
 
 interface DiscoverPageProps {
     searchParams: {
         category?: string;
         title?: string;
         [key: string]: string | string[] | undefined;
+    };
+}
+
+export async function generateMetadata({ searchParams }: DiscoverPageProps): Promise<Metadata> {
+    const title = searchParams.title || 'Discover';
+    return {
+        title: `${title} - kisskh`,
+        description: `Discover new movies and TV shows. Filter by genre, country, year, and more.`,
     };
 }
 

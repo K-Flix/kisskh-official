@@ -1,11 +1,17 @@
+
 'use client';
 
 import { useWatchlist } from '@/context/watchlist-context';
 import { MovieCard } from '@/components/movie-card';
 import { Film } from 'lucide-react';
+import { useEffect } from 'react';
 
 export default function WatchlistPage() {
   const { watchlist } = useWatchlist();
+
+  useEffect(() => {
+    document.title = 'My Watchlist - kisskh';
+  }, []);
 
   return (
     <div className="container py-8">

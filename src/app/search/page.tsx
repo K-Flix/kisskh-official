@@ -4,11 +4,26 @@ import { searchMovies } from '@/lib/data';
 import { MovieCard } from '@/components/movie-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SearchClientPage } from '@/components/search-client-page';
+import type { Metadata } from 'next';
 
 interface SearchPageProps {
   searchParams: {
     q?: string;
   };
+}
+
+export async function generateMetadata({ searchParams }: SearchPageProps): Promise<Metadata> {
+    const query = searchParams.q || '';
+    if (query) {
+        return {
+            title: `Search results for "${query}" - kisskh`,
+            description: `Find movies and TV shows matching "${query}".`,
+        };
+    }
+    return {
+        title: 'Search - kisskh',
+        description: 'Search for movies and TV shows.',
+    };
 }
 
 function SearchResultsSkeleton() {
