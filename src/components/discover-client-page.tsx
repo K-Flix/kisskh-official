@@ -55,7 +55,9 @@ export function DiscoverClientPage({ initialItems, initialFilters, genres, count
         }
     });
 
-    const newItems = await getItems(categoryKey, page, false, true, filters);
+    const keyToFetch = categoryKey === 'discover_all' && Object.keys(filters).length === 0 ? 'trending_today' : categoryKey;
+
+    const newItems = await getItems(keyToFetch, page, false, true, filters);
     if (newItems.length > 0) {
       setItems((prev) => [...prev, ...newItems]);
       setPage((prev) => prev + 1);
@@ -81,15 +83,14 @@ export function DiscoverClientPage({ initialItems, initialFilters, genres, count
       current.delete(key);
     }
     
-    const category = current.get('category');
-    if (category) {
-        current.delete('category');
-        current.delete('title');
-    }
+    // When a filter changes, we are no longer in a specific "category" view
+    current.delete('category');
+    current.delete('title');
     
     const search = current.toString();
     const query = search ? `?${search}` : "";
 
+    // We use router.push to re-render the page with new props from the server
     router.push(`/discover${query}`);
   }, [searchParams, router]);
 
@@ -99,6 +100,7 @@ export function DiscoverClientPage({ initialItems, initialFilters, genres, count
     const title = current.get('title');
     
     let newPath = '/discover';
+    // If we were on a category page, resetting should keep us there without filters
     if(category && title) {
       newPath = `/discover?category=${category}&title=${title}`;
     }

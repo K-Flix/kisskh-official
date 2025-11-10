@@ -42,7 +42,7 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
         }
     }
 
-    const categoryKey = category || 'discover_all';
+    const categoryKey = category || (Object.keys(flatFilters).length > 0 ? 'discover_all' : 'trending_today');
     const initialItems = await getItems(categoryKey, 1, false, true, flatFilters);
     const genres = await getGenres();
     const countries = await getCountries();
