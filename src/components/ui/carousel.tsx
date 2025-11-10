@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -78,11 +79,11 @@ const Carousel = React.forwardRef<
     }, [])
 
     const scrollPrev = React.useCallback(() => {
-      api?.scrollPrev()
+      api?.scrollPrev(true)
     }, [api])
 
     const scrollNext = React.useCallback(() => {
-      api?.scrollNext()
+      api?.scrollNext(true)
     }, [api])
 
     const handleKeyDown = React.useCallback(
