@@ -5,6 +5,8 @@ import { Separator } from '@/components/ui/separator';
 import { CategoryClientPage } from '@/components/category-client-page';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { networksConfig } from '@/lib/networks';
+import { NetworkCard } from '@/components/network-card';
 
 interface DiscoverPageProps {
     searchParams: {
@@ -68,6 +70,15 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
                 <p className="text-muted-foreground">Discover the best movies and TV shows to watch, from trending series to popular K-Dramas, C-Dramas and Anime.</p>
             </div>
             <Separator />
+             <div>
+                <div className="flex items-center space-x-3 mb-4">
+                    <div className="w-1.5 h-7 bg-primary rounded-full" />
+                    <h2 className="text-2xl font-bold">Browse by Network</h2>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    {networksConfig.map(network => <NetworkCard key={network.name} network={network} />)}
+                </div>
+            </div>
             <MovieCarousel title="Trending" movies={trending} seeAllHref="/discover?category=trending_today&title=Trending Today" />
             <MovieCarousel title="K-Drama" movies={kDramas} seeAllHref="/discover?category=k_drama&title=K-Dramas" />
             <MovieCarousel title="C-Drama" movies={cDramas} seeAllHref="/discover?category=c_drama&title=C-Dramas" />

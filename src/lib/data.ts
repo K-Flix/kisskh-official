@@ -3,6 +3,7 @@
 
 import type { Movie, Show, MovieDetails, ShowDetails, TmdbItem } from '@/lib/types';
 import { endpoints } from './endpoints';
+import { networksConfig } from './networks';
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p';
@@ -94,6 +95,24 @@ function getDynamicParams() {
 }
 
 export async function getItems(key: string, page: number = 1, featured: boolean = false, isCategoryPage: boolean = false): Promise<(Movie | Show)[]> {
+    if (key.startsWith('network_')) {
+        const networkName = key.replace('network_', '').replace(/[^a-z0-9]/g, '');
+        const network = networksConfig.find(n => n.name.toLowerCase().replace(/[^a-z0-9]/g, '') === networkName);
+        if (!network) return [];
+
+        const params: Record<string, string> = {
+            page: page.toString(),
+            sort_by: 'popularity.desc',
+            'watch_region': 'US' // Or dynamically set this
+        };
+        if (network.networkIds) params.with_networks = network.networkIds.join('|');
+        if (network.providerIds) params.with_watch_providers = network.providerIds.join('|');
+
+        const data = await fetchFromTMDB('discover/tv', params);
+        if (!data?.results) return [];
+        return data.results.map((item: TmdbItem) => processItem(item, 'tv')).filter(Boolean) as Show[];
+    }
+    
     const endpoint = endpoints.find(e => e.key === key);
     if (!endpoint) return [];
 

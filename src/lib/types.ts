@@ -108,3 +108,10 @@ export type TmdbMovieResult = {
   first_air_date?: string;
   genre_ids: number[];
 };
+
+export interface NetworkConfig {
+  name: string;
+  logo_path: string;
+  providerIds?: number[];
+  networkIds?: number[];
+}
