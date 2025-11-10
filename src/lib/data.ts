@@ -148,7 +148,7 @@ export async function getItems(
     
     if (specialCategories.includes(key)) {
       if (isCategoryPage) {
-        finalParams.sort_by = 'popularity.desc';
+        finalParams.sort_by = 'first_air_date.desc';
       } else {
         const dynamicParams = getDynamicParams();
         finalParams['air_date.gte'] = dynamicParams['air_date.gte'];
@@ -293,3 +293,5 @@ export async function getCountries(): Promise<Country[]> {
         .filter((c: Country) => c.english_name)
         .sort((a: Country, b: Country) => a.english_name.localeCompare(b.english_name));
 }
+
+    
