@@ -101,19 +101,23 @@ export function DiscoverClientPage({
 
   const handleNetworkSelect = (network: NetworkConfig) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
-    
     const networkIds = network.networkIds?.join('|');
     const providerIds = network.providerIds?.join('|');
-    
-    const currentNetworkFilter = current.get('with_networks');
-    const isAlreadySelected = currentNetworkFilter === networkIds;
-
+  
+    // Correctly check if the network is already selected by checking both params
+    const isAlreadySelected = 
+      (networkIds && current.get('with_networks') === networkIds) || 
+      (providerIds && current.get('with_watch_providers') === providerIds);
+  
     if (isAlreadySelected) {
-        current.delete('with_networks');
-        current.delete('with_watch_providers');
+      current.delete('with_networks');
+      current.delete('with_watch_providers');
     } else {
-        if (networkIds) current.set('with_networks', networkIds);
-        if (providerIds) current.set('with_watch_providers', providerIds);
+      // Clear any previous network filters before setting new ones
+      current.delete('with_networks');
+      current.delete('with_watch_providers');
+      if (networkIds) current.set('with_networks', networkIds);
+      if (providerIds) current.set('with_watch_providers', providerIds);
     }
     
     current.delete('category');
@@ -121,7 +125,6 @@ export function DiscoverClientPage({
     
     const search = current.toString();
     const query = search ? `?${search}` : "";
-
     router.push(`/discover${query}`);
   }
 
@@ -148,6 +151,7 @@ export function DiscoverClientPage({
 
   const pageTitle = searchParams.get('title');
   const selectedNetworkId = searchParams.get('with_networks');
+  const selectedProviderId = searchParams.get('with_watch_providers');
 
   const currentFilters: Record<string, string | undefined> = {};
   searchParams.forEach((value, key) => {
@@ -166,15 +170,20 @@ export function DiscoverClientPage({
               </div>
               <Carousel opts={{ align: 'start', loop: false }} className="w-full">
                   <CarouselContent>
-                  {networks.map((network) => (
-                      <CarouselItem key={network.name} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6">
-                          <NetworkCard 
-                            network={network} 
-                            onClick={() => handleNetworkSelect(network)} 
-                            isActive={selectedNetworkId === network.networkIds?.join('|')}
-                          />
-                      </CarouselItem>
-                  ))}
+                  {networks.map((network) => {
+                      const networkIds = network.networkIds?.join('|');
+                      const providerIds = network.providerIds?.join('|');
+                      const isActive = (networkIds && selectedNetworkId === networkIds) || (providerIds && selectedProviderId === providerIds);
+                      return (
+                        <CarouselItem key={network.name} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6">
+                            <NetworkCard 
+                              network={network} 
+                              onClick={() => handleNetworkSelect(network)} 
+                              isActive={isActive}
+                            />
+                        </CarouselItem>
+                      )
+                    })}
                   </CarouselContent>
                   <CarouselPrevious className="ml-12" />
                   <CarouselNext className="mr-12" />
