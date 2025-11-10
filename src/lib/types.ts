@@ -22,6 +22,7 @@ export interface BaseItem {
   logo_path?: string;
   trailer_url?: string;
   media_type: 'movie' | 'tv';
+  popularity: number;
 }
 
 export interface Movie extends BaseItem {

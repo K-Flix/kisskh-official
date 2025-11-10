@@ -68,6 +68,7 @@ function processItem(item: TmdbItem, mediaTypeOverride?: 'movie' | 'tv'): Movie 
         genres: item.genres || [],
         logo_path: logo ? `${IMAGE_BASE_URL}/w500${logo.file_path}` : undefined,
         trailer_url: trailer ? `https://www.youtube.com/embed/${trailer.key}` : undefined,
+        popularity: item.popularity || 0,
     };
 
     if (mediaType === 'movie') {
@@ -107,16 +108,7 @@ export async function getItems(
     // Handle detailed discovery filter
     if (key === 'discover_all' || Object.keys(filters).length > 0) {
       const mediaType = filters.media_type === 'all' ? 'multi' : filters.media_type || 'multi';
-      let endpointUrl;
-      
-      if (mediaType === 'movie' || mediaType === 'tv') {
-        endpointUrl = `discover/${mediaType}`;
-      } else {
-        // Fallback for 'multi' or 'all'
-        endpointUrl = 'discover/movie'; // TMDB discover doesn't have a multi endpoint, default to movie and combine later if needed
-      }
-      
-      const { media_type, ...apiFilters } = filters;
+      const { media_type: _, ...apiFilters } = filters;
   
       let finalParams = {
         page: page.toString(),
@@ -124,12 +116,30 @@ export async function getItems(
         ...apiFilters,
       };
 
-      const data = await fetchFromTMDB(endpointUrl, finalParams);
-      if (!data?.results) return [];
-      
-      return data.results
-        .map((item: TmdbItem) => processItem(item, mediaType as 'movie' | 'tv'))
-        .filter(Boolean) as (Movie | Show)[];
+      if (mediaType === 'movie' || mediaType === 'tv') {
+        const endpointUrl = `discover/${mediaType}`;
+        const data = await fetchFromTMDB(endpointUrl, finalParams);
+        if (!data?.results) return [];
+        return data.results
+          .map((item: TmdbItem) => processItem(item, mediaType as 'movie' | 'tv'))
+          .filter(Boolean) as (Movie | Show)[];
+      } else { // 'multi'
+        const [movieData, tvData] = await Promise.all([
+          fetchFromTMDB('discover/movie', finalParams),
+          fetchFromTMDB('discover/tv', finalParams)
+        ]);
+
+        const movies = (movieData?.results || [])
+            .map((item: TmdbItem) => processItem(item, 'movie'))
+            .filter(Boolean) as (Movie | Show)[];
+        
+        const tvShows = (tvData?.results || [])
+            .map((item: TmdbItem) => processItem(item, 'tv'))
+            .filter(Boolean) as (Movie | Show)[];
+
+        // Combine and sort by popularity
+        return [...movies, ...tvShows].sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+      }
     }
   
     if (key.startsWith('network_')) {
@@ -224,6 +234,7 @@ export async function getMovieById(id: number): Promise<MovieDetails | null> {
         similar: (data.similar?.results || [])
             .map((item: TmdbItem) => processItem(item, 'movie'))
             .filter(Boolean) as Movie[],
+        popularity: data.popularity || 0,
     };
     
     return movie;
@@ -266,6 +277,7 @@ export async function getShowById(id: number): Promise<ShowDetails | null> {
         seasons,
         cast,
         similar,
+        popularity: data.popularity || 0,
     };
 };
 
