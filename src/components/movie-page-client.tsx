@@ -19,13 +19,13 @@ interface MoviePageClientProps {
 }
 
 const servers = [
-    { name: 'Vidstorm', displayName: 'Vidstorm' },
-    { name: 'VidSrcV2', displayName: 'VidSrc' },
-    { name: 'Videasy', displayName: 'Videasy' },
-    { name: 'VidSrcMe', displayName: 'VidSrcMe' },
-    { name: 'VidPlus', displayName: 'VidPlus' },
-    { name: 'MoviesAPI', displayName: 'MoviesAPI' },
-    { name: 'VidLink', displayName: 'VidLink' }
+    { name: 'Vidstorm', displayName: 'Primary' },
+    { name: 'VidSrcV2', displayName: 'Alternate 1' },
+    { name: 'Videasy', displayName: 'Alternate 2' },
+    { name: 'VidSrcMe', displayName: 'Alternate 3' },
+    { name: 'VidPlus', displayName: 'Alternate 4' },
+    { name: 'MoviesAPI', displayName: 'Alternate 5' },
+    { name: 'VidLink', displayName: 'Alternate 6' }
   ];
 
 export function MoviePageClient({ movie }: MoviePageClientProps) {
