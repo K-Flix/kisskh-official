@@ -108,16 +108,25 @@ export function DiscoverClientPage({
   }, [searchParams, router]);
 
   const handleNetworkSelect = (network: NetworkConfig) => {
-    const current = new URLSearchParams();
+    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    
     const networkIds = network.networkIds?.join('|');
     const providerIds = network.providerIds?.join('|');
-
-    const category = `network_${network.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
-    current.set('category', category);
-    current.set('title', network.name);
     
-    if (networkIds) current.set('with_networks', networkIds);
-    if (providerIds) current.set('with_watch_providers', providerIds);
+    const currentNetworkFilter = current.get('with_networks');
+    const isAlreadySelected = currentNetworkFilter === networkIds;
+
+    // If the network is already selected, deselect it by removing the filters
+    if (isAlreadySelected) {
+        current.delete('with_networks');
+        current.delete('with_watch_providers');
+    } else {
+        if (networkIds) current.set('with_networks', networkIds);
+        if (providerIds) current.set('with_watch_providers', providerIds);
+    }
+    
+    current.delete('category');
+    current.delete('title');
     
     const search = current.toString();
     const query = search ? `?${search}` : "";
@@ -148,6 +157,8 @@ export function DiscoverClientPage({
 
   const isDefaultView = !searchParams.get('category') && Object.keys(initialFilters).length === 0;
 
+  const selectedNetworkId = searchParams.get('with_networks');
+
   return (
     <div className="space-y-8">
       {pageTitle ? (
@@ -162,7 +173,11 @@ export function DiscoverClientPage({
                   <CarouselContent>
                   {networks.map((network) => (
                       <CarouselItem key={network.name} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6">
-                      <NetworkCard network={network} onNetworkSelect={handleNetworkSelect} />
+                          <NetworkCard 
+                            network={network} 
+                            onNetworkSelect={handleNetworkSelect} 
+                            isActive={selectedNetworkId === network.networkIds?.join('|')}
+                          />
                       </CarouselItem>
                   ))}
                   </CarouselContent>
@@ -172,16 +187,14 @@ export function DiscoverClientPage({
           </div>
       ) : null}
 
-      {isDefaultView && (
-        <DiscoverFilters
-          genres={genres}
-          countries={countries}
-          years={years}
-          onFilterChange={handleFilterChange}
-          onReset={handleReset}
-          currentFilters={initialFilters}
-        />
-      )}
+      <DiscoverFilters
+        genres={genres}
+        countries={countries}
+        years={years}
+        onFilterChange={handleFilterChange}
+        onReset={handleReset}
+        currentFilters={initialFilters}
+      />
 
       {items.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
@@ -218,3 +231,5 @@ export function DiscoverClientPage({
     </div>
   );
 }
+
+    
