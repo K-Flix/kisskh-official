@@ -17,9 +17,10 @@ interface DiscoverClientPageProps {
   genres: Genre[];
   countries: Country[];
   years: string[];
+  categoryKey: string;
 }
 
-export function DiscoverClientPage({ initialItems, initialFilters, genres, countries, years }: DiscoverClientPageProps) {
+export function DiscoverClientPage({ initialItems, initialFilters, genres, countries, years, categoryKey }: DiscoverClientPageProps) {
   const [items, setItems] = useState(initialItems);
   const [page, setPage] = useState(2);
   const [loading, setLoading] = useState(false);
@@ -52,7 +53,7 @@ export function DiscoverClientPage({ initialItems, initialFilters, genres, count
         filters[key] = value;
     });
 
-    const newItems = await getItems('discover_all', page, false, true, filters);
+    const newItems = await getItems(categoryKey, page, false, true, filters);
     if (newItems.length > 0) {
       setItems((prev) => [...prev, ...newItems]);
       setPage((prev) => prev + 1);
@@ -111,14 +112,16 @@ export function DiscoverClientPage({ initialItems, initialFilters, genres, count
 
   return (
     <div className="space-y-8">
-      <DiscoverFilters
-        genres={genres}
-        countries={countries}
-        years={years}
-        onFilterChange={handleFilterChange}
-        onReset={handleReset}
-        currentFilters={initialFilters}
-      />
+      {!searchParams.get('category') && (
+        <DiscoverFilters
+          genres={genres}
+          countries={countries}
+          years={years}
+          onFilterChange={handleFilterChange}
+          onReset={handleReset}
+          currentFilters={initialFilters}
+        />
+      )}
       {items.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
             {items.map((item, index) => {

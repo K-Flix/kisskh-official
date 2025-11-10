@@ -47,49 +47,37 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
     const countries = await getCountries();
 
     const years = Array.from({ length: new Date().getFullYear() - 1900 + 1 }, (_, i) => (new Date().getFullYear() - i).toString());
-
-    if (category) {
-         return (
-            <div className="container py-8">
-                <h1 className="text-3xl font-bold mb-8">{title || 'Discover'}</h1>
-                <Suspense fallback={<DiscoverSkeleton />}>
-                     <DiscoverClientPage
-                        initialItems={initialItems}
-                        initialFilters={flatFilters}
-                        genres={genres}
-                        countries={countries}
-                        years={years}
-                    />
-                </Suspense>
-            </div>
-        );
-    }
+    const categoryKey = category || 'discover_all';
 
     return (
         <div className="container py-8 space-y-8">
-             <div>
-                <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-1.5 h-7 bg-primary rounded-full" />
-                    <h2 className="text-2xl font-bold">Browse by Network</h2>
+            {category ? (
+                <h1 className="text-3xl font-bold">{title || 'Discover'}</h1>
+            ) : (
+                <div>
+                    <div className="flex items-center space-x-3 mb-4">
+                        <div className="w-1.5 h-7 bg-primary rounded-full" />
+                        <h2 className="text-2xl font-bold">Browse by Network</h2>
+                    </div>
+                    <Carousel
+                        opts={{
+                        align: 'start',
+                        loop: false,
+                        }}
+                        className="w-full"
+                    >
+                        <CarouselContent>
+                        {networksConfig.map((network) => (
+                            <CarouselItem key={network.name} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6">
+                            <NetworkCard network={network} />
+                            </CarouselItem>
+                        ))}
+                        </CarouselContent>
+                        <CarouselPrevious className="ml-12" />
+                        <CarouselNext className="mr-12" />
+                    </Carousel>
                 </div>
-                 <Carousel
-                    opts={{
-                    align: 'start',
-                    loop: false,
-                    }}
-                    className="w-full"
-                >
-                    <CarouselContent>
-                    {networksConfig.map((network) => (
-                        <CarouselItem key={network.name} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6">
-                           <NetworkCard network={network} />
-                        </CarouselItem>
-                    ))}
-                    </CarouselContent>
-                    <CarouselPrevious className="ml-12" />
-                    <CarouselNext className="mr-12" />
-                </Carousel>
-            </div>
+            )}
             
             <Suspense fallback={<DiscoverSkeleton />}>
                 <DiscoverClientPage
@@ -98,6 +86,7 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
                     genres={genres}
                     countries={countries}
                     years={years}
+                    categoryKey={categoryKey}
                 />
             </Suspense>
         </div>
