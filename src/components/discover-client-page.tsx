@@ -74,7 +74,7 @@ export function DiscoverClientPage({
     setItems(initialItems);
     setPage(2);
     setHasMore(initialItems.length > 0);
-  }, [searchParams, initialItems]);
+  }, [initialItems]);
 
   const handleFilterChange = useCallback((key: string, value: string) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
