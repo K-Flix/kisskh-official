@@ -7,6 +7,7 @@ import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { networksConfig } from '@/lib/networks';
 import { NetworkCard } from '@/components/network-card';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 interface DiscoverPageProps {
     searchParams: {
@@ -75,9 +76,23 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
                     <div className="w-1.5 h-7 bg-primary rounded-full" />
                     <h2 className="text-2xl font-bold">Browse by Network</h2>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                    {networksConfig.map(network => <NetworkCard key={network.name} network={network} />)}
-                </div>
+                 <Carousel
+                    opts={{
+                    align: 'start',
+                    loop: false,
+                    }}
+                    className="w-full"
+                >
+                    <CarouselContent>
+                    {networksConfig.map((network) => (
+                        <CarouselItem key={network.name} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6">
+                           <NetworkCard network={network} />
+                        </CarouselItem>
+                    ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="ml-12" />
+                    <CarouselNext className="mr-12" />
+                </Carousel>
             </div>
             <MovieCarousel title="Trending" movies={trending} seeAllHref="/discover?category=trending_today&title=Trending Today" />
             <MovieCarousel title="K-Drama" movies={kDramas} seeAllHref="/discover?category=k_drama&title=K-Dramas" />
