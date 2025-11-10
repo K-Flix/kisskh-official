@@ -15,18 +15,16 @@ export function NetworkCard({ network, onClick, isActive, hasActiveFilter }: Net
   return (
     <Card 
         className={cn(
-            "overflow-hidden transition-all duration-300 flex items-center justify-center aspect-video cursor-pointer group",
-            isActive 
-              ? "bg-white scale-105 shadow-lg shadow-primary/30" 
-              : "bg-secondary hover:bg-muted"
+            "overflow-hidden transition-all duration-300 flex items-center justify-center aspect-video cursor-pointer group bg-secondary hover:bg-muted",
+            isActive && "bg-white scale-105 shadow-lg shadow-primary/30"
         )}
         onClick={onClick}
     >
         <CardContent className="p-4 relative w-full h-full flex items-center justify-center">
             <div className={cn(
                 "relative w-3/4 h-3/4 transition-all duration-300",
-                !isActive && hasActiveFilter && "opacity-60 group-hover:opacity-100",
-                !isActive && "grayscale group-hover:grayscale-0"
+                !isActive && hasActiveFilter && "opacity-60 grayscale group-hover:opacity-100 group-hover:grayscale-0",
+                isActive && "grayscale-0"
               )}
             >
                 <Image
