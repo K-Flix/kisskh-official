@@ -96,10 +96,6 @@ export function DiscoverClientPage({ initialItems, initialFilters, genres, count
   }, [searchParams, router]);
 
   const handleReset = useCallback(() => {
-    const current = new URLSearchParams(Array.from(searchParams.entries()));
-    const category = current.get('category');
-    const title = current.get('title');
-    
     // Always reset to the base discover page, which will default to 'trending_today'
     router.push('/discover');
   }, [router]);
