@@ -8,10 +8,16 @@ import { EpisodeList } from '@/components/episode-list';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ActorCard } from '@/components/actor-card';
 import { ShowHero } from './show-hero';
-import { X, ArrowLeft } from 'lucide-react';
+import { X, ArrowLeft, ChevronDown } from 'lucide-react';
 import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 interface ShowPageClientProps {
   show: ShowDetails;
@@ -134,24 +140,24 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                 ></iframe>
                 </div>
                 <div className="container max-w-4xl mx-auto mt-4">
-                <div className="flex flex-wrap items-center gap-2 p-2 bg-secondary/50 rounded-lg">
-                    <span className="text-sm font-semibold text-gray-300 mr-2 shrink-0">Servers:</span>
-                    {servers.map(({ name, displayName }) => (
-                    <Button
-                        key={name}
-                        onClick={() => setSelectedServer(name)}
-                        size="sm"
-                        variant={selectedServer === name ? 'default' : 'secondary'}
-                        className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
-                        selectedServer === name
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-zinc-700/80 hover:bg-zinc-600'
-                        }`}
-                    >
-                        {displayName}
-                    </Button>
-                    ))}
-                </div>
+                  <div className="flex items-center gap-2 p-2 bg-secondary/50 rounded-lg">
+                      <span className="text-sm font-semibold text-gray-300 mr-2 shrink-0">Server:</span>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="secondary" className="w-full justify-between sm:w-auto">
+                            {servers.find(s => s.name === selectedServer)?.displayName}
+                            <ChevronDown className="ml-2 h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          {servers.map(({ name, displayName }) => (
+                            <DropdownMenuItem key={name} onSelect={() => setSelectedServer(name)}>
+                              {displayName}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                  </div>
                 </div>
                  <div className="container py-8">
                     <EpisodeList
