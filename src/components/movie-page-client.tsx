@@ -14,11 +14,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface MoviePageClientProps {
   movie: MovieDetails;
@@ -114,23 +115,19 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                 ></iframe>
                 </div>
                 <div className="container max-w-4xl mx-auto mt-4">
-                  <div className="flex items-center gap-2 p-2 bg-secondary/50 rounded-lg">
-                    <span className="text-sm font-semibold text-gray-300 mr-2 shrink-0">Server:</span>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="secondary" className="w-full justify-between sm:w-auto">
-                          {servers.find(s => s.name === selectedServer)?.displayName}
-                          <ChevronDown className="ml-2 h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        {servers.map(({ name, displayName }) => (
-                          <DropdownMenuItem key={name} onSelect={() => setSelectedServer(name)}>
-                            {displayName}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                  <div className="grid grid-cols-1 items-center gap-4 bg-secondary/50 p-3 rounded-lg border-border/50">
+                    <Select value={selectedServer} onValueChange={setSelectedServer}>
+                        <SelectTrigger className="w-full bg-background border-0 focus:ring-2 focus:ring-primary">
+                            <SelectValue placeholder="Select a server" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {servers.map(({ name, displayName }) => (
+                                <SelectItem key={name} value={name}>
+                                    {displayName}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                   </div>
                 </div>
             </div>
