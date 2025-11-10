@@ -33,3 +33,5 @@ export function NetworkCard({ network, onClick, isActive }: NetworkCardProps) {
     </Card>
   );
 }
+
+    
