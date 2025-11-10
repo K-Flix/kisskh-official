@@ -88,7 +88,6 @@ export function DiscoverClientPage({
     const search = current.toString();
     const query = search ? `?${search}` : "";
 
-    // Use router.push to trigger a re-render with new server-side props
     router.push(`/discover${query}`);
   }, [searchParams, router]);
 
@@ -96,18 +95,17 @@ export function DiscoverClientPage({
     const current = new URLSearchParams(Array.from(searchParams.entries()));
     const networkIds = network.networkIds?.join('|');
     const providerIds = network.providerIds?.join('|');
-  
+
     const isAlreadySelected = 
-      (networkIds && current.get('with_networks') === networkIds) || 
-      (providerIds && current.get('with_watch_providers') === providerIds);
-  
-    // Clear any existing network/provider filters before setting new ones
+        (networkIds && current.get('with_networks') === networkIds) || 
+        (providerIds && current.get('with_watch_providers') === providerIds);
+
     current.delete('with_networks');
     current.delete('with_watch_providers');
 
     if (!isAlreadySelected) {
-      if (networkIds) current.set('with_networks', networkIds);
-      if (providerIds) current.set('with_watch_providers', providerIds);
+        if (networkIds) current.set('with_networks', networkIds);
+        if (providerIds) current.set('with_watch_providers', providerIds);
     }
     
     const search = current.toString();
@@ -138,6 +136,7 @@ export function DiscoverClientPage({
 
   const selectedNetworkId = searchParams.get('with_networks');
   const selectedProviderId = searchParams.get('with_watch_providers');
+  const hasActiveNetworkFilter = !!selectedNetworkId || !!selectedProviderId;
 
   const currentFilters: Record<string, string | undefined> = {};
   searchParams.forEach((value, key) => {
@@ -157,12 +156,14 @@ export function DiscoverClientPage({
                   const networkIds = network.networkIds?.join('|');
                   const providerIds = network.providerIds?.join('|');
                   const isActive = (networkIds && selectedNetworkId === networkIds) || (providerIds && selectedProviderId === providerIds);
+                  
                   return (
                     <CarouselItem key={network.name} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6">
                         <NetworkCard 
                           network={network} 
                           onClick={() => handleNetworkSelect(network)} 
                           isActive={isActive}
+                          hasActiveFilter={hasActiveNetworkFilter}
                         />
                     </CarouselItem>
                   )
