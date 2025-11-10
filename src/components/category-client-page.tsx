@@ -44,9 +44,7 @@ export function CategoryClientPage({ initialItems, slug }: CategoryClientPagePro
 
     const filters: Record<string, string> = {};
     searchParams.forEach((value, key) => {
-        if(key !== 'category' && key !== 'title') {
-            filters[key] = value;
-        }
+        filters[key] = value;
     });
 
     const newItems = await getItems(slug, page, false, true, filters);

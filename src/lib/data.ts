@@ -105,7 +105,6 @@ export async function getItems(
     filters: Record<string, string> = {}
   ): Promise<(Movie | Show)[]> {
     
-    // Handle detailed discovery filter
     if (key === 'discover_all') {
       const mediaType = filters.media_type === 'all' ? 'multi' : filters.media_type || 'multi';
       const { media_type: _, ...apiFilters } = filters;
@@ -129,38 +128,13 @@ export async function getItems(
           fetchFromTMDB('discover/tv', finalParams)
         ]);
 
-        const movies = (movieData?.results || [])
-            .map((item: TmdbItem) => processItem(item, 'movie'))
-            .filter(Boolean) as (Movie | Show)[];
-        
-        const tvShows = (tvData?.results || [])
-            .map((item: TmdbItem) => processItem(item, 'tv'))
-            .filter(Boolean) as (Movie | Show)[];
+        const movies = (movieData?.results || []).map((item: TmdbItem) => processItem(item, 'movie')).filter(Boolean) as Movie[];
+        const tvShows = (tvData?.results || []).map((item: TmdbItem) => processItem(item, 'tv')).filter(Boolean) as Show[];
 
-        // Combine and sort by popularity
         return [...movies, ...tvShows].sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
       }
     }
   
-    if (key.startsWith('network_')) {
-      const networkName = key.replace('network_', '').replace(/[^a-z0-9]/g, '');
-      const network = networksConfig.find(n => n.name.toLowerCase().replace(/[^a-z0-9]/g, '') === networkName);
-      if (!network) return [];
-  
-      const params: Record<string, string> = {
-        page: page.toString(),
-        sort_by: 'popularity.desc',
-        'watch_region': 'US',
-        ...filters
-      };
-      if (network.networkIds) params.with_networks = network.networkIds.join('|');
-      if (network.providerIds) params.with_watch_providers = network.providerIds.join('|');
-  
-      const data = await fetchFromTMDB('discover/tv', params);
-      if (!data?.results) return [];
-      return data.results.map((item: TmdbItem) => processItem(item, 'tv')).filter(Boolean) as Show[];
-    }
-    
     const endpoint = endpoints.find(e => e.key === key);
     if (!endpoint) return [];
   
@@ -174,7 +148,7 @@ export async function getItems(
     
     if (specialCategories.includes(key)) {
       if (isCategoryPage) {
-        finalParams.sort_by = 'first_air_date.desc';
+        finalParams.sort_by = 'popularity.desc';
       } else {
         const dynamicParams = getDynamicParams();
         finalParams['air_date.gte'] = dynamicParams['air_date.gte'];
@@ -315,10 +289,7 @@ export async function getCountries(): Promise<Country[]> {
     const data = await fetchFromTMDB('configuration/countries');
     if (!data) return [];
     
-    // Filter out countries without an english_name and sort
     return data
         .filter((c: Country) => c.english_name)
         .sort((a: Country, b: Country) => a.english_name.localeCompare(b.english_name));
 }
-
-    

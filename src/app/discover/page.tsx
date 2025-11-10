@@ -13,17 +13,16 @@ interface DiscoverPageProps {
 }
 
 export async function generateMetadata({ searchParams }: DiscoverPageProps): Promise<Metadata> {
-    const { title, with_genres, primary_release_year, with_origin_country, with_networks } = searchParams;
+    const { with_genres, primary_release_year, with_origin_country, with_networks } = searchParams;
 
     let description = 'Discover new movies and TV shows.';
-    const details = [];
     if (with_genres) description += ` Filtered by genre.`;
     if (primary_release_year) description += ` From the year ${primary_release_year}.`;
     if (with_origin_country) description += ` From a specific country.`;
     if (with_networks) description += ` From a specific network.`
 
     return {
-        title: `${title || 'Discover'} - kisskh`,
+        title: `Discover - kisskh`,
         description: description,
     };
 }
@@ -52,11 +51,8 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
             flatFilters[key] = value;
         }
     }
-
-    const hasFilters = Object.keys(flatFilters).filter(k => k !== 'title' && k !== 'category').length > 0;
-    const categoryKey = searchParams.category || (hasFilters ? 'discover_all' : 'trending_today');
-
-    const initialItems = await getItems(categoryKey as string, 1, false, true, flatFilters);
+    
+    const initialItems = await getItems('discover_all', 1, false, true, flatFilters);
     const genres = await getGenres();
     const countries = await getCountries();
 

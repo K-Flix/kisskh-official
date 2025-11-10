@@ -57,15 +57,10 @@ export function DiscoverClientPage({
     const currentParams = new URLSearchParams(Array.from(searchParams.entries()));
     const filters: Record<string, string> = {};
     currentParams.forEach((value, key) => {
-        if(key !== 'category' && key !== 'title') {
-            filters[key] = value;
-        }
+      filters[key] = value;
     });
 
-    const hasFilters = Object.keys(filters).length > 0;
-    const categoryKey = currentParams.get('category') || (hasFilters ? 'discover_all' : 'trending_today');
-
-    const newItems = await getItems(categoryKey, page, false, true, filters);
+    const newItems = await getItems('discover_all', page, false, true, filters);
     if (newItems.length > 0) {
       setItems((prev) => [...prev, ...newItems]);
       setPage((prev) => prev + 1);
@@ -90,9 +85,6 @@ export function DiscoverClientPage({
       current.delete(key);
     }
     
-    current.delete('category');
-    current.delete('title');
-    
     const search = current.toString();
     const query = search ? `?${search}` : "";
 
@@ -104,7 +96,6 @@ export function DiscoverClientPage({
     const networkIds = network.networkIds?.join('|');
     const providerIds = network.providerIds?.join('|');
   
-    // Correctly check if the network is already selected by checking both params
     const isAlreadySelected = 
       (networkIds && current.get('with_networks') === networkIds) || 
       (providerIds && current.get('with_watch_providers') === providerIds);
@@ -113,15 +104,11 @@ export function DiscoverClientPage({
       current.delete('with_networks');
       current.delete('with_watch_providers');
     } else {
-      // Clear any previous network filters before setting new ones
       current.delete('with_networks');
       current.delete('with_watch_providers');
       if (networkIds) current.set('with_networks', networkIds);
       if (providerIds) current.set('with_watch_providers', providerIds);
     }
-    
-    current.delete('category');
-    current.delete('title');
     
     const search = current.toString();
     const query = search ? `?${search}` : "";
@@ -149,7 +136,6 @@ export function DiscoverClientPage({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const pageTitle = searchParams.get('title');
   const selectedNetworkId = searchParams.get('with_networks');
   const selectedProviderId = searchParams.get('with_watch_providers');
 
@@ -160,36 +146,32 @@ export function DiscoverClientPage({
 
   return (
     <div className="space-y-8">
-      {pageTitle ? (
-          <h1 className="text-3xl font-bold">{pageTitle}</h1>
-      ) : (
-          <div>
-              <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-1.5 h-7 bg-primary rounded-full" />
-                  <h2 className="text-2xl font-bold">Browse by Network</h2>
-              </div>
-              <Carousel opts={{ align: 'start', loop: false }} className="w-full">
-                  <CarouselContent>
-                  {networks.map((network) => {
-                      const networkIds = network.networkIds?.join('|');
-                      const providerIds = network.providerIds?.join('|');
-                      const isActive = (networkIds && selectedNetworkId === networkIds) || (providerIds && selectedProviderId === providerIds);
-                      return (
-                        <CarouselItem key={network.name} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6">
-                            <NetworkCard 
-                              network={network} 
-                              onClick={() => handleNetworkSelect(network)} 
-                              isActive={isActive}
-                            />
-                        </CarouselItem>
-                      )
-                    })}
-                  </CarouselContent>
-                  <CarouselPrevious className="ml-12" />
-                  <CarouselNext className="mr-12" />
-              </Carousel>
+      <div>
+          <div className="flex items-center space-x-3 mb-4">
+              <div className="w-1.5 h-7 bg-primary rounded-full" />
+              <h2 className="text-2xl font-bold">Browse by Network</h2>
           </div>
-      )}
+          <Carousel opts={{ align: 'start', loop: false }} className="w-full">
+              <CarouselContent>
+              {networks.map((network) => {
+                  const networkIds = network.networkIds?.join('|');
+                  const providerIds = network.providerIds?.join('|');
+                  const isActive = (networkIds && selectedNetworkId === networkIds) || (providerIds && selectedProviderId === providerIds);
+                  return (
+                    <CarouselItem key={network.name} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6">
+                        <NetworkCard 
+                          network={network} 
+                          onClick={() => handleNetworkSelect(network)} 
+                          isActive={isActive}
+                        />
+                    </CarouselItem>
+                  )
+                })}
+              </CarouselContent>
+              <CarouselPrevious className="ml-12" />
+              <CarouselNext className="mr-12" />
+          </Carousel>
+      </div>
 
       <DiscoverFilters
         genres={genres}
@@ -235,5 +217,3 @@ export function DiscoverClientPage({
     </div>
   );
 }
-
-    
