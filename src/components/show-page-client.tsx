@@ -144,7 +144,9 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                     <div className="grid grid-cols-1 items-center gap-4 bg-secondary/50 p-3 rounded-lg border-border/50">
                         <Select value={selectedServer} onValueChange={setSelectedServer}>
                             <SelectTrigger className="w-full bg-background border-0 focus:ring-2 focus:ring-primary">
-                                <SelectValue placeholder="Select a server" />
+                                <SelectValue>
+                                  Server: {servers.find(s => s.name === selectedServer)?.displayName}
+                                </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
                                 {servers.map(({ name, displayName }) => (
