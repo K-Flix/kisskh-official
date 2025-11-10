@@ -58,17 +58,11 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
         );
     }
 
-    // Fallback to default discover page if no category is specified
-    const trending = await getItems('trending_today', 1, false, true);
-    const kDramas = await getItems('k_drama', 1, false, true);
-    const cDramas = await getItems('c_drama', 1, false, true);
-    const anime = await getItems('anime', 1, false, true);
-
     return (
         <div className="container py-8 space-y-8">
             <div>
                 <h1 className="text-3xl font-bold mb-2">Discover</h1>
-                <p className="text-muted-foreground">Discover the best movies and TV shows to watch, from trending series to popular K-Dramas, C-Dramas and Anime.</p>
+                <p className="text-muted-foreground">Discover the best movies and TV shows to watch from your favorite networks.</p>
             </div>
             <Separator />
              <div>
@@ -94,11 +88,6 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
                     <CarouselNext className="mr-12" />
                 </Carousel>
             </div>
-            <MovieCarousel title="Trending" movies={trending} seeAllHref="/discover?category=trending_today&title=Trending Today" />
-            <MovieCarousel title="K-Drama" movies={kDramas} seeAllHref="/discover?category=k_drama&title=K-Dramas" />
-            <MovieCarousel title="C-Drama" movies={cDramas} seeAllHref="/discover?category=c_drama&title=C-Dramas" />
-            <MovieCarousel title="Anime" movies={anime} seeAllHref="/discover?category=anime&title=Anime" />
         </div>
     );
 }
-
