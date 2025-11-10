@@ -14,7 +14,7 @@ export function NetworkCard({ network }: NetworkCardProps) {
   
   const queryParams = new URLSearchParams();
   if (networkIds) queryParams.set('with_networks', networkIds);
-  if (providerIds) query_params.set('with_watch_providers', providerIds);
+  if (providerIds) queryParams.set('with_watch_providers', providerIds);
 
   const href = `/discover?category=network_${network.name.toLowerCase().replace(/[^a-z0-9]/g, '')}&title=${encodeURIComponent(network.name)}&${queryParams.toString()}`;
   
