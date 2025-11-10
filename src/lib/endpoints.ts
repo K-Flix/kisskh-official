@@ -14,6 +14,7 @@ export const endpoints: Endpoint[] = [
     { key: 'k_drama_on_air', title: 'K-Drama', url: `discover/tv`, params: { with_origin_country: 'KR', language: 'en-US', with_genres: '18' }, type: 'tv' },
     { key: 'c_drama_on_air', title: 'C-Drama', url: `discover/tv`, params: { with_origin_country: 'CN', language: 'en-US', with_genres: '18' }, type: 'tv' },
     { key: 'anime', title: 'Anime', url: `discover/tv`, params: { with_genres: '16', language: 'en-US', with_origin_country: 'JP' }, type: 'tv' },
+    { key: 'discover_all', title: 'Discover All', url: 'discover/movie', params: { language: 'en-US', sort_by: 'primary_release_date.desc' }, type: 'movie'},
   
     // TV Shows
     { key: 'trending_tv', title: 'Trending TV Shows', url: `trending/tv/week`, params: { language: 'en-US' }, type: 'tv' },

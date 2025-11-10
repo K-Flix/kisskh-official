@@ -1,8 +1,5 @@
 
 import { getItems } from '@/lib/data';
-import { MovieCarousel } from '@/components/movie-carousel';
-import { Separator } from '@/components/ui/separator';
-import { CategoryClientPage } from '@/components/category-client-page';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { networksConfig } from '@/lib/networks';
@@ -10,6 +7,7 @@ import { NetworkCard } from '@/components/network-card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Button } from '@/components/ui/button';
 import { ChevronDown } from 'lucide-react';
+import { CategoryClientPage } from '@/components/category-client-page';
 
 interface DiscoverPageProps {
     searchParams: {
@@ -44,6 +42,11 @@ async function DiscoverContent({ category, title }: { category: string, title: s
     }
     
     return <CategoryClientPage initialItems={initialItems} slug={category} />
+}
+
+async function AllContent() {
+    const initialItems = await getItems('discover_all', 1, false, true);
+    return <CategoryClientPage initialItems={initialItems} slug="discover_all" />;
 }
 
 export default async function DiscoverPage({ searchParams }: DiscoverPageProps) {
@@ -109,6 +112,9 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
                     <Button variant="ghost">Reset</Button>
                 </div>
             </div>
+            <Suspense fallback={<DiscoverSkeleton />}>
+                <AllContent />
+            </Suspense>
         </div>
     );
 }
