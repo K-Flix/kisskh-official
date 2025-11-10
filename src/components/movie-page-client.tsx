@@ -75,11 +75,20 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
   return (
     <div className="text-white">
       {showPlayer ? (
-        <div className="w-full">
-            <div className="md:mt-8">
-                <div className="container relative flex justify-between items-center h-14 px-4">
-                    <button onClick={() => router.back()} className="flex items-center gap-2 text-white">
+        <div className="relative w-full min-h-screen">
+             <Image
+                src={movie.backdrop_path}
+                alt={`Backdrop for ${movie.title}`}
+                fill
+                priority
+                className="object-cover object-top opacity-30"
+            />
+            <div className="absolute inset-0 bg-background/70 backdrop-blur-md" />
+            <div className="relative z-10">
+                <div className="container relative flex justify-between items-center h-16 px-4">
+                    <button onClick={() => setShowPlayer(false)} className="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
                         <ArrowLeft className="w-6 h-6"/>
+                        <span className="font-semibold">Back to details</span>
                     </button>
                     <button
                         onClick={() => setShowPlayer(false)}
@@ -89,7 +98,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                         <X className="w-6 h-6" />
                     </button>
                 </div>
-                <div className="relative aspect-video w-full max-w-4xl mx-auto">
+                <div className="relative aspect-video w-full max-w-4xl mx-auto mt-4">
                 <iframe
                     src={videoUrl}
                     allow="autoplay; encrypted-media; picture-in-picture"
@@ -118,12 +127,6 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                     ))}
                 </div>
                 </div>
-            </div>
-            <div className="container py-8 space-y-12">
-                {movie.cast && movie.cast.length > 0 && <ActorCard actors={movie.cast} />}
-                {movie.similar && movie.similar.length > 0 && (
-                  <MovieCarousel title="You may also like" movies={movie.similar} />
-                )}
             </div>
         </div>
       ) : (

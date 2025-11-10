@@ -101,11 +101,20 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
   return (
     <div className="text-white">
       {playerState ? (
-        <div className="w-full">
-            <div className="md:mt-8">
-                <div className="container relative flex justify-between items-center h-14 px-4">
-                     <button onClick={() => router.back()} className="flex items-center gap-2 text-white">
+        <div className="relative w-full min-h-screen">
+             <Image
+                src={show.backdrop_path}
+                alt={`Backdrop for ${show.title}`}
+                fill
+                priority
+                className="object-cover object-top opacity-30"
+            />
+            <div className="absolute inset-0 bg-background/70 backdrop-blur-md" />
+            <div className="relative z-10">
+                <div className="container relative flex justify-between items-center h-16 px-4">
+                     <button onClick={handleClosePlayer} className="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
                         <ArrowLeft className="w-6 h-6"/>
+                        <span className="font-semibold">Back to details</span>
                     </button>
                     <button
                         onClick={handleClosePlayer}
@@ -115,7 +124,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                         <X className="w-6 h-6" />
                     </button>
                 </div>
-                <div className="relative aspect-video w-full max-w-4xl mx-auto">
+                <div className="relative aspect-video w-full max-w-4xl mx-auto mt-4">
                 <iframe
                     src={videoUrl}
                     allow="autoplay; encrypted-media; picture-in-picture"
@@ -144,21 +153,15 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                     ))}
                 </div>
                 </div>
-            </div>
-            <div className="container py-8 space-y-12">
-                <EpisodeList
-                showId={show.id}
-                seasons={show.seasons} 
-                showBackdropPath={show.backdrop_path}
-                onEpisodePlay={handlePlay} 
-                currentEpisode={playerState ? { season: playerState.season, episode: playerState.episode } : undefined}
-                />
-                
-                {show.cast && show.cast.length > 0 && <ActorCard actors={show.cast} />}
-                
-                {show.similar && show.similar.length > 0 && (
-                  <MovieCarousel title="Similars" movies={show.similar} />
-                )}
+                 <div className="container py-8">
+                    <EpisodeList
+                    showId={show.id}
+                    seasons={show.seasons} 
+                    showBackdropPath={show.backdrop_path}
+                    onEpisodePlay={handlePlay} 
+                    currentEpisode={playerState ? { season: playerState.season, episode: playerState.episode } : undefined}
+                    />
+                </div>
             </div>
         </div>
       ) : (
