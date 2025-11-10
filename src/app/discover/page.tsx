@@ -3,8 +3,6 @@ import { getItems, getGenres, getCountries } from '@/lib/data';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { networksConfig } from '@/lib/networks';
-import { NetworkCard } from '@/components/network-card';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { DiscoverClientPage } from '@/components/discover-client-page';
 import type { Metadata } from 'next';
 
@@ -61,34 +59,6 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
 
     return (
         <div className="container py-8 space-y-8">
-            {category ? (
-                <h1 className="text-3xl font-bold">{title || 'Discover'}</h1>
-            ) : (
-                <div>
-                    <div className="flex items-center space-x-3 mb-4">
-                        <div className="w-1.5 h-7 bg-primary rounded-full" />
-                        <h2 className="text-2xl font-bold">Browse by Network</h2>
-                    </div>
-                    <Carousel
-                        opts={{
-                        align: 'start',
-                        loop: false,
-                        }}
-                        className="w-full"
-                    >
-                        <CarouselContent>
-                        {networksConfig.map((network) => (
-                            <CarouselItem key={network.name} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6">
-                            <NetworkCard network={network} />
-                            </CarouselItem>
-                        ))}
-                        </CarouselContent>
-                        <CarouselPrevious className="ml-12" />
-                        <CarouselNext className="mr-12" />
-                    </Carousel>
-                </div>
-            )}
-            
             <Suspense fallback={<DiscoverSkeleton />}>
                 <DiscoverClientPage
                     initialItems={initialItems}
@@ -97,6 +67,8 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
                     countries={countries}
                     years={years}
                     categoryKey={categoryKey}
+                    networks={networksConfig}
+                    pageTitle={title}
                 />
             </Suspense>
         </div>
