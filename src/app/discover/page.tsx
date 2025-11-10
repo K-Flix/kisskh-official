@@ -60,11 +60,6 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
 
     return (
         <div className="container py-8 space-y-8">
-            <div>
-                <h1 className="text-3xl font-bold mb-2">Discover</h1>
-                <p className="text-muted-foreground">Discover the best movies and TV shows to watch from your favorite networks.</p>
-            </div>
-            <Separator />
              <div>
                 <div className="flex items-center space-x-3 mb-4">
                     <div className="w-1.5 h-7 bg-primary rounded-full" />
