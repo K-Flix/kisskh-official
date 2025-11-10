@@ -50,7 +50,9 @@ export function DiscoverClientPage({ initialItems, initialFilters, genres, count
     const currentParams = new URLSearchParams(Array.from(searchParams.entries()));
     const filters: Record<string, string> = {};
     currentParams.forEach((value, key) => {
-        filters[key] = value;
+        if(key !== 'category' && key !== 'title') {
+            filters[key] = value;
+        }
     });
 
     const newItems = await getItems(categoryKey, page, false, true, filters);
@@ -86,6 +88,9 @@ export function DiscoverClientPage({ initialItems, initialFilters, genres, count
 
     const search = current.toString();
     const query = search ? `?${search}` : "";
+
+    // The router.push will trigger a re-render with new initialItems,
+    // which the useEffect above will catch to reset the state.
     router.push(`/discover${query}`);
   }, [searchParams, router]);
 
