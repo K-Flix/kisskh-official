@@ -1,17 +1,17 @@
 
-import { getItems } from '@/lib/data';
+import { getItems, getGenres, getCountries } from '@/lib/data';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { networksConfig } from '@/lib/networks';
 import { NetworkCard } from '@/components/network-card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { CategoryClientPage } from '@/components/category-client-page';
-import { DiscoverFilters } from '@/components/discover-filters';
+import { DiscoverClientPage } from '@/components/discover-client-page';
 
 interface DiscoverPageProps {
     searchParams: {
         category?: string;
         title?: string;
+        [key: string]: string | string[] | undefined;
     };
 }
 
@@ -28,35 +28,38 @@ function DiscoverSkeleton() {
     )
 }
 
-async function DiscoverContent({ category, title }: { category: string, title: string }) {
-    const initialItems = await getItems(category, 1, false, true);
-
-    if (initialItems.length === 0) {
-        return (
-          <div className="text-center py-20">
-            <h2 className="text-2xl font-semibold">No results found for {title}</h2>
-            <p className="text-muted-foreground mt-2">There are no items available in this category at the moment.</p>
-          </div>
-        );
-    }
-    
-    return <CategoryClientPage initialItems={initialItems} slug={category} />
-}
-
-async function AllContent() {
-    const initialItems = await getItems('discover_all', 1, false, true);
-    return <CategoryClientPage initialItems={initialItems} slug="discover_all" />;
-}
-
 export default async function DiscoverPage({ searchParams }: DiscoverPageProps) {
-    const { category, title } = searchParams;
+    const { category, title, ...filters } = searchParams;
+    
+    // Convert string array to string
+    const flatFilters: Record<string, string> = {};
+    for (const key in filters) {
+        const value = filters[key];
+        if (Array.isArray(value)) {
+            flatFilters[key] = value[0];
+        } else if (value) {
+            flatFilters[key] = value;
+        }
+    }
+
+    const initialItems = await getItems(category || 'discover_all', 1, false, true, flatFilters);
+    const genres = await getGenres();
+    const countries = await getCountries();
+
+    const years = Array.from({ length: new Date().getFullYear() - 1900 + 1 }, (_, i) => (new Date().getFullYear() - i).toString());
 
     if (category) {
-        return (
+         return (
             <div className="container py-8">
                 <h1 className="text-3xl font-bold mb-8">{title || 'Discover'}</h1>
                 <Suspense fallback={<DiscoverSkeleton />}>
-                    <DiscoverContent category={category} title={title || 'Content'} />
+                     <DiscoverClientPage
+                        initialItems={initialItems}
+                        initialFilters={flatFilters}
+                        genres={genres}
+                        countries={countries}
+                        years={years}
+                    />
                 </Suspense>
             </div>
         );
@@ -88,10 +91,14 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
                 </Carousel>
             </div>
             
-            <DiscoverFilters />
-            
             <Suspense fallback={<DiscoverSkeleton />}>
-                <AllContent />
+                <DiscoverClientPage
+                    initialItems={initialItems}
+                    initialFilters={flatFilters}
+                    genres={genres}
+                    countries={countries}
+                    years={years}
+                />
             </Suspense>
         </div>
     );

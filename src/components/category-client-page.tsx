@@ -8,6 +8,7 @@ import { getItems } from '@/lib/data';
 import { Loader2, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useSearchParams } from 'next/navigation';
 
 interface CategoryClientPageProps {
   initialItems: (Movie | Show)[];
@@ -21,6 +22,7 @@ export function CategoryClientPage({ initialItems, slug }: CategoryClientPagePro
   const [hasMore, setHasMore] = useState(initialItems.length > 0);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const observer = useRef<IntersectionObserver>();
+  const searchParams = useSearchParams();
 
   const lastItemRef = useCallback(
     (node: HTMLDivElement) => {
@@ -39,7 +41,15 @@ export function CategoryClientPage({ initialItems, slug }: CategoryClientPagePro
   const loadMoreItems = async () => {
     if (loading || !hasMore) return;
     setLoading(true);
-    const newItems = await getItems(slug, page, false, true);
+
+    const filters: Record<string, string> = {};
+    searchParams.forEach((value, key) => {
+        if(key !== 'category' && key !== 'title') {
+            filters[key] = value;
+        }
+    });
+
+    const newItems = await getItems(slug, page, false, true, filters);
     if (newItems.length > 0) {
       setItems((prev) => [...prev, ...newItems]);
       setPage((prev) => prev + 1);
@@ -60,6 +70,12 @@ export function CategoryClientPage({ initialItems, slug }: CategoryClientPagePro
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    setItems(initialItems);
+    setPage(2);
+    setHasMore(initialItems.length > 0);
+  }, [initialItems]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);

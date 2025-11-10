@@ -1,7 +1,7 @@
 
 'use server';
 
-import type { Movie, Show, MovieDetails, ShowDetails, TmdbItem } from '@/lib/types';
+import type { Movie, Show, MovieDetails, ShowDetails, TmdbItem, Genre, Country } from '@/lib/types';
 import { endpoints } from './endpoints';
 import { networksConfig } from './networks';
 
@@ -24,7 +24,9 @@ async function fetchFromTMDB(endpoint: string, params: Record<string, string> = 
   
   const url = new URL(`${API_BASE_URL}/${endpoint}`);
   url.searchParams.append('api_key', apiKey);
-  Object.entries(params).forEach(([key, value]) => url.searchParams.append(key, value));
+  Object.entries(params).forEach(([key, value]) => {
+      if (value) url.searchParams.append(key, value);
+  });
   
   try {
     const response = await fetch(url.toString(), { ...options, next: { revalidate: 3600 } }); // Revalidate every hour
@@ -94,50 +96,85 @@ function getDynamicParams() {
     };
 }
 
-export async function getItems(key: string, page: number = 1, featured: boolean = false, isCategoryPage: boolean = false): Promise<(Movie | Show)[]> {
+export async function getItems(
+    key: string,
+    page: number = 1,
+    featured: boolean = false,
+    isCategoryPage: boolean = false,
+    filters: Record<string, string> = {}
+  ): Promise<(Movie | Show)[]> {
+    
+    // Handle detailed discovery filter
+    if (key === 'discover_all' || Object.keys(filters).length > 0) {
+      const mediaType = filters.media_type === 'all' ? 'multi' : filters.media_type || 'multi';
+      let endpointUrl;
+      
+      if (mediaType === 'movie' || mediaType === 'tv') {
+        endpointUrl = `discover/${mediaType}`;
+      } else {
+        // Fallback for 'multi' or 'all'
+        endpointUrl = 'discover/movie'; // TMDB discover doesn't have a multi endpoint, default to movie and combine later if needed
+      }
+      
+      const { media_type, ...apiFilters } = filters;
+  
+      let finalParams = {
+        page: page.toString(),
+        sort_by: 'popularity.desc',
+        ...apiFilters,
+      };
+
+      const data = await fetchFromTMDB(endpointUrl, finalParams);
+      if (!data?.results) return [];
+      
+      return data.results
+        .map((item: TmdbItem) => processItem(item, mediaType as 'movie' | 'tv'))
+        .filter(Boolean) as (Movie | Show)[];
+    }
+  
     if (key.startsWith('network_')) {
-        const networkName = key.replace('network_', '').replace(/[^a-z0-9]/g, '');
-        const network = networksConfig.find(n => n.name.toLowerCase().replace(/[^a-z0-9]/g, '') === networkName);
-        if (!network) return [];
-
-        const params: Record<string, string> = {
-            page: page.toString(),
-            sort_by: 'popularity.desc',
-            'watch_region': 'US' // Or dynamically set this
-        };
-        if (network.networkIds) params.with_networks = network.networkIds.join('|');
-        if (network.providerIds) params.with_watch_providers = network.providerIds.join('|');
-
-        const data = await fetchFromTMDB('discover/tv', params);
-        if (!data?.results) return [];
-        return data.results.map((item: TmdbItem) => processItem(item, 'tv')).filter(Boolean) as Show[];
+      const networkName = key.replace('network_', '').replace(/[^a-z0-9]/g, '');
+      const network = networksConfig.find(n => n.name.toLowerCase().replace(/[^a-z0-9]/g, '') === networkName);
+      if (!network) return [];
+  
+      const params: Record<string, string> = {
+        page: page.toString(),
+        sort_by: 'popularity.desc',
+        'watch_region': 'US',
+        ...filters
+      };
+      if (network.networkIds) params.with_networks = network.networkIds.join('|');
+      if (network.providerIds) params.with_watch_providers = network.providerIds.join('|');
+  
+      const data = await fetchFromTMDB('discover/tv', params);
+      if (!data?.results) return [];
+      return data.results.map((item: TmdbItem) => processItem(item, 'tv')).filter(Boolean) as Show[];
     }
     
     const endpoint = endpoints.find(e => e.key === key);
     if (!endpoint) return [];
-
+  
     let finalParams: Record<string, string> = { 
         page: page.toString(), 
         ...endpoint.params,
+        ...filters,
     };
-
+  
     const specialCategories = ['k_drama_on_air', 'k_drama', 'c_drama', 'anime'];
     
     if (specialCategories.includes(key)) {
-        if (isCategoryPage) {
-            // For "See All" pages, sort by newest, no date restriction.
-            finalParams.sort_by = 'first_air_date.desc';
-        } else {
-            // For homepage carousels, filter by recent air dates and sort by popularity.
-            const dynamicParams = getDynamicParams();
-            finalParams['air_date.gte'] = dynamicParams['air_date.gte'];
-            finalParams['air_date.lte'] = dynamicParams['air_date.lte'];
-            finalParams.sort_by = 'popularity.desc';
-        }
+      if (isCategoryPage) {
+        finalParams.sort_by = 'first_air_date.desc';
+      } else {
+        const dynamicParams = getDynamicParams();
+        finalParams['air_date.gte'] = dynamicParams['air_date.gte'];
+        finalParams['air_date.lte'] = dynamicParams['air_date.lte'];
+        finalParams.sort_by = 'popularity.desc';
+      }
     } else if (endpoint.sort_by) {
-        finalParams.sort_by = endpoint.sort_by;
+      finalParams.sort_by = endpoint.sort_by;
     }
-
+  
     const data = await fetchFromTMDB(endpoint.url, finalParams);
     if (!data?.results) return [];
     
@@ -154,9 +191,9 @@ export async function getItems(key: string, page: number = 1, featured: boolean 
         );
         return detailedItems.filter(Boolean) as (Movie | Show)[];
     }
-
+  
     return items;
-}
+  }
 
 export async function getMovieById(id: number): Promise<MovieDetails | null> {
     const data = await fetchFromTMDB(`movie/${id}`, { append_to_response: 'credits,images,similar,videos' });
@@ -243,4 +280,31 @@ export async function searchMovies(query: string, page: number = 1): Promise<(Mo
     .map((item: TmdbItem) => processItem(item, item.media_type))
     .filter(Boolean)
     .sort((a: any, b: any) => (b.popularity || 0) - (a.popularity || 0)) as (Movie | Show)[];
+}
+
+
+export async function getGenres(): Promise<Genre[]> {
+    const movieGenres = await fetchFromTMDB('genre/movie/list');
+    const tvGenres = await fetchFromTMDB('genre/tv/list');
+  
+    const allGenres = new Map<number, string>();
+    
+    if (movieGenres?.genres) {
+      movieGenres.genres.forEach((g: Genre) => allGenres.set(g.id, g.name));
+    }
+    if (tvGenres?.genres) {
+      tvGenres.genres.forEach((g: Genre) => allGenres.set(g.id, g.name));
+    }
+  
+    return Array.from(allGenres, ([id, name]) => ({ id, name })).sort((a, b) => a.name.localeCompare(b.name));
+}
+  
+export async function getCountries(): Promise<Country[]> {
+    const data = await fetchFromTMDB('configuration/countries');
+    if (!data) return [];
+    
+    // Filter out countries without an english_name and sort
+    return data
+        .filter((c: Country) => c.english_name)
+        .sort((a: Country, b: Country) => a.english_name.localeCompare(b.english_name));
 }
