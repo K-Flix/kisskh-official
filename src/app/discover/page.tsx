@@ -8,6 +8,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { networksConfig } from '@/lib/networks';
 import { NetworkCard } from '@/components/network-card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Button } from '@/components/ui/button';
+import { ChevronDown } from 'lucide-react';
 
 interface DiscoverPageProps {
     searchParams: {
@@ -82,6 +84,30 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
                     <CarouselPrevious className="ml-12" />
                     <CarouselNext className="mr-12" />
                 </Carousel>
+            </div>
+            <div>
+                <div className="flex items-center space-x-3 mb-4">
+                    <div className="w-1.5 h-7 bg-primary rounded-full" />
+                    <h2 className="text-2xl font-bold">Detailed Search</h2>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                    <Button variant="outline">
+                        Type <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                    <Button variant="outline">
+                        Genre <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                    <Button variant="outline">
+                        Country <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                    <Button variant="outline">
+                        Years <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                    <Button variant="outline">
+                        Sort By <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost">Reset</Button>
+                </div>
             </div>
         </div>
     );
