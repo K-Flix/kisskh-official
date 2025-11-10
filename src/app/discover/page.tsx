@@ -42,12 +42,12 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
         }
     }
 
-    const initialItems = await getItems(category || 'discover_all', 1, false, true, flatFilters);
+    const categoryKey = category || 'discover_all';
+    const initialItems = await getItems(categoryKey, 1, false, true, flatFilters);
     const genres = await getGenres();
     const countries = await getCountries();
 
     const years = Array.from({ length: new Date().getFullYear() - 1900 + 1 }, (_, i) => (new Date().getFullYear() - i).toString());
-    const categoryKey = category || 'discover_all';
 
     return (
         <div className="container py-8 space-y-8">

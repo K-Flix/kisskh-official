@@ -80,23 +80,30 @@ export function DiscoverClientPage({ initialItems, initialFilters, genres, count
     } else {
       current.delete(key);
     }
-    // Remove page param for new searches
-    current.delete('page');
-    // We don't want category or title in discover filters
-    current.delete('category');
-    current.delete('title');
-
+    
+    const category = current.get('category');
+    if (category) {
+        current.delete('category');
+        current.delete('title');
+    }
+    
     const search = current.toString();
     const query = search ? `?${search}` : "";
 
-    // The router.push will trigger a re-render with new initialItems,
-    // which the useEffect above will catch to reset the state.
     router.push(`/discover${query}`);
   }, [searchParams, router]);
 
   const handleReset = useCallback(() => {
-    router.push('/discover');
-  }, [router]);
+    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    const category = current.get('category');
+    const title = current.get('title');
+    
+    let newPath = '/discover';
+    if(category && title) {
+      newPath = `/discover?category=${category}&title=${title}`;
+    }
+    router.push(newPath);
+  }, [router, searchParams]);
 
   const handleScroll = () => {
     if (window.scrollY > 400) {

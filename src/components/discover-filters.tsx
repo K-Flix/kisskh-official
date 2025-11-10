@@ -10,8 +10,6 @@ import {
 } from "@/components/ui/select"
 import { Button } from "./ui/button";
 import { Genre, Country } from "@/lib/types";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
 
 interface DiscoverFiltersProps {
     genres: Genre[];
