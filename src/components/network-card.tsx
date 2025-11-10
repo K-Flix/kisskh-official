@@ -6,18 +6,18 @@ import { cn } from '@/lib/utils';
 
 interface NetworkCardProps {
   network: NetworkConfig;
-  onNetworkSelect: (network: NetworkConfig) => void;
+  onClick: () => void;
   isActive?: boolean;
 }
 
-export function NetworkCard({ network, onNetworkSelect, isActive }: NetworkCardProps) {
+export function NetworkCard({ network, onClick, isActive }: NetworkCardProps) {
   return (
     <Card 
         className={cn(
             "overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/30 border-2 bg-white flex items-center justify-center aspect-video cursor-pointer",
             isActive ? "border-primary" : "border-border/80"
         )}
-        onClick={() => onNetworkSelect(network)}
+        onClick={onClick}
     >
         <CardContent className="p-4 relative w-full h-full flex items-center justify-center">
             <div className="relative w-3/4 h-3/4">
@@ -33,5 +33,3 @@ export function NetworkCard({ network, onNetworkSelect, isActive }: NetworkCardP
     </Card>
   );
 }
-
-    

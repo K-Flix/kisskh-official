@@ -15,24 +15,18 @@ import { NetworkCard } from '@/components/network-card';
 
 interface DiscoverClientPageProps {
   initialItems: (Movie | Show)[];
-  initialFilters: Record<string, string | undefined>;
   genres: Genre[];
   countries: Country[];
   years: string[];
-  categoryKey: string;
   networks: NetworkConfig[];
-  pageTitle?: string;
 }
 
 export function DiscoverClientPage({ 
   initialItems, 
-  initialFilters, 
   genres, 
   countries, 
   years, 
-  categoryKey,
   networks,
-  pageTitle
 }: DiscoverClientPageProps) {
   const [items, setItems] = useState(initialItems);
   const [page, setPage] = useState(2);
@@ -69,10 +63,9 @@ export function DiscoverClientPage({
     });
 
     const hasFilters = Object.keys(filters).length > 0;
-    const currentCategory = currentParams.get('category');
-    const keyToFetch = currentCategory || (hasFilters ? 'discover_all' : 'trending_today');
+    const categoryKey = currentParams.get('category') || (hasFilters ? 'discover_all' : 'trending_today');
 
-    const newItems = await getItems(keyToFetch, page, false, true, filters);
+    const newItems = await getItems(categoryKey, page, false, true, filters);
     if (newItems.length > 0) {
       setItems((prev) => [...prev, ...newItems]);
       setPage((prev) => prev + 1);
@@ -87,7 +80,6 @@ export function DiscoverClientPage({
     setPage(2);
     setHasMore(initialItems.length > 0);
   }, [searchParams, initialItems]);
-
 
   const handleFilterChange = useCallback((key: string, value: string) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -116,7 +108,6 @@ export function DiscoverClientPage({
     const currentNetworkFilter = current.get('with_networks');
     const isAlreadySelected = currentNetworkFilter === networkIds;
 
-    // If the network is already selected, deselect it by removing the filters
     if (isAlreadySelected) {
         current.delete('with_networks');
         current.delete('with_watch_providers');
@@ -155,9 +146,13 @@ export function DiscoverClientPage({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isDefaultView = !searchParams.get('category') && Object.keys(initialFilters).length === 0;
-
+  const pageTitle = searchParams.get('title');
   const selectedNetworkId = searchParams.get('with_networks');
+
+  const currentFilters: Record<string, string | undefined> = {};
+  searchParams.forEach((value, key) => {
+    currentFilters[key] = value;
+  });
 
   return (
     <div className="space-y-8">
@@ -175,7 +170,7 @@ export function DiscoverClientPage({
                       <CarouselItem key={network.name} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6">
                           <NetworkCard 
                             network={network} 
-                            onNetworkSelect={handleNetworkSelect} 
+                            onClick={() => handleNetworkSelect(network)} 
                             isActive={selectedNetworkId === network.networkIds?.join('|')}
                           />
                       </CarouselItem>
@@ -193,7 +188,7 @@ export function DiscoverClientPage({
         years={years}
         onFilterChange={handleFilterChange}
         onReset={handleReset}
-        currentFilters={initialFilters}
+        currentFilters={currentFilters}
       />
 
       {items.length > 0 ? (
