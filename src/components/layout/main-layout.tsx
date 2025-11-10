@@ -24,6 +24,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const isDetailPage = pathname.startsWith('/movie/') || pathname.startsWith('/tv/');
     const isPageWithHero = ['/', '/movies', '/tv'].includes(pathname);
+    const isDiscoverPage = pathname.startsWith('/discover');
 
     if (isDetailPage) {
         return <main>{children}</main>;
@@ -33,7 +34,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
         <div className="relative flex min-h-screen flex-col">
             <Header />
             <main className="flex-1">
-                {isPageWithHero ? children : <div className="pt-16">{children}</div>}
+                {isPageWithHero ? children : <div className={isDiscoverPage ? 'pt-16' : 'pt-16'}>{children}</div>}
             </main>
             <Footer />
         </div>

@@ -163,7 +163,7 @@ export function DiscoverClientPage({
     <div className="space-y-8">
       {pageTitle ? (
           <h1 className="text-3xl font-bold">{pageTitle}</h1>
-      ) : isDefaultView ? (
+      ) : (
           <div>
               <div className="flex items-center space-x-3 mb-4">
                   <div className="w-1.5 h-7 bg-primary rounded-full" />
@@ -185,7 +185,7 @@ export function DiscoverClientPage({
                   <CarouselNext className="mr-12" />
               </Carousel>
           </div>
-      ) : null}
+      )}
 
       <DiscoverFilters
         genres={genres}
@@ -231,5 +231,3 @@ export function DiscoverClientPage({
     </div>
   );
 }
-
-    

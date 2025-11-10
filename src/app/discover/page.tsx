@@ -15,10 +15,17 @@ interface DiscoverPageProps {
 }
 
 export async function generateMetadata({ searchParams }: DiscoverPageProps): Promise<Metadata> {
-    const title = searchParams.title || 'Discover';
+    const { title, with_genres, primary_release_year, with_origin_country } = searchParams;
+
+    let description = 'Discover new movies and TV shows.';
+    const details = [];
+    if (with_genres) description += ` Filtered by genre ID ${with_genres}.`;
+    if (primary_release_year) description += ` From the year ${primary_release_year}.`;
+    if (with_origin_country) description += ` From country code ${with_origin_country}.`;
+
     return {
-        title: `${title} - kisskh`,
-        description: `Discover new movies and TV shows. Filter by genre, country, year, and more.`,
+        title: `${title || 'Discover'} - kisskh`,
+        description: description,
     };
 }
 
@@ -58,7 +65,7 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
     const years = Array.from({ length: new Date().getFullYear() - 1900 + 1 }, (_, i) => (new Date().getFullYear() - i).toString());
 
     return (
-        <div className="container py-8 space-y-8">
+        <div className="container py-8 space-y-8 pt-24">
             <Suspense fallback={<DiscoverSkeleton />}>
                 <DiscoverClientPage
                     initialItems={initialItems}
@@ -74,5 +81,3 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
         </div>
     );
 }
-
-    

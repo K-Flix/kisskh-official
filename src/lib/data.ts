@@ -106,7 +106,7 @@ export async function getItems(
   ): Promise<(Movie | Show)[]> {
     
     // Handle detailed discovery filter
-    if (key === 'discover_all' || Object.keys(filters).length > 0) {
+    if (key === 'discover_all') {
       const mediaType = filters.media_type === 'all' ? 'multi' : filters.media_type || 'multi';
       const { media_type: _, ...apiFilters } = filters;
   
@@ -320,5 +320,3 @@ export async function getCountries(): Promise<Country[]> {
         .filter((c: Country) => c.english_name)
         .sort((a: Country, b: Country) => a.english_name.localeCompare(b.english_name));
 }
-
-    
