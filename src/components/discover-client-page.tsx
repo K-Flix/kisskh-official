@@ -105,18 +105,15 @@ export function DiscoverClientPage({
     current.delete('with_watch_providers');
 
     if (!isCurrentlySelected) {
-        // Broadcast-only networks (tvN, CBS, etc.)
-        if (networkIds && (!providerIds || providerIds.length === 0)) {
+        if (networkIds) {
             current.set('with_networks', networkIds);
-            current.set('media_type', 'tv'); // Force TV type
-        } 
-        // Streaming-only or hybrid networks
-        else if (providerIds && providerIds.length > 0) {
+        }
+        if (providerIds) {
             current.set('with_watch_providers', providerIds);
-            // If it's hybrid and also has network IDs, add them too for completeness
-            if (networkIds) {
-                 current.set('with_networks', networkIds);
-            }
+        }
+        // If it's a broadcast-only network, default to TV
+        if (networkIds && (!providerIds || providerIds.length === 0)) {
+            current.set('media_type', 'tv');
         }
     } else {
        current.delete('media_type');
@@ -173,8 +170,8 @@ export function DiscoverClientPage({
               <div className="w-1.5 h-7 bg-primary rounded-full" />
               <h2 className="text-2xl font-bold">Browse by Network</h2>
           </div>
-          <Carousel opts={{ align: 'start', loop: false }} className="w-full">
-              <CarouselContent>
+          <Carousel opts={{ align: 'start', slidesToScroll: 'auto' }} className="w-full">
+              <CarouselContent className="-ml-4">
               {networks.map((network) => {
                   const networkIds = network.networkIds?.join('|');
                   const providerIds = network.providerIds?.join('|');
@@ -182,7 +179,7 @@ export function DiscoverClientPage({
                   const hasActiveFilter = !!selectedNetworkId || !!selectedProviderId;
 
                   return (
-                    <CarouselItem key={network.name} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6">
+                    <CarouselItem key={network.name} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6 pl-4">
                         <NetworkCard 
                           network={network} 
                           onClick={() => handleNetworkSelect(network)} 
@@ -193,8 +190,8 @@ export function DiscoverClientPage({
                   )
                 })}
               </CarouselContent>
-              <CarouselPrevious className="ml-12" />
-              <CarouselNext className="mr-12" />
+              <CarouselPrevious />
+              <CarouselNext />
           </Carousel>
       </div>
 

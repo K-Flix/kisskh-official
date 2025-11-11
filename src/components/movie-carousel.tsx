@@ -38,14 +38,13 @@ export function MovieCarousel({ title, movies, seeAllHref }: MovieCarouselProps)
       <Carousel
         opts={{
           align: 'start',
-          loop: false,
           slidesToScroll: 'auto',
         }}
         className="w-full"
       >
-        <CarouselContent className="-ml-2 md:-ml-4">
+        <CarouselContent className="-ml-4">
           {movies.map((movie) => (
-            <CarouselItem key={movie.id} className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6">
+            <CarouselItem key={movie.id} className="pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6">
               <MovieCard movie={movie} />
             </CarouselItem>
           ))}
