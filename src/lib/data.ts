@@ -106,45 +106,46 @@ export async function getItems(
   ): Promise<(Movie | Show)[]> {
     
     if (key === 'discover_all') {
-      const mediaType = filters.media_type === 'all' ? 'multi' : filters.media_type || 'multi';
-      const { media_type: _, ...apiFilters } = filters;
+        const mediaType = filters.media_type === 'all' ? 'multi' : filters.media_type || 'multi';
+        const { media_type: _, ...apiFilters } = filters;
+    
+        let finalParams: Record<string, string | undefined> = {
+          page: page.toString(),
+          sort_by: filters.sort_by || 'popularity.desc',
+          ...apiFilters,
+        };
   
-      let finalParams: Record<string, string | undefined> = {
-        page: page.toString(),
-        sort_by: filters.sort_by || 'popularity.desc',
-        ...apiFilters,
-      };
-
-      // The with_watch_providers filter works for both movies and TV.
-      // The with_networks filter only works for TV.
-      // We will prefer with_watch_providers when available.
-
-      const typesToFetch: ('movie' | 'tv')[] = mediaType === 'multi' ? ['movie', 'tv'] : [mediaType];
-      
-      const promises = typesToFetch.map(type => {
-        const paramsForType = { ...finalParams };
-        // TV can use with_networks, so we don't delete it. 
-        // Movies cannot, so we must ensure it's not present for movie calls.
-        if (type === 'movie') {
-            delete paramsForType.with_networks;
-        } else { // type === 'tv'
-            // if we have a provider, we prefer it for better results for TV as well
-            if (paramsForType.with_watch_providers) {
+        const typesToFetch: ('movie' | 'tv')[] = mediaType === 'multi' ? ['movie', 'tv'] : [mediaType];
+        
+        let allItems: (Movie | Show)[] = [];
+  
+        if (filters.with_watch_providers || filters.with_networks) {
+          const promises = typesToFetch.map(type => {
+            const paramsForType = { ...finalParams };
+            if (type === 'movie') {
                 delete paramsForType.with_networks;
+            } else { // type === 'tv'
+                if (paramsForType.with_watch_providers) {
+                    delete paramsForType.with_networks;
+                }
+            }
+            return fetchFromTMDB(`discover/${type}`, paramsForType as Record<string, string>);
+          });
+          const results = await Promise.all(promises);
+          allItems = results.flatMap((data, index) => {
+              if (!data?.results) return [];
+              const type = typesToFetch[index];
+              return data.results.map((item: TmdbItem) => processItem(item, type)).filter(Boolean) as (Movie | Show)[];
+          });
+        } else {
+            const endpoint = mediaType === 'multi' ? `discover/movie` : `discover/${mediaType}`;
+            const data = await fetchFromTMDB(endpoint, finalParams as Record<string, string>);
+            if (data?.results) {
+                allItems = data.results.map((item: TmdbItem) => processItem(item, mediaType === 'multi' ? item.media_type : mediaType)).filter(Boolean) as (Movie|Show)[];
             }
         }
-        return fetchFromTMDB(`discover/${type}`, paramsForType as Record<string, string>);
-      });
-
-      const results = await Promise.all(promises);
-      const allItems = results.flatMap((data, index) => {
-          if (!data?.results) return [];
-          const type = typesToFetch[index];
-          return data.results.map((item: TmdbItem) => processItem(item, type)).filter(Boolean) as (Movie | Show)[];
-      });
-
-      // Combine and sort by popularity
-      return allItems.sort((a, b) => b.popularity - (a.popularity || 0));
+        
+        return allItems.sort((a, b) => b.popularity - (a.popularity || 0));
     }
   
     const endpoint = endpoints.find(e => e.key === key);
