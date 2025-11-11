@@ -95,6 +95,7 @@ export default {
       },
       basis: {
         '1/7': '14.2857143%',
+        '1/8': '12.5%',
       },
     },
     container: {
