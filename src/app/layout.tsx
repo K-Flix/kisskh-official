@@ -14,6 +14,10 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 export const metadata: Metadata = {
   title: 'kisskh',
   description: 'A streaming website built with Next.js',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+  },
   icons: {
     icon: [],
   }
