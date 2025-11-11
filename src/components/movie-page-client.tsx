@@ -7,7 +7,7 @@ import type { MovieDetails } from '@/lib/types';
 import { ActorCard } from '@/components/actor-card';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ShowHero } from './show-hero';
-import { X, ArrowLeft, Download, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Download, ChevronDown } from 'lucide-react';
 import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import Link from 'next/link';
