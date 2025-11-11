@@ -94,36 +94,35 @@ export function DiscoverClientPage({
 
   const handleNetworkSelect = (network: NetworkConfig) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
+    
     const networkIds = network.networkIds?.join('|');
     const providerIds = network.providerIds?.join('|');
 
-    const isAlreadySelected = 
-        (networkIds && current.get('with_networks') === networkIds) ||
-        (providerIds && current.get('with_watch_providers') === providerIds);
-
+    const isAlreadySelected = (networkIds && current.get('with_networks') === networkIds) || (providerIds && current.get('with_watch_providers') === providerIds);
+    
     current.delete('with_networks');
     current.delete('with_watch_providers');
 
     if (!isAlreadySelected) {
-        if (networkIds) {
-            current.set('with_networks', networkIds);
-        }
-        if (providerIds) {
-            current.set('with_watch_providers', providerIds);
-        }
+        if (networkIds) current.set('with_networks', networkIds);
+        if (providerIds) current.set('with_watch_providers', providerIds);
         
-        const hasNetworkIds = network.networkIds && network.networkIds.length > 0;
-        const hasProviderIds = network.providerIds && network.providerIds.length > 0;
-
-        if(hasNetworkIds && !hasProviderIds) { // Broadcast-only
-          current.set('media_type', 'tv');
+        // If it's a broadcast-only network (has networkId but no providerId), default to TV
+        if (network.networkIds && network.networkIds.length > 0 && (!network.providerIds || network.providerIds.length === 0)) {
+            current.set('media_type', 'tv');
         }
+    } else {
+      // If it's already selected, clicking again should clear the media_type if it was forced
+       if (network.networkIds && network.networkIds.length > 0 && (!network.providerIds || network.providerIds.length === 0)) {
+            current.delete('media_type');
+       }
     }
-    
+
     const search = current.toString();
     const query = search ? `?${search}` : "";
     router.push(`/discover${query}`);
   }
+
 
   const handleReset = useCallback(() => {
     router.push('/discover');
@@ -180,7 +179,7 @@ export function DiscoverClientPage({
                   const isNetworkActive = networkIds && selectedNetworkId === networkIds;
                   const isProviderActive = providerIds && selectedProviderId === providerIds;
                   
-                  const isActive = (networkIds && isNetworkActive) || (providerIds && isProviderActive);
+                  const isActive = isNetworkActive || isProviderActive;
                   
                   return (
                     <CarouselItem key={network.name} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6">
@@ -245,3 +244,4 @@ export function DiscoverClientPage({
   );
 }
 
+    

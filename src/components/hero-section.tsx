@@ -111,3 +111,5 @@ export function HeroSection({ movies }: HeroSectionProps) {
     </Carousel>
   );
 }
+
+    

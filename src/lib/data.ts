@@ -106,59 +106,41 @@ export async function getItems(
   ): Promise<(Movie | Show)[]> {
     
     if (key === 'discover_all') {
-      const { media_type, with_networks, with_watch_providers, ...apiFilters } = filters;
-  
-      const selectedNetwork = networksConfig.find(n => 
-        (n.networkIds?.join('|') === with_networks) || 
-        (n.providerIds?.join('|') === with_watch_providers)
-      );
-  
-      const hasNetworkIds = selectedNetwork && selectedNetwork.networkIds && selectedNetwork.networkIds.length > 0;
-      const hasProviderIds = selectedNetwork && selectedNetwork.providerIds && selectedNetwork.providerIds.length > 0;
+      const { media_type, ...apiFilters } = filters;
       
-      const isBroadcastOnly = hasNetworkIds && !hasProviderIds;
-      const isStreamingOnly = hasProviderIds && !hasNetworkIds;
-
-      let effectiveMediaType = media_type;
-      if (isBroadcastOnly && effectiveMediaType !== 'tv') {
-        effectiveMediaType = 'tv'; // Force TV for broadcast-only networks
-      }
-
-      const typesToFetch: ('movie' | 'tv')[] = effectiveMediaType && effectiveMediaType !== 'all'
-        ? [effectiveMediaType as 'movie' | 'tv']
+      const typesToFetch: ('movie' | 'tv')[] = media_type && media_type !== 'all'
+        ? [media_type as 'movie' | 'tv']
         : ['movie', 'tv'];
-  
-      let allItems: (Movie | Show)[] = [];
-  
+
       const promises = typesToFetch.map(type => {
         let paramsForType: Record<string, string> = {
           page: page.toString(),
           sort_by: filters.sort_by || 'popularity.desc',
           ...apiFilters,
         };
-  
+
+        const endpoint = `discover/${type}`;
+
         if (type === 'tv') {
-          if (with_networks) paramsForType.with_networks = with_networks;
-          if (with_watch_providers) {
-              paramsForType.with_watch_providers = with_watch_providers;
-              paramsForType.watch_region = 'US';
-          }
+          // For TV, we only care about with_networks
+          delete paramsForType.with_watch_providers;
         } else if (type === 'movie') {
-          // Movies only work reliably with provider IDs
-          if (with_watch_providers) {
-            paramsForType.with_watch_providers = with_watch_providers;
+          // For Movies, we only care about with_watch_providers
+          delete paramsForType.with_networks;
+          if (paramsForType.with_watch_providers) {
             paramsForType.watch_region = 'US';
           } else {
-            // Don't fetch movies if we only have a network ID, as it's unreliable
+            // Don't fetch movies if there's no provider filter
             return Promise.resolve(null);
           }
         }
         
-        return fetchFromTMDB(`discover/${type}`, paramsForType);
+        return fetchFromTMDB(endpoint, paramsForType);
       });
   
       const results = await Promise.all(promises);
       
+      let allItems: (Movie | Show)[] = [];
       results.forEach((data, index) => {
         if (data?.results) {
           const type = typesToFetch[index];
@@ -177,22 +159,14 @@ export async function getItems(
     const endpoint = endpoints.find(e => e.key === key);
     if (!endpoint) return [];
   
-    const finalParams: Record<string, string> = { ...endpoint.params, ...filters };
-    
-    if (page > 1) {
-      finalParams.page = page.toString();
-    }
+    const finalParams: Record<string, string> = { ...endpoint.params, ...filters, page: page.toString() };
   
     if (isCategoryPage && (key === 'k_drama' || key === 'c_drama')) {
         finalParams.sort_by = 'first_air_date.desc';
     } else if (key === 'k_drama_on_air' || key === 'c_drama_on_air') {
         const dynamicParams = getDynamicParams();
-        finalParams.sort_by = 'popularity.desc';
         Object.assign(finalParams, dynamicParams);
-    } else if (key === 'c_drama' && isCategoryPage) { // This handles "See All" for C-Drama on home
-        const dynamicParams = getDynamicParams();
         finalParams.sort_by = 'popularity.desc';
-        Object.assign(finalParams, dynamicParams);
     } else if (endpoint.sort_by) {
       finalParams.sort_by = endpoint.sort_by;
     }
