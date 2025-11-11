@@ -106,54 +106,55 @@ export async function getItems(
   ): Promise<(Movie | Show)[]> {
     
     if (key === 'discover_all') {
-      const { media_type, ...apiFilters } = filters;
-      
-      const typesToFetch: ('movie' | 'tv')[] = media_type && media_type !== 'all'
-        ? [media_type as 'movie' | 'tv']
-        : ['movie', 'tv'];
+        const { media_type, ...apiFilters } = filters;
+        const pageStr = page.toString();
 
-      const promises = typesToFetch.map(type => {
-        let paramsForType: Record<string, string> = {
-          page: page.toString(),
-          sort_by: filters.sort_by || 'popularity.desc',
-          ...apiFilters,
-        };
+        const typesToFetch: ('movie' | 'tv')[] = media_type && media_type !== 'all'
+            ? [media_type as 'movie' | 'tv']
+            : ['movie', 'tv'];
 
-        const endpoint = `discover/${type}`;
+        const hasNetworkFilter = !!apiFilters.with_networks;
+        const hasProviderFilter = !!apiFilters.with_watch_providers;
 
-        if (type === 'tv') {
-          // For TV, we only care about with_networks
-          delete paramsForType.with_watch_providers;
-        } else if (type === 'movie') {
-          // For Movies, we only care about with_watch_providers
-          delete paramsForType.with_networks;
-          if (paramsForType.with_watch_providers) {
-            paramsForType.watch_region = 'US';
-          } else {
-            // Don't fetch movies if there's no provider filter
-            return Promise.resolve(null);
-          }
-        }
+        const promises = typesToFetch.map(type => {
+            const endpoint = `discover/${type}`;
+            let paramsForType = { ...apiFilters, page: pageStr };
+
+            if (type === 'tv') {
+                if (hasProviderFilter && !hasNetworkFilter) {
+                    paramsForType.watch_region = 'US';
+                } else if (hasNetworkFilter) {
+                    delete paramsForType.with_watch_providers; // Prioritize network for TV
+                }
+            } else if (type === 'movie') {
+                 if (hasProviderFilter) {
+                    paramsForType.watch_region = 'US';
+                    delete paramsForType.with_networks; // Movies don't use with_networks
+                } else {
+                    // Don't fetch movies if there's only a network filter
+                    return Promise.resolve(null);
+                }
+            }
+            
+            return fetchFromTMDB(endpoint, paramsForType);
+        });
+
+        const results = await Promise.all(promises);
         
-        return fetchFromTMDB(endpoint, paramsForType);
-      });
-  
-      const results = await Promise.all(promises);
-      
-      let allItems: (Movie | Show)[] = [];
-      results.forEach((data, index) => {
-        if (data?.results) {
-          const type = typesToFetch[index];
-          const processed = data.results.map((item: TmdbItem) => processItem(item, type)).filter(Boolean) as (Movie | Show)[];
-          allItems = allItems.concat(processed);
+        let allItems: (Movie | Show)[] = [];
+        results.forEach((data, index) => {
+            if (data?.results) {
+                const type = typesToFetch[index];
+                const processed = data.results.map((item: TmdbItem) => processItem(item, type)).filter(Boolean) as (Movie | Show)[];
+                allItems = allItems.concat(processed);
+            }
+        });
+
+        if (typesToFetch.length > 1) {
+            allItems.sort((a, b) => b.popularity - a.popularity);
         }
-      });
-      
-      if (typesToFetch.length > 1) {
-        allItems.sort((a, b) => b.popularity - a.popularity);
-      }
-  
-      return allItems;
+
+        return allItems;
     }
   
     const endpoint = endpoints.find(e => e.key === key);

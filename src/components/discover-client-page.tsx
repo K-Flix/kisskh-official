@@ -92,32 +92,36 @@ export function DiscoverClientPage({
     router.push(`/discover${query}`);
   }, [searchParams, router]);
 
-  const handleNetworkSelect = (network: NetworkConfig) => {
+ const handleNetworkSelect = (network: NetworkConfig) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
-    
     const networkIds = network.networkIds?.join('|');
     const providerIds = network.providerIds?.join('|');
 
-    const isAlreadySelected = (networkIds && current.get('with_networks') === networkIds) || (providerIds && current.get('with_watch_providers') === providerIds);
-    
+    const isCurrentlySelected = 
+        (networkIds && current.get('with_networks') === networkIds) ||
+        (providerIds && current.get('with_watch_providers') === providerIds);
+
     current.delete('with_networks');
     current.delete('with_watch_providers');
 
-    if (!isAlreadySelected) {
-        if (networkIds) current.set('with_networks', networkIds);
-        if (providerIds) current.set('with_watch_providers', providerIds);
-        
-        // If it's a broadcast-only network (has networkId but no providerId), default to TV
-        if (network.networkIds && network.networkIds.length > 0 && (!network.providerIds || network.providerIds.length === 0)) {
-            current.set('media_type', 'tv');
+    if (!isCurrentlySelected) {
+        // Broadcast-only networks (tvN, CBS, etc.)
+        if (networkIds && (!providerIds || providerIds.length === 0)) {
+            current.set('with_networks', networkIds);
+            current.set('media_type', 'tv'); // Force TV type
+        } 
+        // Streaming-only or hybrid networks
+        else if (providerIds && providerIds.length > 0) {
+            current.set('with_watch_providers', providerIds);
+            // If it's hybrid and also has network IDs, add them too for completeness
+            if (networkIds) {
+                 current.set('with_networks', networkIds);
+            }
         }
     } else {
-      // If it's already selected, clicking again should clear the media_type if it was forced
-       if (network.networkIds && network.networkIds.length > 0 && (!network.providerIds || network.providerIds.length === 0)) {
-            current.delete('media_type');
-       }
+       current.delete('media_type');
     }
-
+    
     const search = current.toString();
     const query = search ? `?${search}` : "";
     router.push(`/discover${query}`);
@@ -147,8 +151,7 @@ export function DiscoverClientPage({
 
   const selectedNetworkId = searchParams.get('with_networks');
   const selectedProviderId = searchParams.get('with_watch_providers');
-  const hasActiveNetworkFilter = !!selectedNetworkId || !!selectedProviderId;
-
+  
   const currentFilters: Record<string, string | undefined> = {};
   searchParams.forEach((value, key) => {
     currentFilters[key] = value;
@@ -156,12 +159,12 @@ export function DiscoverClientPage({
   
   const selectedNetwork = networksConfig.find(n => 
     (n.networkIds?.join('|') === selectedNetworkId && n.providerIds?.join('|') === selectedProviderId) ||
-    (n.networkIds?.join('|') === selectedNetworkId && !selectedProviderId) ||
-    (n.providerIds?.join('|') === selectedProviderId && !selectedNetworkId)
+    (n.networkIds?.join('|') === selectedNetworkId && !n.providerIds?.length) ||
+    (n.providerIds?.join('|') === selectedProviderId && !n.networkIds?.length) ||
+    (n.providerIds?.join('|') === selectedProviderId && n.networkIds?.join('|') === selectedNetworkId)
   );
 
-  const isMediaTypeDisabled = selectedNetwork && selectedNetwork.networkIds && selectedNetwork.networkIds.length > 0 && !(selectedNetwork.providerIds && selectedNetwork.providerIds.length > 0);
-
+  const isMediaTypeDisabled = selectedNetwork && selectedNetwork.networkIds && selectedNetwork.networkIds.length > 0 && (!selectedNetwork.providerIds || selectedNetwork.providerIds.length === 0);
 
   return (
     <div className="space-y-8">
@@ -175,19 +178,16 @@ export function DiscoverClientPage({
               {networks.map((network) => {
                   const networkIds = network.networkIds?.join('|');
                   const providerIds = network.providerIds?.join('|');
+                  const isActive = (networkIds && selectedNetworkId === networkIds) || (providerIds && selectedProviderId === providerIds);
+                  const hasActiveFilter = !!selectedNetworkId || !!selectedProviderId;
 
-                  const isNetworkActive = networkIds && selectedNetworkId === networkIds;
-                  const isProviderActive = providerIds && selectedProviderId === providerIds;
-                  
-                  const isActive = isNetworkActive || isProviderActive;
-                  
                   return (
                     <CarouselItem key={network.name} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6">
                         <NetworkCard 
                           network={network} 
                           onClick={() => handleNetworkSelect(network)} 
                           isActive={isActive}
-                          hasActiveFilter={hasActiveNetworkFilter}
+                          hasActiveFilter={hasActiveFilter}
                         />
                     </CarouselItem>
                   )
@@ -243,5 +243,3 @@ export function DiscoverClientPage({
     </div>
   );
 }
-
-    
