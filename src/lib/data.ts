@@ -107,14 +107,19 @@ export async function getItems(
     
     if (key === 'discover_all') {
         const { media_type: mediaTypeFilter, with_networks, with_watch_providers, ...apiFilters } = filters;
-        const effectiveMediaType = mediaTypeFilter === 'all' ? 'multi' : mediaTypeFilter || 'multi';
         
-        let typesToFetch: ('movie' | 'tv')[] = [];
+        const selectedNetwork = networksConfig.find(n => n.networkIds?.join('|') === with_networks);
+        const isBroadcastNetwork = selectedNetwork && selectedNetwork.networkIds && selectedNetwork.networkIds.length > 0 && (!selectedNetwork.providerIds || selectedNetwork.providerIds.length === 0);
 
-        if (effectiveMediaType === 'multi') {
-            typesToFetch = ['movie', 'tv'];
+        let typesToFetch: ('movie' | 'tv')[];
+
+        if (isBroadcastNetwork) {
+            // If a broadcast network is selected, only fetch TV shows.
+            typesToFetch = ['tv'];
+        } else if (mediaTypeFilter && mediaTypeFilter !== 'all') {
+            typesToFetch = [mediaTypeFilter as 'movie' | 'tv'];
         } else {
-            typesToFetch = [effectiveMediaType as 'movie' | 'tv'];
+            typesToFetch = ['movie', 'tv'];
         }
         
         let allItems: (Movie | Show)[] = [];
@@ -151,7 +156,7 @@ export async function getItems(
         });
         
         if (typesToFetch.length > 1) {
-            return allItems.sort((a, b) => b.popularity - a.popularity);
+            allItems.sort((a, b) => b.popularity - a.popularity);
         }
 
         return allItems;
@@ -160,7 +165,7 @@ export async function getItems(
     const endpoint = endpoints.find(e => e.key === key);
     if (!endpoint) return [];
   
-    const finalParams: Record<string, string> = { ...endpoint.params, ...filters };
+    const finalParams = { ...endpoint.params, ...filters };
     
     if (page > 1) {
       finalParams.page = page.toString();
@@ -168,11 +173,7 @@ export async function getItems(
   
     if (isCategoryPage && (key === 'k_drama' || key === 'c_drama')) {
         finalParams.sort_by = 'first_air_date.desc';
-    } else if (key === 'k_drama_on_air' || key === 'c_drama_on_air') {
-        const dynamicParams = getDynamicParams();
-        finalParams.sort_by = 'popularity.desc';
-        Object.assign(finalParams, dynamicParams);
-    } else if (key === 'c_drama') {
+    } else if (key === 'k_drama_on_air' || key === 'c_drama_on_air' || key === 'c_drama') {
         const dynamicParams = getDynamicParams();
         finalParams.sort_by = 'popularity.desc';
         Object.assign(finalParams, dynamicParams);
