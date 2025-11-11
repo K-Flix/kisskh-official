@@ -20,10 +20,10 @@ export default async function MoviesPage() {
     <div className="flex flex-col">
       {featured && featured.length > 0 && <HeroSection movies={featured} />}
       <div className="container py-8 space-y-8">
-        <MovieCarousel title="Popular Movies" movies={popularMovies} />
-        <MovieCarousel title="Top Rated Movies" movies={topRated} />
-        <MovieCarousel title="Now Playing" movies={nowPlaying} />
-        <MovieCarousel title="Upcoming" movies={upcoming} />
+        <MovieCarousel title="Popular Movies" movies={popularMovies} seeAllHref="/category/popular_movies" />
+        <MovieCarousel title="Top Rated Movies" movies={topRated} seeAllHref="/category/top_rated_movies" />
+        <MovieCarousel title="Now Playing" movies={nowPlaying} seeAllHref="/category/now_playing_movies" />
+        <MovieCarousel title="Upcoming" movies={upcoming} seeAllHref="/category/upcoming_movies" />
       </div>
     </div>
   );

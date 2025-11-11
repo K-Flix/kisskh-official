@@ -22,12 +22,12 @@ export default async function TVPage() {
     <div className="flex flex-col">
       {featured && featured.length > 0 && <HeroSection movies={featured} />}
       <div className="container py-8 space-y-8">
-        <MovieCarousel title="Trending TV Shows" movies={trending} />
-        <MovieCarousel title="K-Drama" movies={kDramas} key="k-dramas" />
-        <MovieCarousel title="C-Drama" movies={cDramas} />
-        <MovieCarousel title="Anime" movies={anime} />
-        <MovieCarousel title="On The Air" movies={onTheAir} />
-        <MovieCarousel title="Top Rated" movies={topRated} />
+        <MovieCarousel title="Trending TV Shows" movies={trending} seeAllHref="/category/trending_tv" />
+        <MovieCarousel title="K-Drama" movies={kDramas} seeAllHref="/category/k_drama" />
+        <MovieCarousel title="C-Drama" movies={cDramas} seeAllHref="/category/c_drama" />
+        <MovieCarousel title="Anime" movies={anime} seeAllHref="/category/anime" />
+        <MovieCarousel title="On The Air" movies={onTheAir} seeAllHref="/category/on_the_air_tv" />
+        <MovieCarousel title="Top Rated" movies={topRated} seeAllHref="/category/top_rated_tv" />
       </div>
     </div>
   );
