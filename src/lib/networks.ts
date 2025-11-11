@@ -33,7 +33,7 @@ export const networksConfig: NetworkConfig[] = [
   { name: 'Fox', logo_path: 'https://media.themoviedb.org/t/p/w154/1DSpHrWyOORkL9N2QHX7Adt31mQ.png', providerIds: [], networkIds: [19] },
   { name: 'AMC', logo_path: 'https://media.themoviedb.org/t/p/w154/pmvRmATOCaDykE6JrVoeYxlFHw3.png', providerIds: [], networkIds: [174] },
   { name: 'BBC', logo_path: 'https://media.themoviedb.org/t/p/w154/imf3gQOupRLdbwRC6FalEovuAPS.png', providerIds: [], networkIds: [4] },
-  { name: 'The CW', logo_path: 'https://media.themoviedb.org/t/p/w154/hEpcdJ4O6eitG9ADSnUrlovS.png', providerIds: [], networkIds: [71] },
+  { name: 'The CW', logo_path: 'https://image.tmdb.org/t/p/w154/hEpcdJ4O6eitG9ADSnDXNUrlovS.png', providerIds: [], networkIds: [71] },
   { name: 'MGM+', logo_path: 'https://media.themoviedb.org/t/p/w154/89TXvQzvoKvyqD9EEogohzMJ8D6.png', providerIds: [], networkIds: [6219] },
   { name: 'tvN', logo_path: 'https://media.themoviedb.org/t/p/w154/aRDq8zBrX3YLpHSfueNQBkNnn7b.png', providerIds: [], networkIds: [866] },
   { name: 'JTBC', logo_path: 'https://media.themoviedb.org/t/p/w154/44I4aVlasm8Blb8WPGXTkMYuZJF.png', providerIds: [], networkIds: [885] },
