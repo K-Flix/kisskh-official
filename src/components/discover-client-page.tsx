@@ -94,18 +94,14 @@ export function DiscoverClientPage({
   const handleNetworkSelect = (network: NetworkConfig) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
     const networkIds = network.networkIds?.join('|');
-    const providerIds = network.providerIds?.join('|');
 
-    const isAlreadySelected = 
-        (networkIds && current.get('with_networks') === networkIds) || 
-        (providerIds && current.get('with_watch_providers') === providerIds);
+    const isAlreadySelected = (networkIds && current.get('with_networks') === networkIds);
 
     current.delete('with_networks');
     current.delete('with_watch_providers');
 
-    if (!isAlreadySelected) {
-        if (networkIds) current.set('with_networks', networkIds);
-        if (providerIds) current.set('with_watch_providers', providerIds);
+    if (!isAlreadySelected && networkIds) {
+        current.set('with_networks', networkIds);
     }
     
     const search = current.toString();
@@ -135,8 +131,7 @@ export function DiscoverClientPage({
   }, []);
 
   const selectedNetworkId = searchParams.get('with_networks');
-  const selectedProviderId = searchParams.get('with_watch_providers');
-  const hasActiveNetworkFilter = !!selectedNetworkId || !!selectedProviderId;
+  const hasActiveNetworkFilter = !!selectedNetworkId;
 
   const currentFilters: Record<string, string | undefined> = {};
   searchParams.forEach((value, key) => {
@@ -154,8 +149,7 @@ export function DiscoverClientPage({
               <CarouselContent>
               {networks.map((network) => {
                   const networkIds = network.networkIds?.join('|');
-                  const providerIds = network.providerIds?.join('|');
-                  const isActive = (networkIds && selectedNetworkId === networkIds) || (providerIds && selectedProviderId === providerIds);
+                  const isActive = (networkIds && selectedNetworkId === networkIds);
                   
                   return (
                     <CarouselItem key={network.name} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6">
