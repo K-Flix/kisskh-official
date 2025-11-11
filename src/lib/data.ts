@@ -158,16 +158,15 @@ export async function getItems(
     };
   
     // Special handling for drama categories to sort by date on category pages
-    const dramaKeys = ['k_drama', 'c_drama'];
-    if (isCategoryPage && dramaKeys.includes(key)) {
-        finalParams.sort_by = 'first_air_date.desc';
-    } else if (key === 'k_drama_on_air') {
-        const dynamicParams = getDynamicParams();
-        finalParams['air_date.gte'] = dynamicParams['air_date.gte'];
-        finalParams['air_date.lte'] = dynamicParams['air_date.lte'];
-        finalParams.sort_by = 'popularity.desc';
+    if (isCategoryPage && (key === 'k_drama' || key === 'c_drama')) {
+      finalParams.sort_by = 'first_air_date.desc';
+    } else if (key === 'k_drama_on_air' || key === 'c_drama_on_air') {
+      const dynamicParams = getDynamicParams();
+      finalParams['air_date.gte'] = dynamicParams['air_date.gte'];
+      finalParams['air_date.lte'] = dynamicParams['air_date.lte'];
+      finalParams.sort_by = 'popularity.desc';
     } else if (endpoint.sort_by) {
-        finalParams.sort_by = endpoint.sort_by;
+      finalParams.sort_by = endpoint.sort_by;
     }
   
     const data = await fetchFromTMDB(endpoint.url, finalParams);
@@ -308,3 +307,4 @@ export async function getCountries(): Promise<Country[]> {
     
 
     
+
