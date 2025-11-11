@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { DiscoverFilters } from './discover-filters';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { NetworkCard } from '@/components/network-card';
+import { networksConfig } from '@/lib/networks';
 
 interface DiscoverClientPageProps {
   initialItems: (Movie | Show)[];
@@ -100,7 +101,6 @@ export function DiscoverClientPage({
         (networkIds && current.get('with_networks') === networkIds) ||
         (providerIds && current.get('with_watch_providers') === providerIds);
 
-    // Always clear both to ensure a clean state
     current.delete('with_networks');
     current.delete('with_watch_providers');
 
@@ -110,6 +110,13 @@ export function DiscoverClientPage({
         }
         if (providerIds) {
             current.set('with_watch_providers', providerIds);
+        }
+        
+        const hasNetworkIds = network.networkIds && network.networkIds.length > 0;
+        const hasProviderIds = network.providerIds && network.providerIds.length > 0;
+
+        if(hasNetworkIds && !hasProviderIds) { // Broadcast-only
+          current.set('media_type', 'tv');
         }
     }
     
@@ -147,6 +154,15 @@ export function DiscoverClientPage({
   searchParams.forEach((value, key) => {
     currentFilters[key] = value;
   });
+  
+  const selectedNetwork = networksConfig.find(n => 
+    (n.networkIds?.join('|') === selectedNetworkId && n.providerIds?.join('|') === selectedProviderId) ||
+    (n.networkIds?.join('|') === selectedNetworkId && !selectedProviderId) ||
+    (n.providerIds?.join('|') === selectedProviderId && !selectedNetworkId)
+  );
+
+  const isMediaTypeDisabled = selectedNetwork && selectedNetwork.networkIds && selectedNetwork.networkIds.length > 0 && !(selectedNetwork.providerIds && selectedNetwork.providerIds.length > 0);
+
 
   return (
     <div className="space-y-8">
@@ -163,7 +179,8 @@ export function DiscoverClientPage({
 
                   const isNetworkActive = networkIds && selectedNetworkId === networkIds;
                   const isProviderActive = providerIds && selectedProviderId === providerIds;
-                  const isActive = isNetworkActive || isProviderActive;
+                  
+                  const isActive = (networkIds && isNetworkActive) || (providerIds && isProviderActive);
                   
                   return (
                     <CarouselItem key={network.name} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6">
@@ -189,6 +206,7 @@ export function DiscoverClientPage({
         onFilterChange={handleFilterChange}
         onReset={handleReset}
         currentFilters={currentFilters}
+        isMediaTypeDisabled={isMediaTypeDisabled}
       />
 
       {items.length > 0 ? (
@@ -226,3 +244,4 @@ export function DiscoverClientPage({
     </div>
   );
 }
+

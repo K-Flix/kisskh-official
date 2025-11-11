@@ -106,76 +106,78 @@ export async function getItems(
   ): Promise<(Movie | Show)[]> {
     
     if (key === 'discover_all') {
-        const { media_type: mediaTypeFilter, with_networks, with_watch_providers, ...apiFilters } = filters;
-        
-        const selectedNetwork = networksConfig.find(n => 
-            (n.networkIds?.length && n.networkIds.join('|') === with_networks) || 
-            (n.providerIds?.length && n.providerIds.join('|') === with_watch_providers)
-        );
+      const { media_type, with_networks, with_watch_providers, ...apiFilters } = filters;
+  
+      const selectedNetwork = networksConfig.find(n => 
+        (n.networkIds?.join('|') === with_networks) || 
+        (n.providerIds?.join('|') === with_watch_providers)
+      );
+  
+      const hasNetworkIds = selectedNetwork && selectedNetwork.networkIds && selectedNetwork.networkIds.length > 0;
+      const hasProviderIds = selectedNetwork && selectedNetwork.providerIds && selectedNetwork.providerIds.length > 0;
+      
+      const isBroadcastOnly = hasNetworkIds && !hasProviderIds;
+      const isStreamingOnly = hasProviderIds && !hasNetworkIds;
 
-        const hasNetworkIds = selectedNetwork && selectedNetwork.networkIds && selectedNetwork.networkIds.length > 0;
-        const hasProviderIds = selectedNetwork && selectedNetwork.providerIds && selectedNetwork.providerIds.length > 0;
+      let effectiveMediaType = media_type;
+      if (isBroadcastOnly && effectiveMediaType !== 'tv') {
+        effectiveMediaType = 'tv'; // Force TV for broadcast-only networks
+      }
 
-        const isBroadcastOnly = hasNetworkIds && !hasProviderIds;
-        const isStreamingOnly = hasProviderIds && !hasNetworkIds;
-
-        let typesToFetch: ('movie' | 'tv')[];
-
-        if (isBroadcastOnly) {
-            typesToFetch = ['tv'];
-        } else if (mediaTypeFilter && mediaTypeFilter !== 'all') {
-            typesToFetch = [mediaTypeFilter as 'movie' | 'tv'];
-        } else {
-            typesToFetch = ['movie', 'tv'];
+      const typesToFetch: ('movie' | 'tv')[] = effectiveMediaType && effectiveMediaType !== 'all'
+        ? [effectiveMediaType as 'movie' | 'tv']
+        : ['movie', 'tv'];
+  
+      let allItems: (Movie | Show)[] = [];
+  
+      const promises = typesToFetch.map(type => {
+        let paramsForType: Record<string, string> = {
+          page: page.toString(),
+          sort_by: filters.sort_by || 'popularity.desc',
+          ...apiFilters,
+        };
+  
+        if (type === 'tv') {
+          if (with_networks) paramsForType.with_networks = with_networks;
+          if (with_watch_providers) {
+              paramsForType.with_watch_providers = with_watch_providers;
+              paramsForType.watch_region = 'US';
+          }
+        } else if (type === 'movie') {
+          // Movies only work reliably with provider IDs
+          if (with_watch_providers) {
+            paramsForType.with_watch_providers = with_watch_providers;
+            paramsForType.watch_region = 'US';
+          } else {
+            // Don't fetch movies if we only have a network ID, as it's unreliable
+            return Promise.resolve(null);
+          }
         }
         
-        let allItems: (Movie | Show)[] = [];
-
-        const promises = typesToFetch.map(type => {
-            let paramsForType: Record<string, string> = {
-                page: page.toString(),
-                sort_by: filters.sort_by || 'popularity.desc',
-                ...apiFilters,
-            };
-
-            if (type === 'tv') {
-                if (with_networks) paramsForType.with_networks = with_networks;
-                // For streaming-only services, we must use providers for TV as well
-                if (isStreamingOnly && with_watch_providers) {
-                    paramsForType.with_watch_providers = with_watch_providers;
-                    paramsForType.watch_region = 'US';
-                }
-            } else if (type === 'movie') {
-                if (with_watch_providers) {
-                    paramsForType.with_watch_providers = with_watch_providers;
-                    paramsForType.watch_region = 'US';
-                }
-            }
-            
-            return fetchFromTMDB(`discover/${type}`, paramsForType);
-        });
-
-        const results = await Promise.all(promises);
-        
-        results.forEach((data, index) => {
-            if (data?.results) {
-                const type = typesToFetch[index];
-                const processed = data.results.map((item: TmdbItem) => processItem(item, type)).filter(Boolean) as (Movie | Show)[];
-                allItems = allItems.concat(processed);
-            }
-        });
-        
-        if (typesToFetch.length > 1) {
-            allItems.sort((a, b) => b.popularity - a.popularity);
+        return fetchFromTMDB(`discover/${type}`, paramsForType);
+      });
+  
+      const results = await Promise.all(promises);
+      
+      results.forEach((data, index) => {
+        if (data?.results) {
+          const type = typesToFetch[index];
+          const processed = data.results.map((item: TmdbItem) => processItem(item, type)).filter(Boolean) as (Movie | Show)[];
+          allItems = allItems.concat(processed);
         }
-
-        return allItems;
+      });
+      
+      if (typesToFetch.length > 1) {
+        allItems.sort((a, b) => b.popularity - a.popularity);
+      }
+  
+      return allItems;
     }
   
     const endpoint = endpoints.find(e => e.key === key);
     if (!endpoint) return [];
   
-    const finalParams = { ...endpoint.params, ...filters };
+    const finalParams: Record<string, string> = { ...endpoint.params, ...filters };
     
     if (page > 1) {
       finalParams.page = page.toString();
@@ -183,7 +185,11 @@ export async function getItems(
   
     if (isCategoryPage && (key === 'k_drama' || key === 'c_drama')) {
         finalParams.sort_by = 'first_air_date.desc';
-    } else if (key === 'k_drama_on_air' || key === 'c_drama_on_air' || key === 'c_drama') {
+    } else if (key === 'k_drama_on_air' || key === 'c_drama_on_air') {
+        const dynamicParams = getDynamicParams();
+        finalParams.sort_by = 'popularity.desc';
+        Object.assign(finalParams, dynamicParams);
+    } else if (key === 'c_drama' && isCategoryPage) { // This handles "See All" for C-Drama on home
         const dynamicParams = getDynamicParams();
         finalParams.sort_by = 'popularity.desc';
         Object.assign(finalParams, dynamicParams);

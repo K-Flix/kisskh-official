@@ -18,9 +18,10 @@ interface DiscoverFiltersProps {
     onFilterChange: (key: string, value: string) => void;
     onReset: () => void;
     currentFilters: Record<string, string | undefined>;
+    isMediaTypeDisabled?: boolean;
 }
 
-export function DiscoverFilters({ genres, countries, years, onFilterChange, onReset, currentFilters }: DiscoverFiltersProps) {
+export function DiscoverFilters({ genres, countries, years, onFilterChange, onReset, currentFilters, isMediaTypeDisabled }: DiscoverFiltersProps) {
     const sortOptions = [
         { value: 'popularity.desc', label: 'Popularity' },
         { value: 'vote_average.desc', label: 'Rating' },
@@ -34,8 +35,12 @@ export function DiscoverFilters({ genres, countries, years, onFilterChange, onRe
             <h2 className="text-2xl font-bold">Detailed Search</h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 bg-secondary/50 p-3 rounded-lg border-border/50">
-            <Select value={currentFilters['media_type'] || 'all'} onValueChange={(value) => onFilterChange('media_type', value)}>
-                <SelectTrigger className="w-full bg-background border-0 focus:ring-2 focus:ring-primary">
+            <Select 
+                value={currentFilters['media_type'] || 'all'} 
+                onValueChange={(value) => onFilterChange('media_type', value)}
+                disabled={isMediaTypeDisabled}
+            >
+                <SelectTrigger className="w-full bg-background border-0 focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed">
                     <SelectValue placeholder="Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -92,3 +97,4 @@ export function DiscoverFilters({ genres, countries, years, onFilterChange, onRe
     </div>
   )
 }
+
