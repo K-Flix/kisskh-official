@@ -108,13 +108,20 @@ export async function getItems(
     if (key === 'discover_all') {
         const { media_type: mediaTypeFilter, with_networks, with_watch_providers, ...apiFilters } = filters;
         
-        const selectedNetwork = networksConfig.find(n => n.networkIds?.join('|') === with_networks);
-        const isBroadcastNetwork = selectedNetwork && selectedNetwork.networkIds && selectedNetwork.networkIds.length > 0 && (!selectedNetwork.providerIds || selectedNetwork.providerIds.length === 0);
+        const selectedNetwork = networksConfig.find(n => 
+            (n.networkIds?.length && n.networkIds.join('|') === with_networks) || 
+            (n.providerIds?.length && n.providerIds.join('|') === with_watch_providers)
+        );
+
+        const hasNetworkIds = selectedNetwork && selectedNetwork.networkIds && selectedNetwork.networkIds.length > 0;
+        const hasProviderIds = selectedNetwork && selectedNetwork.providerIds && selectedNetwork.providerIds.length > 0;
+
+        const isBroadcastOnly = hasNetworkIds && !hasProviderIds;
+        const isStreamingOnly = hasProviderIds && !hasNetworkIds;
 
         let typesToFetch: ('movie' | 'tv')[];
 
-        if (isBroadcastNetwork) {
-            // If a broadcast network is selected, only fetch TV shows.
+        if (isBroadcastOnly) {
             typesToFetch = ['tv'];
         } else if (mediaTypeFilter && mediaTypeFilter !== 'all') {
             typesToFetch = [mediaTypeFilter as 'movie' | 'tv'];
@@ -131,14 +138,17 @@ export async function getItems(
                 ...apiFilters,
             };
 
-            if (type === 'movie') {
-                if (with_watch_providers) {
+            if (type === 'tv') {
+                if (with_networks) paramsForType.with_networks = with_networks;
+                // For streaming-only services, we must use providers for TV as well
+                if (isStreamingOnly && with_watch_providers) {
                     paramsForType.with_watch_providers = with_watch_providers;
                     paramsForType.watch_region = 'US';
                 }
-            } else { // type === 'tv'
-                if (with_networks) {
-                    paramsForType.with_networks = with_networks;
+            } else if (type === 'movie') {
+                if (with_watch_providers) {
+                    paramsForType.with_watch_providers = with_watch_providers;
+                    paramsForType.watch_region = 'US';
                 }
             }
             
