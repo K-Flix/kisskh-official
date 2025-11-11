@@ -106,70 +106,71 @@ export async function getItems(
   ): Promise<(Movie | Show)[]> {
     
     if (key === 'discover_all') {
-        const mediaType = filters.media_type === 'all' ? 'multi' : filters.media_type || 'multi';
-        const { media_type: _, ...apiFilters } = filters;
-    
-        let finalParams: Record<string, string | undefined> = {
+      const { media_type: mediaTypeFilter, ...apiFilters } = filters;
+      let effectiveMediaType = mediaTypeFilter === 'all' ? 'multi' : mediaTypeFilter || 'multi';
+  
+      const selectedNetwork = networksConfig.find(n => n.networkIds?.join('|') === filters.with_networks || n.providerIds?.join('|') === filters.with_watch_providers);
+
+      // If a network is selected that ONLY has networkIds (not providerIds), default to searching TV
+      if (selectedNetwork && selectedNetwork.networkIds && !selectedNetwork.providerIds && effectiveMediaType === 'multi') {
+        effectiveMediaType = 'tv';
+      }
+      
+      const typesToFetch: ('movie' | 'tv')[] = effectiveMediaType === 'multi' ? ['movie', 'tv'] : [effectiveMediaType as 'movie' | 'tv'];
+  
+      let allItems: (Movie | Show)[] = [];
+  
+      const promises = typesToFetch.map(type => {
+        const paramsForType = {
           page: page.toString(),
           sort_by: filters.sort_by || 'popularity.desc',
           ...apiFilters,
         };
   
-        const typesToFetch: ('movie' | 'tv')[] = mediaType === 'multi' ? ['movie', 'tv'] : [mediaType];
-        
-        let allItems: (Movie | Show)[] = [];
-  
-        if (filters.with_watch_providers || filters.with_networks) {
-          const promises = typesToFetch.map(type => {
-            const paramsForType = { ...finalParams };
-            if (type === 'movie') {
-                delete paramsForType.with_networks;
-            } else { // type === 'tv'
-                if (paramsForType.with_watch_providers) {
-                    delete paramsForType.with_networks;
-                }
-            }
-            return fetchFromTMDB(`discover/${type}`, paramsForType as Record<string, string>);
-          });
-          const results = await Promise.all(promises);
-          allItems = results.flatMap((data, index) => {
-              if (!data?.results) return [];
-              const type = typesToFetch[index];
-              return data.results.map((item: TmdbItem) => processItem(item, type)).filter(Boolean) as (Movie | Show)[];
-          });
-        } else {
-            const endpoint = mediaType === 'multi' ? `discover/movie` : `discover/${mediaType}`;
-            const data = await fetchFromTMDB(endpoint, finalParams as Record<string, string>);
-            if (data?.results) {
-                allItems = data.results.map((item: TmdbItem) => processItem(item, mediaType === 'multi' ? item.media_type : mediaType)).filter(Boolean) as (Movie|Show)[];
-            }
+        if (type === 'movie') {
+          // Movies should ONLY use with_watch_providers, not with_networks
+          delete paramsForType.with_networks;
+        } else { // type === 'tv'
+          // TV shows should prioritize with_networks if it exists.
+          if (paramsForType.with_networks) {
+            delete paramsForType.with_watch_providers;
+          }
         }
-        
-        return allItems.sort((a, b) => b.popularity - (a.popularity || 0));
+  
+        return fetchFromTMDB(`discover/${type}`, paramsForType as Record<string, string>);
+      });
+  
+      const results = await Promise.all(promises);
+      allItems = results.flatMap((data, index) => {
+        if (!data?.results) return [];
+        const type = typesToFetch[index];
+        return data.results.map((item: TmdbItem) => processItem(item, type)).filter(Boolean) as (Movie | Show)[];
+      });
+      
+      // Sort combined results by popularity client-side as TMDB can't sort multi-searches
+      return allItems.sort((a, b) => b.popularity - (a.popularity || 0));
     }
   
     const endpoint = endpoints.find(e => e.key === key);
     if (!endpoint) return [];
   
-    let finalParams: Record<string, string> = { 
-        page: page.toString(), 
-        ...endpoint.params,
-        ...filters,
-    };
+    let finalParams = { ...endpoint.params, ...filters };
+    
+    if (page > 1) {
+      finalParams.page = page.toString();
+    }
   
     // Special handling for drama categories to sort by date on category pages
     if (isCategoryPage && (key === 'k_drama' || key === 'c_drama')) {
       finalParams.sort_by = 'first_air_date.desc';
     } else if (key === 'k_drama_on_air' || key === 'c_drama_on_air') {
       const dynamicParams = getDynamicParams();
-      finalParams['air_date.gte'] = dynamicParams['air_date.gte'];
-      finalParams['air_date.lte'] = dynamicParams['air_date.lte'];
-      finalParams.sort_by = 'popularity.desc';
+      finalParams = { ...finalParams, ...dynamicParams, sort_by: 'popularity.desc' };
     } else if (endpoint.sort_by) {
       finalParams.sort_by = endpoint.sort_by;
     }
   
-    const data = await fetchFromTMDB(endpoint.url, finalParams);
+    const data = await fetchFromTMDB(endpoint.url, finalParams as Record<string, string>);
     if (!data?.results) return [];
     
     let items = data.results
@@ -308,3 +309,6 @@ export async function getCountries(): Promise<Country[]> {
 
     
 
+
+
+    
