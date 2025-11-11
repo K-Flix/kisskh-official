@@ -106,41 +106,38 @@ export async function getItems(
   ): Promise<(Movie | Show)[]> {
     
     if (key === 'discover_all') {
-        const { media_type: mediaTypeFilter, ...apiFilters } = filters;
+        const { media_type: mediaTypeFilter, with_networks, with_watch_providers, ...apiFilters } = filters;
         const effectiveMediaType = mediaTypeFilter === 'all' ? 'multi' : mediaTypeFilter || 'multi';
-
-        const selectedNetwork = networksConfig.find(n => n.networkIds?.join('|') === filters.with_networks || n.providerIds?.join('|') === filters.with_watch_providers);
         
         let typesToFetch: ('movie' | 'tv')[] = [];
 
         if (effectiveMediaType === 'multi') {
-            if (selectedNetwork && selectedNetwork.networkIds && !selectedNetwork.providerIds) {
-                typesToFetch = ['tv'];
-            } else {
-                typesToFetch = ['movie', 'tv'];
-            }
+            typesToFetch = ['movie', 'tv'];
         } else {
             typesToFetch = [effectiveMediaType as 'movie' | 'tv'];
         }
-
+        
         let allItems: (Movie | Show)[] = [];
 
         const promises = typesToFetch.map(type => {
-            const paramsForType = {
+            let paramsForType: Record<string, string> = {
                 page: page.toString(),
                 sort_by: filters.sort_by || 'popularity.desc',
                 ...apiFilters,
             };
 
-            // TV shows use with_networks, Movies use with_watch_providers.
-            // Clear the irrelevant one for each type.
             if (type === 'movie') {
-                delete paramsForType.with_networks;
+                if (with_watch_providers) {
+                    paramsForType.with_watch_providers = with_watch_providers;
+                    paramsForType.watch_region = 'US';
+                }
             } else { // type === 'tv'
-                delete paramsForType.with_watch_providers;
+                if (with_networks) {
+                    paramsForType.with_networks = with_networks;
+                }
             }
             
-            return fetchFromTMDB(`discover/${type}`, paramsForType as Record<string, string>);
+            return fetchFromTMDB(`discover/${type}`, paramsForType);
         });
 
         const results = await Promise.all(promises);
@@ -153,7 +150,6 @@ export async function getItems(
             }
         });
         
-        // Sort combined results by popularity client-side as TMDB can't sort multi-searches
         if (typesToFetch.length > 1) {
             return allItems.sort((a, b) => b.popularity - a.popularity);
         }
@@ -164,24 +160,27 @@ export async function getItems(
     const endpoint = endpoints.find(e => e.key === key);
     if (!endpoint) return [];
   
-    const finalParams = { ...endpoint.params, ...filters };
+    const finalParams: Record<string, string> = { ...endpoint.params, ...filters };
     
     if (page > 1) {
       finalParams.page = page.toString();
     }
   
-    // Special handling for drama categories to sort by date on category pages
     if (isCategoryPage && (key === 'k_drama' || key === 'c_drama')) {
-      finalParams.sort_by = 'first_air_date.desc';
+        finalParams.sort_by = 'first_air_date.desc';
     } else if (key === 'k_drama_on_air' || key === 'c_drama_on_air') {
-      const dynamicParams = getDynamicParams();
-      finalParams.sort_by = 'popularity.desc';
-      Object.assign(finalParams, dynamicParams);
+        const dynamicParams = getDynamicParams();
+        finalParams.sort_by = 'popularity.desc';
+        Object.assign(finalParams, dynamicParams);
+    } else if (key === 'c_drama') {
+        const dynamicParams = getDynamicParams();
+        finalParams.sort_by = 'popularity.desc';
+        Object.assign(finalParams, dynamicParams);
     } else if (endpoint.sort_by) {
       finalParams.sort_by = endpoint.sort_by;
     }
   
-    const data = await fetchFromTMDB(endpoint.url, finalParams as Record<string, string>);
+    const data = await fetchFromTMDB(endpoint.url, finalParams);
     if (!data?.results) return [];
     
     let items = data.results
