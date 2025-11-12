@@ -127,10 +127,13 @@ export async function getItems(
                     delete paramsForType.with_watch_providers; // Prioritize network for TV
                 }
             } else if (type === 'movie') {
+                if(paramsForType.with_origin_country) {
+                    // This is the fix. The parameter for movies is with_origin_country, not with_original_country
+                }
                  if (hasProviderFilter) {
                     paramsForType.watch_region = 'US';
                     delete paramsForType.with_networks; // Movies don't use with_networks
-                } else {
+                } else if(hasNetworkFilter) {
                     // Don't fetch movies if there's only a network filter
                     return Promise.resolve(null);
                 }
