@@ -24,7 +24,7 @@ export function EpisodeCard({ episode, showId, seasonNumber, showBackdropPath, o
   return (
     <div 
         onClick={isReleased ? onPlay : undefined}
-        className={`flex items-center gap-4 bg-secondary/50 p-2 rounded-lg group transition-all duration-200 ${isReleased ? 'cursor-pointer hover:bg-secondary/80' : 'cursor-default opacity-70'} ${isPlaying ? 'bg-primary/20 border border-primary/50' : 'border border-transparent'}`}
+        className={`flex items-start gap-4 bg-secondary/50 p-3 rounded-lg group transition-all duration-200 ${isReleased ? 'cursor-pointer hover:bg-secondary/80' : 'cursor-default opacity-70'} ${isPlaying ? 'bg-primary/10 border border-primary/50' : 'border border-transparent'}`}
     >
       <div className="relative w-48 flex-shrink-0 aspect-video rounded-md overflow-hidden bg-muted">
         <Image 
@@ -47,12 +47,12 @@ export function EpisodeCard({ episode, showId, seasonNumber, showBackdropPath, o
         </div>
         <span className="absolute bottom-1 left-2 bg-black/70 text-white text-xs font-bold px-1.5 py-0.5 rounded pointer-events-none">{episode.episode_number}</span>
       </div>
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 pt-1">
         <div className="flex items-baseline justify-between">
-            <h3 className={`text-base font-bold truncate ${isPlaying ? 'text-primary' : 'text-white'}`}>{episode.name}</h3>
+            <h3 className={`text-base font-bold truncate ${isPlaying ? 'text-primary' : 'text-white'}`}>{`Chapter ${episode.episode_number}: ${episode.name}`}</h3>
             {episode.runtime && <span className="text-sm text-muted-foreground flex-shrink-0 ml-4">{episode.runtime}m</span>}
         </div>
-        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+        <p className="text-sm text-muted-foreground mt-1.5 line-clamp-2">
             {isReleased 
                 ? episode.overview || 'No description available for this episode.'
                 : <span className="flex items-center gap-2"><CalendarClock className="w-4 h-4"/>Airs on {format(new Date(episode.air_date!), 'MMMM do, yyyy')}</span>
@@ -63,7 +63,7 @@ export function EpisodeCard({ episode, showId, seasonNumber, showBackdropPath, o
           asChild
           variant="ghost"
           size="icon"
-          className="ml-auto flex-shrink-0 w-12 h-12 rounded-full bg-background/50 hover:bg-background/80 disabled:opacity-50 disabled:pointer-events-none"
+          className="ml-auto flex-shrink-0 w-11 h-11 rounded-full bg-background/50 hover:bg-background/80 disabled:opacity-50 disabled:pointer-events-none self-center"
           aria-label={`Download episode ${episode.episode_number}`}
           title={`Download episode ${episode.episode_number}`}
           onClick={(e) => e.stopPropagation()} // Prevents playing the episode

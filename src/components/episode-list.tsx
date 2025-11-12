@@ -57,7 +57,7 @@ export function EpisodeList({ showId, seasons, showBackdropPath, onEpisodePlay, 
             </div>
         </div>
       
-      <ScrollArea className="h-[60vh] pr-4 -mr-4">
+      <ScrollArea className="h-[70vh] pr-4 -mr-4">
         {selectedSeason && (
             <div className="space-y-3">
                 {filteredEpisodes?.map((episode) => {
