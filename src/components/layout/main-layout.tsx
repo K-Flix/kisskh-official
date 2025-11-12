@@ -22,19 +22,17 @@ function Footer() {
 
 export function MainLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const isDetailPage = pathname.startsWith('/movie/') || pathname.startsWith('/tv/') || pathname.startsWith('/person/');
     const isPageWithHero = ['/', '/movies', '/tv'].includes(pathname);
-    const isDiscoverPage = pathname.startsWith('/discover');
-
-    if (isDetailPage) {
-        return <main>{children}</main>;
-    }
+    const isDetailPage = pathname.startsWith('/movie/') || pathname.startsWith('/tv/') || pathname.startsWith('/person/');
     
     return (
         <div className="relative flex min-h-screen flex-col">
             <Header />
             <main className="flex-1">
-                {isPageWithHero ? children : <div className={isDiscoverPage ? 'pt-16' : 'pt-16'}>{children}</div>}
+                {isPageWithHero ? children : 
+                 isDetailPage ? <div className="pt-0">{children}</div> :
+                 <div className="pt-16">{children}</div>
+                }
             </main>
             <Footer />
         </div>

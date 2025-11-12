@@ -11,7 +11,10 @@ import { ThemeWrapper } from '@/components/theme-wrapper';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
+const VERCEL_URL = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(VERCEL_URL),
   title: 'kisskh',
   description: 'A streaming website built with Next.js',
   viewport: {
@@ -22,6 +25,14 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [],
+  },
+  openGraph: {
+    title: 'kisskh',
+    description: 'A free streaming website for movies and TV shows.',
+    images: '/og-image.png',
+    type: 'website',
+    url: VERCEL_URL,
+    siteName: 'kisskh',
   }
 };
 
