@@ -37,6 +37,7 @@ export interface Show extends BaseItem {
 
 export interface CastMember {
   credit_id: string;
+  id: number;
   name: string;
   character: string;
   profile_path: string | null;
@@ -121,4 +122,17 @@ export interface NetworkConfig {
   logo_path: string;
   providerIds?: number[];
   networkIds?: number[];
+}
+
+export interface Person {
+    id: number;
+    name: string;
+    profile_path: string;
+    biography: string;
+    birthday: string | null;
+    place_of_birth: string | null;
+}
+
+export interface PersonDetails extends Person {
+    known_for: (Movie | Show)[];
 }

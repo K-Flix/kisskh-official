@@ -22,7 +22,7 @@ function Footer() {
 
 export function MainLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const isDetailPage = pathname.startsWith('/movie/') || pathname.startsWith('/tv/');
+    const isDetailPage = pathname.startsWith('/movie/') || pathname.startsWith('/tv/') || pathname.startsWith('/person/');
     const isPageWithHero = ['/', '/movies', '/tv'].includes(pathname);
     const isDiscoverPage = pathname.startsWith('/discover');
 

@@ -1,7 +1,7 @@
 
 'use server';
 
-import type { Movie, Show, MovieDetails, ShowDetails, TmdbItem, Genre, Country } from '@/lib/types';
+import type { Movie, Show, MovieDetails, ShowDetails, TmdbItem, Genre, Country, PersonDetails } from '@/lib/types';
 import { endpoints } from './endpoints';
 import { networksConfig } from './networks';
 
@@ -127,9 +127,6 @@ export async function getItems(
                     delete paramsForType.with_watch_providers; // Prioritize network for TV
                 }
             } else if (type === 'movie') {
-                if(paramsForType.with_origin_country) {
-                    // This is the fix. The parameter for movies is with_origin_country, not with_original_country
-                }
                  if (hasProviderFilter) {
                     paramsForType.watch_region = 'US';
                     delete paramsForType.with_networks; // Movies don't use with_networks
@@ -216,6 +213,7 @@ export async function getMovieById(id: number): Promise<MovieDetails | null> {
         media_type: 'movie',
         runtime: data.runtime,
         cast: (data.credits?.cast || []).map((member: any) => ({
+            id: member.id,
             credit_id: member.credit_id,
             name: member.name,
             character: member.character,
@@ -251,6 +249,7 @@ export async function getShowById(id: number): Promise<ShowDetails | null> {
     }));
 
     const cast = (data.credits?.cast || []).map((member: any) => ({
+        id: member.id,
         credit_id: member.credit_id,
         name: member.name,
         character: member.character,
@@ -310,4 +309,26 @@ export async function getCountries(): Promise<Country[]> {
         .sort((a: Country, b: Country) => a.english_name.localeCompare(b.english_name));
 }
 
+
+export async function getPersonById(id: number): Promise<PersonDetails | null> {
+    const data = await fetchFromTMDB(`person/${id}`, { append_to_response: 'combined_credits' });
+    if (!data) return null;
+
+    const knownFor = (data.combined_credits?.cast || [])
+        .map((item: TmdbItem) => processItem(item, item.media_type))
+        .filter(Boolean)
+        .sort((a: any, b: any) => (b.popularity || 0) - (a.popularity || 0))
+        .slice(0, 12) as (Movie | Show)[];
     
+    const person: PersonDetails = {
+        id: data.id,
+        name: data.name,
+        profile_path: data.profile_path ? `${IMAGE_BASE_URL}/w500${data.profile_path}` : '/placeholder-avatar.svg',
+        biography: data.biography,
+        birthday: data.birthday,
+        place_of_birth: data.place_of_birth,
+        known_for: knownFor,
+    };
+
+    return person;
+}

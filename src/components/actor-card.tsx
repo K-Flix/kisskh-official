@@ -4,6 +4,7 @@ import type { CastMember } from '@/lib/types';
 import { User } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
+import Link from 'next/link';
 
 interface ActorCardProps {
   actor: CastMember;
@@ -11,27 +12,29 @@ interface ActorCardProps {
 
 function SingleActorCard({ actor }: ActorCardProps) {
   return (
-    <Card className="bg-secondary border-0 text-center shrink-0 w-full overflow-hidden">
-        <div className="relative aspect-[2/3] w-full">
-            {actor.profile_path ? (
-            <Image
-                src={actor.profile_path}
-                alt={actor.name}
-                fill
-                className="object-cover rounded-t-lg"
-                sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, (max-width: 1024px) 20vw, 12.5vw"
-            />
-            ) : (
-            <div className='w-full h-full bg-muted rounded-t-lg flex items-center justify-center'>
-                <User className="w-8 h-8 text-muted-foreground" />
-            </div>
-            )}
-      </div>
-      <CardContent className="p-2">
-        <p className="font-semibold text-sm truncate">{actor.name}</p>
-        <p className="text-xs text-muted-foreground truncate">{actor.character}</p>
-      </CardContent>
-    </Card>
+    <Link href={`/person/${actor.id}`} className="block">
+      <Card className="bg-secondary border-0 text-center shrink-0 w-full overflow-hidden group">
+          <div className="relative aspect-[2/3] w-full">
+              {actor.profile_path ? (
+              <Image
+                  src={actor.profile_path}
+                  alt={actor.name}
+                  fill
+                  className="object-cover rounded-t-lg transition-transform duration-300 group-hover:scale-105"
+                  sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, (max-width: 1024px) 20vw, 12.5vw"
+              />
+              ) : (
+              <div className='w-full h-full bg-muted rounded-t-lg flex items-center justify-center'>
+                  <User className="w-8 h-8 text-muted-foreground" />
+              </div>
+              )}
+        </div>
+        <CardContent className="p-2">
+          <p className="font-semibold text-sm truncate group-hover:text-primary">{actor.name}</p>
+          <p className="text-xs text-muted-foreground truncate">{actor.character}</p>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
 
@@ -51,7 +54,7 @@ export function ActorCard({ actors }: { actors: CastMember[] }) {
           >
             <CarouselContent className="-ml-4">
               {actors.map((member) => (
-                <CarouselItem key={member.credit_id} className="basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6 xl:basis-[12.5%] pl-4">
+                <CarouselItem key={member.credit_id} className="basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6 xl:basis-1/8 pl-4">
                   <SingleActorCard actor={member} />
                 </CarouselItem>
               ))}
