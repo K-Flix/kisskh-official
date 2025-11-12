@@ -42,47 +42,50 @@ export function EpisodeList({ showId, seasons, showBackdropPath, onEpisodePlay, 
             <h2 className="text-2xl font-bold">Episodes</h2>
         </div>
 
-        {/* Toolbar */}
-        <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 mb-6 bg-secondary/50 p-3 rounded-lg border border-border/50">
-            <SeasonSelector seasons={seasons} selectedSeason={selectedSeason?.season_number} onSeasonChange={handleSeasonChange} />
-            <div className="relative w-full flex items-center">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"/>
-                <Input
-                    type="text"
-                    placeholder="Search episode..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-background border-0 rounded-md focus:ring-2 focus:ring-primary text-white py-2.5 pl-10 pr-4"
-                />
-            </div>
+        <div className="bg-secondary/30 border border-border/50 rounded-lg overflow-hidden">
+          {/* Toolbar */}
+          <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 p-4 border-b border-border/50">
+              <SeasonSelector seasons={seasons} selectedSeason={selectedSeason?.season_number} onSeasonChange={handleSeasonChange} />
+              <div className="relative w-full flex items-center">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"/>
+                  <Input
+                      type="text"
+                      placeholder="Search episode..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full bg-background border-0 rounded-md focus:ring-2 focus:ring-primary text-white py-2.5 pl-10 pr-4"
+                  />
+              </div>
+          </div>
+        
+          <ScrollArea className="h-[70vh]">
+            {selectedSeason && (
+                <div>
+                    {filteredEpisodes?.map((episode, index) => {
+                        const isPlaying = currentEpisode?.season === selectedSeason.season_number && currentEpisode?.episode === episode.episode_number;
+                        return (
+                            <EpisodeCard 
+                                key={episode.id}
+                                showId={showId}
+                                seasonNumber={selectedSeason.season_number}
+                                episode={episode} 
+                                showBackdropPath={showBackdropPath}
+                                onPlay={() => onEpisodePlay(selectedSeason.season_number, episode.episode_number)}
+                                isPlaying={isPlaying}
+                                isLast={index === filteredEpisodes.length - 1}
+                            />
+                        )
+                    })}
+                    {filteredEpisodes?.length === 0 && (
+                        <div className="text-center text-muted-foreground py-16">
+                            <p className="text-xl">No episodes found</p>
+                            <p className="text-sm mt-1">Try adjusting your search query.</p>
+                        </div>
+                    )}
+                </div>
+            )}
+          </ScrollArea>
         </div>
-      
-      <ScrollArea className="h-[70vh] pr-4 -mr-4">
-        {selectedSeason && (
-            <div className="space-y-3">
-                {filteredEpisodes?.map((episode) => {
-                    const isPlaying = currentEpisode?.season === selectedSeason.season_number && currentEpisode?.episode === episode.episode_number;
-                    return (
-                        <EpisodeCard 
-                            key={episode.id}
-                            showId={showId}
-                            seasonNumber={selectedSeason.season_number}
-                            episode={episode} 
-                            showBackdropPath={showBackdropPath}
-                            onPlay={() => onEpisodePlay(selectedSeason.season_number, episode.episode_number)}
-                            isPlaying={isPlaying}
-                        />
-                    )
-                })}
-                 {filteredEpisodes?.length === 0 && (
-                    <div className="text-center text-muted-foreground py-16">
-                        <p className="text-xl">No episodes found</p>
-                        <p className="text-sm mt-1">Try adjusting your search query.</p>
-                    </div>
-                )}
-            </div>
-        )}
-      </ScrollArea>
     </section>
   );
 }

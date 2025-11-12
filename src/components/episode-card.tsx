@@ -13,9 +13,10 @@ interface EpisodeCardProps {
   showBackdropPath: string;
   onPlay: () => void;
   isPlaying: boolean;
+  isLast: boolean;
 }
 
-export function EpisodeCard({ episode, showId, seasonNumber, showBackdropPath, onPlay, isPlaying }: EpisodeCardProps) {
+export function EpisodeCard({ episode, showId, seasonNumber, showBackdropPath, onPlay, isPlaying, isLast }: EpisodeCardProps) {
   const downloadUrl = `https://dl.vidsrc.vip/tv/${showId}/${seasonNumber}/${episode.episode_number}`;
   const isReleased = episode.air_date ? new Date(episode.air_date) <= new Date() : false;
 
@@ -24,7 +25,7 @@ export function EpisodeCard({ episode, showId, seasonNumber, showBackdropPath, o
   return (
     <div 
         onClick={isReleased ? onPlay : undefined}
-        className={`flex items-start gap-4 bg-secondary/30 p-3 rounded-lg group transition-all duration-200 border border-border/50 ${isReleased ? 'cursor-pointer hover:bg-secondary/50 hover:border-primary/50' : 'cursor-default opacity-70'} ${isPlaying ? 'bg-primary/10 border-primary/70' : ''}`}
+        className={`flex items-start gap-4 p-4 group transition-all duration-200 border-border/50 ${isReleased ? 'cursor-pointer hover:bg-white/5' : 'cursor-default opacity-70'} ${isPlaying ? 'bg-primary/10' : ''} ${!isLast ? 'border-b' : ''}`}
     >
       <div className="relative w-48 flex-shrink-0 aspect-video rounded-md overflow-hidden bg-muted">
         <Image 
