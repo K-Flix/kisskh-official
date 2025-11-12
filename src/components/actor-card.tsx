@@ -21,7 +21,7 @@ function SingleActorCard({ actor }: ActorCardProps) {
                   alt={actor.name}
                   fill
                   className="object-cover rounded-t-lg transition-transform duration-300 group-hover:scale-105"
-                  sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, (max-width: 1024px) 20vw, 12.5vw"
+                  sizes="(max-width: 640px) 33vw, (max-width: 768px) 20vw, 16.67vw"
               />
               ) : (
               <div className='w-full h-full bg-muted rounded-t-lg flex items-center justify-center'>
@@ -54,7 +54,7 @@ export function ActorCard({ actors }: { actors: CastMember[] }) {
           >
             <CarouselContent className="-ml-4">
               {actors.map((member) => (
-                <CarouselItem key={member.credit_id} className="basis-1/3 sm:basis-1/5 md:basis-1/6 lg:basis-1/8 pl-4">
+                <CarouselItem key={member.credit_id} className="pl-4 basis-1/3 sm:basis-1/5 md:basis-1/6 lg:basis-1/8">
                   <SingleActorCard actor={member} />
                 </CarouselItem>
               ))}
