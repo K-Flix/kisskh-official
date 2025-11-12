@@ -88,35 +88,37 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
 
         <div className="relative w-full">
             {showPlayer ? (
-                 <div className="relative w-full">
-                    <div className="relative aspect-video w-full">
-                        <iframe
-                            src={videoUrl}
-                            allow="autoplay; encrypted-media; picture-in-picture"
-                            allowFullScreen
-                            className="w-full h-full border-0 bg-black"
-                            key={selectedServer}
-                        ></iframe>
-                    </div>
-                    <div className="container mt-4">
-                        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-secondary/50 p-3 rounded-lg border-border/50">
-                            <Select value={selectedServer} onValueChange={setSelectedServer}>
-                                <SelectTrigger className="w-full sm:w-auto bg-background border-0 focus:ring-2 focus:ring-primary">
-                                    <SelectValue>
-                                    Server: {servers.find(s => s.name === selectedServer)?.displayName}
-                                    </SelectValue>
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {servers.map(({ name, displayName }) => (
-                                        <SelectItem key={name} value={name}>
-                                            {displayName}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <Button onClick={() => setShowPlayer(false)} className="w-full sm:w-auto">
-                                Back to details
-                            </Button>
+                 <div className="w-full pt-16 md:pt-24">
+                    <div className="container">
+                        <div className="relative aspect-video w-full">
+                            <iframe
+                                src={videoUrl}
+                                allow="autoplay; encrypted-media; picture-in-picture"
+                                allowFullScreen
+                                className="w-full h-full border-0 bg-black"
+                                key={selectedServer}
+                            ></iframe>
+                        </div>
+                        <div className="mt-4">
+                            <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-secondary/50 p-3 rounded-lg border-border/50">
+                                <Select value={selectedServer} onValueChange={setSelectedServer}>
+                                    <SelectTrigger className="w-full sm:w-auto bg-background border-0 focus:ring-2 focus:ring-primary">
+                                        <SelectValue>
+                                        Server: {servers.find(s => s.name === selectedServer)?.displayName}
+                                        </SelectValue>
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {servers.map(({ name, displayName }) => (
+                                            <SelectItem key={name} value={name}>
+                                                {displayName}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <Button onClick={() => setShowPlayer(false)} className="w-full sm:w-auto">
+                                    Back to details
+                                </Button>
+                            </div>
                         </div>
                     </div>
                  </div>

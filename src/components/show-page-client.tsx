@@ -110,7 +110,8 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
 
         <div className="relative w-full">
             {playerState ? (
-                <div className="relative w-full">
+                <div className="w-full pt-16 md:pt-24">
+                  <div className="container">
                     <div className="relative aspect-video w-full">
                         <iframe
                             src={videoUrl}
@@ -120,7 +121,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                             key={selectedServer}
                         ></iframe>
                     </div>
-                     <div className="container mt-4">
+                     <div className="mt-4">
                         <div className="grid grid-cols-1 items-center gap-4 bg-secondary/50 p-3 rounded-lg border-border/50">
                             <Select value={selectedServer} onValueChange={setSelectedServer}>
                                 <SelectTrigger className="w-full bg-background border-0 focus:ring-2 focus:ring-primary">
@@ -138,6 +139,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                             </Select>
                         </div>
                     </div>
+                  </div>
                 </div>
             ) : (
                 <div className="relative h-[50vh] md:h-[85vh] w-full">
