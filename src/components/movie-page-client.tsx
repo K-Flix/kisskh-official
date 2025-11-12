@@ -8,7 +8,7 @@ import { ActorCard } from '@/components/actor-card';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ShowHero } from './show-hero';
 import { ArrowLeft, Download, X } from 'lucide-react';
-import { Dialog, DialogContent } from './ui/dialog';
+import { Dialog, DialogClose, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -86,6 +86,13 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
             <span className="sr-only">Back</span>
         </button>
 
+        {showPlayer && (
+            <button onClick={() => setShowPlayer(false)} className="absolute top-6 right-4 md:right-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
+                <X className="w-6 h-6 text-white"/>
+                <span className="sr-only">Close Player</span>
+            </button>
+        )}
+
         <div className="relative w-full">
             {showPlayer ? (
                  <div className="w-full pt-16 md:pt-24">
@@ -115,15 +122,6 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                                         ))}
                                     </SelectContent>
                                 </Select>
-                                 <Button 
-                                    variant="ghost" 
-                                    size="icon" 
-                                    onClick={() => setShowPlayer(false)} 
-                                    className="bg-background/50 hover:bg-background/70 text-white rounded-full"
-                                >
-                                    <X className="h-5 w-5" />
-                                    <span className="sr-only">Close player</span>
-                                </Button>
                             </div>
                         </div>
                     </div>

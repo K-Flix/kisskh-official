@@ -108,6 +108,13 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
           <span className="sr-only">Back</span>
       </button>
 
+      {playerState && (
+        <button onClick={() => setPlayerState(null)} className="absolute top-6 right-4 md:right-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
+            <X className="w-6 h-6 text-white"/>
+            <span className="sr-only">Close Player</span>
+        </button>
+      )}
+
         <div className="relative w-full">
             {playerState ? (
                 <div className="w-full pt-16 md:pt-24">
@@ -137,15 +144,6 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                                     ))}
                                 </SelectContent>
                             </Select>
-                            <Button 
-                                variant="ghost" 
-                                size="icon" 
-                                onClick={() => setPlayerState(null)}
-                                className="bg-background/50 hover:bg-background/70 text-white rounded-full"
-                            >
-                                <X className="h-5 w-5" />
-                                <span className="sr-only">Close player</span>
-                            </Button>
                         </div>
                     </div>
                   </div>
