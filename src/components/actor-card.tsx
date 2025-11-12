@@ -19,7 +19,7 @@ function SingleActorCard({ actor }: ActorCardProps) {
                 alt={actor.name}
                 fill
                 className="object-cover rounded-t-lg"
-                sizes="(max-width: 768px) 33vw, 12.5vw"
+                sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, (max-width: 1024px) 20vw, 12.5vw"
             />
             ) : (
             <div className='w-full h-full bg-muted rounded-t-lg flex items-center justify-center'>
@@ -45,7 +45,7 @@ export function ActorCard({ actors }: { actors: CastMember[] }) {
           <Carousel
             opts={{
               align: 'start',
-              slidesToScroll: 3,
+              slidesToScroll: 5,
             }}
             className="w-full"
           >
