@@ -48,13 +48,13 @@ export function ActorCard({ actors }: { actors: CastMember[] }) {
           <Carousel
             opts={{
               align: 'start',
-              slidesToScroll: 5,
+              slidesToScroll: 8,
             }}
             className="w-full"
           >
             <CarouselContent className="-ml-4">
               {actors.map((member) => (
-                <CarouselItem key={member.credit_id} className="pl-4 basis-1/3 sm:basis-1/5 md:basis-1/7 lg:basis-1/8">
+                <CarouselItem key={member.credit_id} className="pl-4 basis-1/3 sm:basis-1/5 md:basis-1/8 lg:basis-1/8">
                   <SingleActorCard actor={member} />
                 </CarouselItem>
               ))}
