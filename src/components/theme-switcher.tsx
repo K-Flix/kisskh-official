@@ -26,7 +26,7 @@ export function ThemeSwitcher() {
         <TooltipTrigger asChild>
             <PopoverTrigger asChild>
               <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hover:text-white">
-                <Palette />
+                <Palette className="h-6 w-6" />
                 <span className="sr-only">Switch theme</span>
               </Button>
             </PopoverTrigger>
