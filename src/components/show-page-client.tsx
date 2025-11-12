@@ -8,7 +8,7 @@ import { EpisodeList } from '@/components/episode-list';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ActorCard } from '@/components/actor-card';
 import { ShowHero } from './show-hero';
-import { ArrowLeft, ChevronDown } from 'lucide-react';
+import { ArrowLeft, X } from 'lucide-react';
 import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
@@ -120,6 +120,15 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                             className="w-full h-full border-0 bg-black"
                             key={selectedServer}
                         ></iframe>
+                        <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            onClick={() => setPlayerState(null)} 
+                            className="absolute top-2 right-2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full"
+                        >
+                            <X className="h-5 w-5" />
+                            <span className="sr-only">Close player</span>
+                        </Button>
                     </div>
                      <div className="mt-4">
                         <div className="grid grid-cols-1 items-center gap-4 bg-secondary/50 p-3 rounded-lg border-border/50">
