@@ -13,7 +13,7 @@ interface ActorCardProps {
 function SingleActorCard({ actor }: ActorCardProps) {
   return (
     <Link href={`/person/${actor.id}`} className="block">
-      <Card className="bg-secondary border-0 text-center shrink-0 w-full overflow-hidden group">
+      <Card className="bg-secondary border-0 text-center shrink-0 w-36 overflow-hidden group">
           <div className="relative aspect-[2/3] w-full">
               {actor.profile_path ? (
               <Image
@@ -48,13 +48,13 @@ export function ActorCard({ actors }: { actors: CastMember[] }) {
           <Carousel
             opts={{
               align: 'start',
-              slidesToScroll: 8,
+              slidesToScroll: 5,
             }}
             className="w-full"
           >
             <CarouselContent className="-ml-4">
               {actors.map((member) => (
-                <CarouselItem key={member.credit_id} className="pl-4 basis-1/3 sm:basis-1/5 md:basis-1/8 lg:basis-1/8">
+                <CarouselItem key={member.credit_id} className="pl-4 basis-auto">
                   <SingleActorCard actor={member} />
                 </CarouselItem>
               ))}
