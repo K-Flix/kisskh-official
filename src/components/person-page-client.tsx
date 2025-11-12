@@ -22,18 +22,18 @@ export function PersonPageClient({ person }: PersonPageClientProps) {
             <span>Back</span>
         </button>
         <div className="flex flex-col md:flex-row gap-8 md:gap-12">
-            <div className="md:w-1/5 flex-shrink-0">
+            <div className="w-full md:w-1/6 flex-shrink-0">
                 <div className="aspect-[2/3] w-full max-w-sm mx-auto md:max-w-none relative overflow-hidden rounded-lg">
                     <Image
                         src={person.profile_path}
                         alt={person.name}
                         fill
                         className="object-cover"
-                        sizes="(max-width: 768px) 80vw, 20vw"
+                        sizes="(max-width: 768px) 80vw, 16vw"
                     />
                 </div>
             </div>
-            <div className="md:w-4/5">
+            <div className="md:w-5/6">
                 <h1 className="text-4xl md:text-5xl font-bold">{person.name}</h1>
                 {person.birthday && (
                     <div className="flex items-center gap-2 mt-2 text-muted-foreground">
