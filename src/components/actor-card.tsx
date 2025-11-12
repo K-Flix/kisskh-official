@@ -45,7 +45,7 @@ export function ActorCard({ actors }: { actors: CastMember[] }) {
           <Carousel
             opts={{
               align: 'start',
-              slidesToScroll: 'auto',
+              slidesToScroll: 3,
             }}
             className="w-full"
           >
