@@ -9,7 +9,7 @@ import { MovieCarousel } from '@/components/movie-carousel';
 import { ActorCard } from '@/components/actor-card';
 import { ShowHero } from './show-hero';
 import { ArrowLeft, X } from 'lucide-react';
-import { Dialog, DialogContent } from './ui/dialog';
+import { Dialog, DialogClose, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
 import {
@@ -120,20 +120,11 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                             className="w-full h-full border-0 bg-black"
                             key={selectedServer}
                         ></iframe>
-                        <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            onClick={() => setPlayerState(null)} 
-                            className="absolute top-2 right-2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full"
-                        >
-                            <X className="h-5 w-5" />
-                            <span className="sr-only">Close player</span>
-                        </Button>
                     </div>
                      <div className="mt-4">
-                        <div className="grid grid-cols-1 items-center gap-4 bg-secondary/50 p-3 rounded-lg border-border/50">
+                        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-secondary/50 p-3 rounded-lg border-border/50">
                             <Select value={selectedServer} onValueChange={setSelectedServer}>
-                                <SelectTrigger className="w-full bg-background border-0 focus:ring-2 focus:ring-primary">
+                                <SelectTrigger className="w-full sm:w-auto bg-background border-0 focus:ring-2 focus:ring-primary">
                                     <SelectValue>
                                     Server: {servers.find(s => s.name === selectedServer)?.displayName}
                                     </SelectValue>
@@ -146,6 +137,15 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                                     ))}
                                 </SelectContent>
                             </Select>
+                            <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                onClick={() => setPlayerState(null)}
+                                className="bg-background/50 hover:bg-background/70 text-white rounded-full"
+                            >
+                                <X className="h-5 w-5" />
+                                <span className="sr-only">Close player</span>
+                            </Button>
                         </div>
                     </div>
                   </div>
@@ -208,6 +208,10 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                   allowFullScreen
                   className="w-full h-full border-0 rounded-lg"
               ></iframe>
+              <DialogClose className="absolute right-2 top-2 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10">
+                    <X className="h-5 w-5 text-white bg-black/50 rounded-full p-0.5" />
+                    <span className="sr-only">Close</span>
+                </DialogClose>
           </DialogContent>
       </Dialog>
     </div>
