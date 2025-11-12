@@ -62,10 +62,10 @@ export function EpisodeList({ showId, seasons, showBackdropPath, onEpisodePlay, 
         
           {/* Bottom Box for Episode List */}
           <div className="bg-secondary/30 border border-border/50 rounded-lg overflow-hidden">
-            <ScrollArea className="h-[70vh]">
+            <ScrollArea className="h-[70vh] p-3">
               {selectedSeason && (
-                  <div>
-                      {filteredEpisodes?.map((episode, index) => {
+                  <div className="space-y-2">
+                      {filteredEpisodes?.map((episode) => {
                           const isPlaying = currentEpisode?.season === selectedSeason.season_number && currentEpisode?.episode === episode.episode_number;
                           return (
                               <EpisodeCard 
@@ -76,7 +76,6 @@ export function EpisodeList({ showId, seasons, showBackdropPath, onEpisodePlay, 
                                   showBackdropPath={showBackdropPath}
                                   onPlay={() => onEpisodePlay(selectedSeason.season_number, episode.episode_number)}
                                   isPlaying={isPlaying}
-                                  isLast={index === filteredEpisodes.length - 1}
                               />
                           )
                       })}
