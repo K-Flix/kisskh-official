@@ -24,7 +24,7 @@ export function EpisodeCard({ episode, showId, seasonNumber, showBackdropPath, o
   return (
     <div 
         onClick={isReleased ? onPlay : undefined}
-        className={`flex items-start gap-4 bg-secondary/50 p-3 rounded-lg group transition-all duration-200 ${isReleased ? 'cursor-pointer hover:bg-secondary/80' : 'cursor-default opacity-70'} ${isPlaying ? 'bg-primary/10 border border-primary/50' : 'border border-transparent'}`}
+        className={`flex items-start gap-4 bg-secondary/30 p-3 rounded-lg group transition-all duration-200 border border-border/50 ${isReleased ? 'cursor-pointer hover:bg-secondary/50 hover:border-primary/50' : 'cursor-default opacity-70'} ${isPlaying ? 'bg-primary/10 border-primary/70' : ''}`}
     >
       <div className="relative w-48 flex-shrink-0 aspect-video rounded-md overflow-hidden bg-muted">
         <Image 
