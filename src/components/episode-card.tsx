@@ -5,6 +5,7 @@ import { Download, PlayCircle, CalendarClock } from 'lucide-react';
 import { Button } from './ui/button';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 interface EpisodeCardProps {
   episode: Episode;
@@ -24,7 +25,11 @@ export function EpisodeCard({ episode, showId, seasonNumber, showBackdropPath, o
   return (
     <div 
         onClick={isReleased ? onPlay : undefined}
-        className={`flex items-start gap-4 p-3 group transition-all duration-200 rounded-lg bg-secondary ${isReleased ? 'cursor-pointer hover:bg-white/10' : 'cursor-default opacity-70'} ${isPlaying ? 'ring-2 ring-primary' : ''}`}
+        className={cn(
+            'flex items-start gap-4 p-3 group transition-all duration-200 rounded-lg bg-secondary border-2',
+            isReleased ? 'cursor-pointer hover:bg-white/10' : 'cursor-default opacity-70',
+            isPlaying ? 'border-primary' : 'border-transparent'
+        )}
     >
       <div className="relative w-48 flex-shrink-0 aspect-video rounded-md overflow-hidden bg-muted">
         <Image 
@@ -49,7 +54,7 @@ export function EpisodeCard({ episode, showId, seasonNumber, showBackdropPath, o
       </div>
       <div className="flex-1 min-w-0 pt-1">
         <div className="flex items-baseline justify-between">
-            <h3 className={`text-base font-bold truncate ${isPlaying ? 'text-primary' : 'text-white'}`}>{`Chapter ${episode.episode_number}: ${episode.name}`}</h3>
+            <h3 className={cn('text-base font-bold truncate', isPlaying ? 'text-primary' : 'text-white')}>{`Chapter ${episode.episode_number}: ${episode.name}`}</h3>
             {episode.runtime && <span className="text-sm text-muted-foreground flex-shrink-0 ml-4">{episode.runtime}m</span>}
         </div>
         <p className="text-sm text-muted-foreground mt-1.5 line-clamp-2">
