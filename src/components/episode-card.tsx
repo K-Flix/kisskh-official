@@ -26,12 +26,12 @@ export function EpisodeCard({ episode, showId, seasonNumber, showBackdropPath, o
     <div 
         onClick={isReleased ? onPlay : undefined}
         className={cn(
-            'flex items-start gap-4 p-3 group transition-all duration-200 rounded-lg bg-secondary/80',
+            'flex items-center gap-4 p-3 group transition-all duration-200 rounded-lg bg-secondary/80',
             isReleased ? 'cursor-pointer hover:bg-white/10' : 'cursor-default opacity-70',
             isPlaying ? 'border-2 border-primary' : 'border-2 border-transparent'
         )}
     >
-      <div className="relative w-32 md:w-48 flex-shrink-0 aspect-video rounded-md overflow-hidden bg-muted">
+      <div className="relative w-32 flex-shrink-0 aspect-video rounded-md overflow-hidden bg-muted">
         <Image 
             src={imagePath || '/placeholder.svg'} 
             alt={episode.name} 
@@ -52,11 +52,8 @@ export function EpisodeCard({ episode, showId, seasonNumber, showBackdropPath, o
         </div>
         <span className="absolute bottom-1 left-2 bg-black/70 text-white text-xs font-bold px-1.5 py-0.5 rounded pointer-events-none">{episode.episode_number}</span>
       </div>
-      <div className="flex-1 min-w-0 pt-1">
-        <div className="flex items-baseline justify-between">
-            <h3 className={cn('text-base font-bold truncate', isPlaying ? 'text-primary' : 'text-white')}>{`Chapter ${episode.episode_number}: ${episode.name}`}</h3>
-            {episode.runtime && <span className="text-sm text-muted-foreground flex-shrink-0 ml-4 hidden sm:inline">{episode.runtime}m</span>}
-        </div>
+      <div className="flex-1 min-w-0">
+        <h3 className={cn('text-base font-bold truncate', isPlaying ? 'text-primary' : 'text-white')}>{`Chapter ${episode.episode_number}: ${episode.name}`}</h3>
         <p className="text-sm text-muted-foreground mt-1.5 line-clamp-2 md:line-clamp-3">
             {isReleased 
                 ? episode.overview || 'No description available for this episode.'
