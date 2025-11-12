@@ -103,6 +103,11 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
 
   return (
     <div className="text-white">
+      <button onClick={() => router.back()} className="absolute top-6 left-4 md:left-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
+          <ArrowLeft className="w-6 h-6 text-white"/>
+          <span className="sr-only">Back</span>
+      </button>
+
         <div className="relative w-full">
             {playerState ? (
                 <div className="relative w-full">
@@ -136,10 +141,6 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                 </div>
             ) : (
                 <div className="relative h-[50vh] md:h-[85vh] w-full">
-                    <button onClick={() => router.back()} className="absolute top-6 left-4 md:left-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
-                        <ArrowLeft className="w-6 h-6 text-white"/>
-                        <span className="sr-only">Back</span>
-                    </button>
                     <div className="absolute inset-0 h-full w-full">
                         <Image
                             src={show.backdrop_path}

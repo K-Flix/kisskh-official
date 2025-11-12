@@ -81,6 +81,11 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
 
   return (
     <div className="text-white">
+        <button onClick={() => router.back()} className="absolute top-6 left-4 md:left-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
+            <ArrowLeft className="w-6 h-6 text-white"/>
+            <span className="sr-only">Back</span>
+        </button>
+
         <div className="relative w-full">
             {showPlayer ? (
                  <div className="relative w-full">
@@ -110,7 +115,6 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                                 </SelectContent>
                             </Select>
                             <Button onClick={() => setShowPlayer(false)} className="w-full sm:w-auto">
-                                <ArrowLeft className="mr-2"/>
                                 Back to details
                             </Button>
                         </div>
@@ -118,11 +122,6 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                  </div>
             ) : (
                 <div className="relative h-[50vh] md:h-[85vh] w-full">
-                    <button onClick={() => router.back()} className="absolute top-6 left-4 md:left-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
-                        <ArrowLeft className="w-6 h-6 text-white"/>
-                        <span className="sr-only">Back</span>
-                    </button>
-                    
                     <div className="absolute inset-0 h-full w-full">
                         <Image
                             src={movie.backdrop_path}
