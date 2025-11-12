@@ -2,18 +2,43 @@
 'use client';
 
 import Image from 'next/image';
-import { PersonDetails } from '@/lib/types';
-import { ArrowLeft, Calendar } from 'lucide-react';
+import { PersonDetails, Movie, Show } from '@/lib/types';
+import { ArrowLeft, Calendar, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ExpandableText } from './expandable-text';
 import { MovieCard } from './movie-card';
+import { useState, useRef, useCallback } from 'react';
+import { Button } from './ui/button';
 
 interface PersonPageClientProps {
   person: PersonDetails;
 }
 
+const ITEMS_PER_PAGE = 18;
+
 export function PersonPageClient({ person }: PersonPageClientProps) {
   const router = useRouter();
+  const [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE);
+  const observer = useRef<IntersectionObserver>();
+
+  const loadMoreItems = useCallback(() => {
+    setVisibleItems((prev) => Math.min(prev + ITEMS_PER_PAGE, person.known_for.length));
+  }, [person.known_for.length]);
+
+  const lastItemRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && visibleItems < person.known_for.length) {
+          loadMoreItems();
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loadMoreItems, visibleItems, person.known_for.length]
+  );
+  
+  const hasMore = visibleItems < person.known_for.length;
 
   return (
     <div>
@@ -50,13 +75,26 @@ export function PersonPageClient({ person }: PersonPageClientProps) {
         <div className="mt-12">
              <div className="flex items-center space-x-3 mb-4">
                 <div className="w-1.5 h-7 bg-primary rounded-full" />
-                <h2 className="text-2xl font-bold">Known For</h2>
+                <h2 className="text-2xl font-bold">Filmography</h2>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
-                {person.known_for.map((item) => (
-                    <MovieCard key={item.id} movie={item} />
-                ))}
+                {person.known_for.slice(0, visibleItems).map((item, index) => {
+                     const isLastItem = index === visibleItems - 1;
+                     return (
+                        <div key={`${item.id}-${item.media_type}-${index}`} ref={isLastItem ? lastItemRef : null}>
+                            <MovieCard movie={item} />
+                        </div>
+                    )
+                })}
             </div>
+            {hasMore && (
+                <div className="flex justify-center mt-8">
+                    <Button onClick={loadMoreItems}>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Load More
+                    </Button>
+                </div>
+            )}
         </div>
     </div>
   );

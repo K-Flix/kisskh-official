@@ -317,8 +317,7 @@ export async function getPersonById(id: number): Promise<PersonDetails | null> {
     const knownFor = (data.combined_credits?.cast || [])
         .map((item: TmdbItem) => processItem(item, item.media_type))
         .filter(Boolean)
-        .sort((a: any, b: any) => (b.popularity || 0) - (a.popularity || 0))
-        .slice(0, 12) as (Movie | Show)[];
+        .sort((a: any, b: any) => (b.popularity || 0) - (a.popularity || 0)) as (Movie | Show)[];
     
     const person: PersonDetails = {
         id: data.id,
