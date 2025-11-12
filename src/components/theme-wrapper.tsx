@@ -15,17 +15,17 @@ export function ThemeWrapper({ children }: { children: React.ReactNode }) {
         setIsMounted(true);
     }, []);
 
-    if (!isMounted) {
-        return <>{children}</>;
-    }
+    const style = isMounted ? { '--primary-hsl': theme } as React.CSSProperties : {};
     
     return (
         <html 
             lang="en" 
             className={`dark ${inter.variable}`}
-            style={{ '--primary-hsl': theme } as React.CSSProperties}
+            style={style}
         >
-            {children}
+            <body className="font-body antialiased min-h-screen bg-background">
+                {children}
+            </body>
         </html>
     )
 }

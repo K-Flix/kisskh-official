@@ -31,7 +31,6 @@ export default function RootLayout({
   return (
     <ThemeProvider>
         <ThemeWrapper>
-          <body className="font-body antialiased min-h-screen bg-background">
             <TooltipProvider>
               <WatchlistProvider>
                 <MainLayout>
@@ -40,8 +39,7 @@ export default function RootLayout({
                 <Toaster />
               </WatchlistProvider>
             </TooltipProvider>
-          </body>
-      </ThemeWrapper>
+        </ThemeWrapper>
     </ThemeProvider>
   );
 }
