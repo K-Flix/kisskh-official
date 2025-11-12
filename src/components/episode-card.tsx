@@ -54,7 +54,7 @@ export function EpisodeCard({ episode, showId, seasonNumber, showBackdropPath, o
       </div>
       <div className="flex-1 min-w-0">
         <h3 className={cn('text-base font-bold truncate', isPlaying ? 'text-primary' : 'text-white')}>{`Chapter ${episode.episode_number}: ${episode.name}`}</h3>
-        <p className="text-sm text-muted-foreground mt-1.5 line-clamp-2 md:line-clamp-3">
+        <p className="text-sm text-muted-foreground mt-1.5 line-clamp-3">
             {isReleased 
                 ? episode.overview || 'No description available for this episode.'
                 : <span className="flex items-center gap-2"><CalendarClock className="w-4 h-4"/>Airs on {format(new Date(episode.air_date!), 'MMMM do, yyyy')}</span>
@@ -65,7 +65,7 @@ export function EpisodeCard({ episode, showId, seasonNumber, showBackdropPath, o
           asChild
           variant="ghost"
           size="icon"
-          className="ml-auto flex-shrink-0 w-11 h-11 rounded-full bg-background/50 hover:bg-background/80 disabled:opacity-50 disabled:pointer-events-none self-center"
+          className="ml-auto flex-shrink-0 w-11 h-11 rounded-full bg-background/50 hover:bg-background/80 disabled:opacity-50 disabled:pointer-events-none self-center hidden md:flex"
           aria-label={`Download episode ${episode.episode_number}`}
           title={`Download episode ${episode.episode_number}`}
           onClick={(e) => e.stopPropagation()} // Prevents playing the episode
