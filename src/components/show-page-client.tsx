@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { cn } from '@/lib/utils';
 
 interface ShowPageClientProps {
   show: ShowDetails;
@@ -129,21 +130,39 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                         ></iframe>
                     </div>
                      <div className="mt-4">
-                        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-secondary/50 p-3 rounded-lg border-border/50">
-                            <Select value={selectedServer} onValueChange={setSelectedServer}>
-                                <SelectTrigger className="w-full sm:w-auto bg-background border-0 focus:ring-2 focus:ring-primary">
-                                    <SelectValue>
-                                    Server: {servers.find(s => s.name === selectedServer)?.displayName}
-                                    </SelectValue>
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {servers.map(({ name, displayName }) => (
-                                        <SelectItem key={name} value={name}>
-                                            {displayName}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between bg-secondary/50 p-3 rounded-lg border-border/50">
+                             {/* Mobile Dropdown */}
+                             <div className="w-full sm:hidden">
+                                  <Select value={selectedServer} onValueChange={setSelectedServer}>
+                                      <SelectTrigger className="w-full bg-background border-0 focus:ring-2 focus:ring-primary">
+                                          <SelectValue>
+                                              Server: {servers.find(s => s.name === selectedServer)?.displayName}
+                                          </SelectValue>
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                          {servers.map(({ name, displayName }) => (
+                                              <SelectItem key={name} value={name}>
+                                                  {displayName}
+                                              </SelectItem>
+                                          ))}
+                                      </SelectContent>
+                                  </Select>
+                                </div>
+                                
+                                {/* Desktop Buttons */}
+                                <div className="hidden sm:flex flex-wrap gap-2">
+                                  {servers.map(({ name, displayName }) => (
+                                      <Button
+                                          key={name}
+                                          variant={selectedServer === name ? 'default' : 'secondary'}
+                                          size="sm"
+                                          onClick={() => setSelectedServer(name)}
+                                          className="text-xs"
+                                      >
+                                          {displayName}
+                                      </Button>
+                                  ))}
+                                </div>
                         </div>
                     </div>
                   </div>
