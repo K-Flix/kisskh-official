@@ -19,9 +19,9 @@ export const metadata: Metadata = {
   description: 'A streaming website built with Next.js',
   viewport: {
     width: 'device-width',
-    initialScale: 1.0,
-    maximumScale: 1.0,
-    userScalable: 'no',
+    initialScale: 1,
+    maximumScale: 1,
+    viewportFit: 'cover',
   },
   icons: {
     icon: [],
