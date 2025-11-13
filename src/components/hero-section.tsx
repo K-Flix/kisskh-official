@@ -71,7 +71,7 @@ export function HeroSection({ movies }: HeroSectionProps) {
         {movies.map((movie) => (
           <CarouselItem key={movie.id}>
             {/* Mobile Layout: Content over image */}
-            <div className="md:hidden relative h-[50vh] w-full">
+            <div className="md:hidden relative h-[100dvh] w-full">
               <Image
                   src={movie.backdrop_path}
                   alt={`Backdrop for ${movie.title}`}
@@ -89,7 +89,7 @@ export function HeroSection({ movies }: HeroSectionProps) {
             </div>
 
             {/* Desktop Layout: Content over image */}
-            <div className="hidden md:block relative h-[85vh] w-full">
+            <div className="hidden md:block relative h-[100dvh] w-full">
                 <Image
                     src={movie.backdrop_path}
                     alt={`Backdrop for ${movie.title}`}
