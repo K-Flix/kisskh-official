@@ -6,8 +6,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { WatchlistProvider } from '@/context/watchlist-context';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { MainLayout } from '@/components/layout/main-layout';
-import { ThemeProvider } from '@/context/theme-context';
-import { ThemedBody } from '@/components/themed-body';
+import { ThemeProvider, useTheme } from '@/context/theme-context';
+import { useEffect } from 'react';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
@@ -16,7 +16,7 @@ const VERCEL_URL = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` 
 export const metadata: Metadata = {
   metadataBase: new URL(VERCEL_URL),
   title: 'kisskh',
-  description: 'A streaming website built with Next.js',
+  description: 'A free streaming website for movies and TV shows.',
   viewport: {
     width: 'device-width',
     initialScale: 1,
@@ -36,6 +36,15 @@ export const metadata: Metadata = {
   }
 };
 
+function ThemeInjector() {
+  'use client';
+  const { theme } = useTheme();
+  useEffect(() => {
+    document.documentElement.style.setProperty('--primary-hsl', theme);
+  }, [theme]);
+  return null;
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -45,16 +54,15 @@ export default function RootLayout({
     <html lang="en" className={`dark ${inter.variable}`}>
       <body>
         <ThemeProvider>
-          <ThemedBody>
-            <TooltipProvider>
-                <WatchlistProvider>
-                    <MainLayout>
-                        {children}
-                    </MainLayout>
-                    <Toaster />
-                </WatchlistProvider>
-            </TooltipProvider>
-          </ThemedBody>
+          <ThemeInjector />
+          <TooltipProvider>
+              <WatchlistProvider>
+                  <MainLayout>
+                      {children}
+                  </MainLayout>
+                  <Toaster />
+              </WatchlistProvider>
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>
