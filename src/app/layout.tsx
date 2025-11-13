@@ -6,8 +6,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { WatchlistProvider } from '@/context/watchlist-context';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { MainLayout } from '@/components/layout/main-layout';
-import { ThemeProvider, useTheme } from '@/context/theme-context';
-import { useEffect } from 'react';
+import { ThemeProvider } from '@/context/theme-context';
+import { ThemeInjector } from '@/components/theme-injector';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
@@ -35,15 +35,6 @@ export const metadata: Metadata = {
     siteName: 'kisskh',
   }
 };
-
-function ThemeInjector() {
-  'use client';
-  const { theme } = useTheme();
-  useEffect(() => {
-    document.documentElement.style.setProperty('--primary-hsl', theme);
-  }, [theme]);
-  return null;
-}
 
 export default function RootLayout({
   children,
