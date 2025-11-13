@@ -7,7 +7,7 @@ import { WatchlistProvider } from '@/context/watchlist-context';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { MainLayout } from '@/components/layout/main-layout';
 import { ThemeProvider } from '@/context/theme-context';
-import { ThemeWrapper } from '@/components/theme-wrapper';
+import { ThemedBody } from '@/components/themed-body';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
@@ -43,18 +43,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`dark ${inter.variable}`}>
-      <body className="font-body antialiased min-h-screen bg-background">
+      <body>
         <ThemeProvider>
-            <ThemeWrapper>
-                <TooltipProvider>
-                  <WatchlistProvider>
+          <ThemedBody>
+            <TooltipProvider>
+                <WatchlistProvider>
                     <MainLayout>
                         {children}
                     </MainLayout>
                     <Toaster />
-                  </WatchlistProvider>
-                </TooltipProvider>
-            </ThemeWrapper>
+                </WatchlistProvider>
+            </TooltipProvider>
+          </ThemedBody>
         </ThemeProvider>
       </body>
     </html>
