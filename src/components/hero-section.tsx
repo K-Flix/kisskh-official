@@ -70,21 +70,19 @@ export function HeroSection({ movies }: HeroSectionProps) {
       <CarouselContent>
         {movies.map((movie) => (
           <CarouselItem key={movie.id}>
-            {/* Mobile Layout: Content below a poster image */}
-            <div className="md:hidden">
-              <div className="relative aspect-video w-full">
-                  <Image
-                      src={movie.poster_path}
-                      alt={`Poster for ${movie.title}`}
-                      fill
-                      priority
-                      className="object-cover"
-                      data-ai-hint="movie poster"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-              </div>
-              <div className="container -mt-20 relative z-10 pb-8">
-                <div className="space-y-3">
+            {/* Mobile Layout */}
+            <div className="md:hidden relative h-[100dvh] w-full">
+              <Image
+                src={movie.backdrop_path}
+                alt={`Backdrop for ${movie.title}`}
+                fill
+                priority
+                className="object-cover object-top"
+                data-ai-hint="movie backdrop"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+              <div className="relative z-10 flex flex-col justify-end h-full container pb-24">
+                <div className="max-w-screen-md space-y-4">
                   <HeroContent movie={movie} />
                 </div>
               </div>
@@ -97,7 +95,7 @@ export function HeroSection({ movies }: HeroSectionProps) {
                     alt={`Backdrop for ${movie.title}`}
                     fill
                     priority
-                    className="object-cover"
+                    className="object-cover object-top"
                     data-ai-hint="movie backdrop"
                 />
                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
