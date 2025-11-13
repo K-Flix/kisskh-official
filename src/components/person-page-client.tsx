@@ -42,10 +42,6 @@ export function PersonPageClient({ person }: PersonPageClientProps) {
 
   return (
     <div>
-        <button onClick={() => router.back()} className="flex items-center gap-2 mb-8 text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="w-5 h-5" />
-            <span>Back</span>
-        </button>
         <div className="flex flex-col md:flex-row gap-8 md:gap-12">
             <div className="w-full md:w-1/6 flex-shrink-0">
                 <div className="aspect-[2/3] w-full max-w-sm mx-auto md:max-w-none relative overflow-hidden rounded-lg">

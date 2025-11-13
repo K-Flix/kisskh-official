@@ -42,17 +42,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ThemeProvider>
-        <ThemeWrapper>
-            <TooltipProvider>
-              <WatchlistProvider>
-                <MainLayout>
-                    {children}
-                </MainLayout>
-                <Toaster />
-              </WatchlistProvider>
-            </TooltipProvider>
-        </ThemeWrapper>
-    </ThemeProvider>
+    <html lang="en" className={`dark ${inter.variable}`}>
+      <body className="font-body antialiased min-h-screen bg-background">
+        <ThemeProvider>
+            <ThemeWrapper>
+                <TooltipProvider>
+                  <WatchlistProvider>
+                    <MainLayout>
+                        {children}
+                    </MainLayout>
+                    <Toaster />
+                  </WatchlistProvider>
+                </TooltipProvider>
+            </ThemeWrapper>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }

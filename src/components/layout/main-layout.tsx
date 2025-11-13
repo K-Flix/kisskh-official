@@ -23,14 +23,12 @@ function Footer() {
 export function MainLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const isPageWithHero = ['/', '/movies', '/tv'].includes(pathname);
-    const isDetailPage = pathname.startsWith('/movie/') || pathname.startsWith('/tv/') || pathname.startsWith('/person/');
     
     return (
         <div className="relative flex min-h-screen flex-col">
             <Header />
             <main className="flex-1">
                 {isPageWithHero ? children : 
-                 isDetailPage ? <div className="pt-0">{children}</div> :
                  <div className="pt-16">{children}</div>
                 }
             </main>
