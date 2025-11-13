@@ -8,35 +8,31 @@ import { Button } from './ui/button';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { Card, CardContent } from './ui/card';
 
 interface EpisodeCardProps {
   episode: Episode;
   showId: number;
   seasonNumber: number;
-  showBackdropPath: string;
   onPlay: () => void;
   isPlaying: boolean;
-  variant?: 'list' | 'grid';
 }
 
-function ListVariant({ episode, showId, seasonNumber, showBackdropPath, onPlay, isPlaying }: EpisodeCardProps) {
+export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying }: EpisodeCardProps) {
   const downloadUrl = `https://dl.vidsrc.vip/tv/${showId}/${seasonNumber}/${episode.episode_number}`;
   const isReleased = episode.air_date ? new Date(episode.air_date) <= new Date() : false;
-  const imagePath = isReleased && episode.still_path ? episode.still_path : showBackdropPath;
-
+  
   return (
     <div
       onClick={isReleased ? onPlay : undefined}
       className={cn(
         'flex items-center gap-4 p-3 group transition-all duration-200 rounded-lg bg-secondary/80',
         isReleased ? 'cursor-pointer hover:bg-white/10' : 'cursor-default opacity-70',
-        isPlaying ? 'border-2 border-primary' : 'border-2 border-transparent'
+        isPlaying ? 'ring-2 ring-primary' : 'ring-2 ring-transparent'
       )}
     >
       <div className="relative w-32 sm:w-40 flex-shrink-0 aspect-video rounded-md overflow-hidden bg-muted">
         <Image
-          src={imagePath || '/placeholder.svg'}
+          src={episode.still_path || '/placeholder.svg'}
           alt={episode.name}
           fill
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
@@ -53,11 +49,11 @@ function ListVariant({ episode, showId, seasonNumber, showBackdropPath, onPlay, 
             </div>
           )}
         </div>
-        <span className="absolute bottom-1 left-2 bg-black/70 text-white text-xs font-bold px-1.5 py-0.5 rounded pointer-events-none">{episode.episode_number}</span>
+        <span className="absolute bottom-1 left-1 bg-black/70 text-white text-xs font-bold px-1.5 py-0.5 rounded pointer-events-none w-6 h-6 flex items-center justify-center rounded-full">{episode.episode_number}</span>
       </div>
       <div className="flex-1 min-w-0">
-        <h3 className={cn('text-base font-bold truncate', isPlaying ? 'text-primary' : 'text-white')}>{`Chapter ${episode.episode_number}: ${episode.name}`}</h3>
-        <p className="text-sm text-muted-foreground mt-1.5 line-clamp-3">
+        <h3 className={cn('text-base font-bold truncate', isPlaying ? 'text-primary' : 'text-white')}>{episode.name}</h3>
+        <p className="text-sm text-muted-foreground mt-1.5 line-clamp-2">
           {isReleased
             ? episode.overview || 'No description available for this episode.'
             : <span className="flex items-center gap-2"><CalendarClock className="w-4 h-4" />Airs on {format(new Date(episode.air_date!), 'MMMM do, yyyy')}</span>
@@ -68,10 +64,10 @@ function ListVariant({ episode, showId, seasonNumber, showBackdropPath, onPlay, 
         asChild
         variant="ghost"
         size="icon"
-        className="ml-auto flex-shrink-0 w-11 h-11 rounded-full bg-background/50 hover:bg-background/80 disabled:opacity-50 disabled:pointer-events-none self-center hidden md:flex"
+        className="ml-auto flex-shrink-0 w-11 h-11 rounded-full bg-background/50 hover:bg-background/80 disabled:opacity-50 disabled:pointer-events-none self-center"
         aria-label={`Download episode ${episode.episode_number}`}
         title={`Download episode ${episode.episode_number}`}
-        onClick={(e) => e.stopPropagation()} // Prevents playing the episode
+        onClick={(e) => e.stopPropagation()} 
         disabled={!isReleased}
       >
         <Link href={isReleased ? downloadUrl : '#'} target="_blank" rel="noopener noreferrer" className={!isReleased ? 'pointer-events-none' : ''}>
@@ -80,50 +76,4 @@ function ListVariant({ episode, showId, seasonNumber, showBackdropPath, onPlay, 
       </Button>
     </div>
   );
-}
-
-function GridVariant({ episode, showBackdropPath, onPlay, isPlaying }: EpisodeCardProps) {
-  const isReleased = episode.air_date ? new Date(episode.air_date) <= new Date() : false;
-  const imagePath = isReleased && episode.still_path ? episode.still_path : showBackdropPath;
-
-  return (
-    <Card 
-        className={cn(
-            'overflow-hidden transition-all duration-300 border-2',
-            isPlaying ? 'border-primary' : 'border-transparent',
-            isReleased ? 'cursor-pointer' : 'cursor-default opacity-70'
-        )}
-        onClick={isReleased ? onPlay : undefined}
-    >
-        <CardContent className="p-0 relative group">
-          <div className="aspect-video w-full relative">
-            <Image
-              src={imagePath || '/placeholder.svg'}
-              alt={episode.name}
-              fill
-              className="object-cover rounded-md"
-              sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, 16vw"
-            />
-             <div className={cn('absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity', isReleased ? 'opacity-0 group-hover:opacity-100' : 'opacity-100')}>
-                {isReleased ? <PlayCircle className="w-8 h-8 text-white" /> : (
-                     <div className="text-center text-white font-semibold p-1">
-                        <p className="text-xs">Coming Soon</p>
-                        {episode.air_date && (
-                            <p className="text-[10px]">{format(new Date(episode.air_date), 'MMM d')}</p>
-                        )}
-                    </div>
-                )}
-            </div>
-             <span className="absolute bottom-1 right-2 bg-black/70 text-white text-xs font-bold px-1.5 py-0.5 rounded pointer-events-none">{episode.episode_number}</span>
-          </div>
-        </CardContent>
-    </Card>
-  )
-}
-
-export function EpisodeCard(props: EpisodeCardProps) {
-    if (props.variant === 'grid') {
-        return <GridVariant {...props} />;
-    }
-    return <ListVariant {...props} />;
 }
