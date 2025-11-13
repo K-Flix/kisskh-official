@@ -23,15 +23,15 @@ function Footer() {
 export function MainLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const isPageWithHero = ['/', '/movies', '/tv'].includes(pathname);
-    const isDetailPage = pathname.startsWith('/movie/') || pathname.startsWith('/tv/') || pathname.startsWith('/person/');
     
+    // Detail pages will not have a header
+    const isDetailPage = /^\/(movie|tv|person)\/.+/.test(pathname);
+
     return (
         <div className="relative flex min-h-screen flex-col">
             {!isDetailPage && <Header />}
             <main className="flex-1">
-                {isPageWithHero || isDetailPage ? children : 
-                 <div className="pt-16">{children}</div>
-                }
+                {isPageWithHero || isDetailPage ? children : <div className="pt-16">{children}</div>}
             </main>
             <Footer />
         </div>

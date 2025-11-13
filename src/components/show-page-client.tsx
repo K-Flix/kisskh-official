@@ -22,6 +22,7 @@ import {
 import { cn } from '@/lib/utils';
 import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group';
 import { Grid, List } from 'lucide-react';
+import { safeRouterBack } from '@/lib/navigation';
 
 interface ShowPageClientProps {
   show: ShowDetails;
@@ -106,7 +107,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
 
   return (
     <div className="text-white">
-      <button onClick={() => router.back()} className="absolute top-6 left-4 md:left-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
+      <button onClick={() => safeRouterBack(router)} className="absolute top-6 left-4 md:left-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
           <ArrowLeft className="w-6 h-6 text-white"/>
           <span className="sr-only">Back</span>
       </button>

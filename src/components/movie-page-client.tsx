@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { safeRouterBack } from '@/lib/navigation';
 
 interface MoviePageClientProps {
   movie: MovieDetails;
@@ -81,7 +82,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
 
   return (
     <div className="text-white">
-        <button onClick={() => router.back()} className="absolute top-6 left-4 md:left-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
+        <button onClick={() => safeRouterBack(router)} className="absolute top-6 left-4 md:left-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
             <ArrowLeft className="w-6 h-6 text-white"/>
             <span className="sr-only">Back</span>
         </button>
