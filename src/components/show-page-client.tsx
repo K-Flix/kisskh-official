@@ -20,6 +20,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { cn } from '@/lib/utils';
+import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group';
+import { Grid, List } from 'lucide-react';
 
 interface ShowPageClientProps {
   show: ShowDetails;
