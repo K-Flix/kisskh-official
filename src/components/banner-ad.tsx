@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useRef } from 'react';
@@ -12,7 +11,6 @@ export function BannerAd() {
     if (!container || adLoadedRef.current) return;
 
     // Prevent ad from loading more than once
-    if (adLoadedRef.current) return;
     adLoadedRef.current = true;
 
     try {
