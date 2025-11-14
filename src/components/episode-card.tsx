@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -30,7 +31,7 @@ export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying }
       <div
         onClick={isReleased ? onPlay : undefined}
         className={cn(
-            'flex items-center gap-4 flex-grow min-w-0',
+            'flex items-center gap-4 flex-1 min-w-0',
             isReleased ? 'cursor-pointer' : 'cursor-default opacity-70'
         )}
       >
@@ -56,7 +57,7 @@ export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying }
               </div>
             )}
           </div>
-          <span className="absolute bottom-1 left-1 bg-black/70 text-white text-xs font-bold px-1.5 py-0.5 rounded-full w-6 h-6 flex items-center justify-center rounded-full">{episode.episode_number}</span>
+          <span className="absolute bottom-1 left-1 bg-black/70 text-white text-xs font-bold px-1.5 py-0.5 w-6 h-6 flex items-center justify-center rounded-full">{episode.episode_number}</span>
         </div>
 
         <div className="flex-1 min-w-0">
