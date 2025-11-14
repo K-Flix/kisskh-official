@@ -21,7 +21,15 @@ export async function generateMetadata({ searchParams }: DiscoverPageProps): Pro
     if (with_origin_country) description += ` From a specific country.`;
     if (with_networks) description += ` From a specific network.`
 
-    const query = new URLSearchParams(searchParams as Record<string, string>).toString();
+    const filteredParams: Record<string, string> = {};
+    for (const key in searchParams) {
+        const value = searchParams[key];
+        if (typeof value === 'string') {
+            filteredParams[key] = value;
+        }
+    }
+
+    const query = new URLSearchParams(filteredParams).toString();
 
     return {
         title: `Discover - kisskh`,
