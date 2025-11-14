@@ -34,13 +34,13 @@ export function DiscoverFilters({ genres, countries, years, onFilterChange, onRe
             <div className="w-1.5 h-7 bg-primary rounded-full" />
             <h2 className="text-2xl font-bold">Detailed Search</h2>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 bg-secondary/50 p-3 rounded-lg border-border/50">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 bg-secondary/50 p-4 rounded-lg border border-border/50">
             <Select 
                 value={currentFilters['media_type'] || 'all'} 
                 onValueChange={(value) => onFilterChange('media_type', value)}
                 disabled={isMediaTypeDisabled}
             >
-                <SelectTrigger className="w-full bg-background border-0 focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed">
+                <SelectTrigger className="w-full bg-background border-border/80 focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed">
                     <SelectValue placeholder="Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -50,7 +50,7 @@ export function DiscoverFilters({ genres, countries, years, onFilterChange, onRe
                 </SelectContent>
             </Select>
             <Select value={currentFilters['with_genres'] || 'all'} onValueChange={(value) => onFilterChange('with_genres', value)}>
-                <SelectTrigger className="w-full bg-background border-0 focus:ring-2 focus:ring-primary">
+                <SelectTrigger className="w-full bg-background border-border/80 focus:ring-2 focus:ring-primary">
                     <SelectValue placeholder="Genre" />
                 </SelectTrigger>
                 <SelectContent>
@@ -61,7 +61,7 @@ export function DiscoverFilters({ genres, countries, years, onFilterChange, onRe
                 </SelectContent>
             </Select>
             <Select value={currentFilters['with_origin_country'] || 'all'} onValueChange={(value) => onFilterChange('with_origin_country', value)}>
-                <SelectTrigger className="w-full bg-background border-0 focus:ring-2 focus:ring-primary">
+                <SelectTrigger className="w-full bg-background border-border/80 focus:ring-2 focus:ring-primary">
                     <SelectValue placeholder="Country" />
                 </SelectTrigger>
                 <SelectContent>
@@ -72,7 +72,7 @@ export function DiscoverFilters({ genres, countries, years, onFilterChange, onRe
                 </SelectContent>
             </Select>
             <Select value={currentFilters['primary_release_year'] || 'all'} onValueChange={(value) => onFilterChange('primary_release_year', value)}>
-                <SelectTrigger className="w-full bg-background border-0 focus:ring-2 focus:ring-primary">
+                <SelectTrigger className="w-full bg-background border-border/80 focus:ring-2 focus:ring-primary">
                     <SelectValue placeholder="Year" />
                 </SelectTrigger>
                 <SelectContent>
@@ -83,7 +83,7 @@ export function DiscoverFilters({ genres, countries, years, onFilterChange, onRe
                 </SelectContent>
             </Select>
             <Select value={currentFilters['sort_by'] || 'popularity.desc'} onValueChange={(value) => onFilterChange('sort_by', value)}>
-                <SelectTrigger className="w-full bg-background border-0 focus:ring-2 focus:ring-primary">
+                <SelectTrigger className="w-full bg-background border-border/80 focus:ring-2 focus:ring-primary">
                     <SelectValue placeholder="Sort By" />
                 </SelectTrigger>
                 <SelectContent>
