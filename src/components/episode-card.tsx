@@ -23,14 +23,14 @@ export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying }
   return (
     <div
       className={cn(
-        'p-3 group transition-all duration-200 rounded-lg bg-secondary/80 flex flex-col sm:flex-row sm:items-center gap-4',
+        'p-3 group transition-all duration-200 rounded-lg bg-secondary/80 flex flex-row items-center gap-4',
         isPlaying ? 'ring-2 ring-primary' : 'ring-2 ring-transparent'
       )}
     >
       <div
         onClick={isReleased ? onPlay : undefined}
         className={cn(
-            'flex items-center gap-4 flex-grow',
+            'flex items-center gap-4 flex-grow min-w-0',
             isReleased ? 'cursor-pointer' : 'cursor-default opacity-70'
         )}
       >
@@ -71,10 +71,10 @@ export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying }
       </div>
       
       {isReleased && (
-        <Button asChild variant="secondary" size="sm" className="w-full sm:w-auto flex-shrink-0">
+        <Button asChild variant="secondary" size="sm" className="w-auto flex-shrink-0">
           <Link href={downloadUrl} target="_blank" onClick={(e) => e.stopPropagation()}>
-            <Download className="w-4 h-4 mr-2" />
-            Download
+            <Download className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Download</span>
           </Link>
         </Button>
       )}
