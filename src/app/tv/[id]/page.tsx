@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import { getShowById } from '@/lib/data';
 import { ShowPageClient } from '@/components/show-page-client';
 import type { Metadata } from 'next';
+import { JsonLd } from '@/components/JsonLd';
+import type { TVSeries as TVSeriesSchema } from 'schema-dts';
 
 interface ShowPageProps {
   params: {
@@ -22,6 +24,7 @@ export async function generateMetadata({ params }: ShowPageProps): Promise<Metad
   if (!show) {
     return {
       title: 'Not Found',
+      description: 'The TV show you are looking for could not be found.',
     };
   }
 
@@ -46,6 +49,9 @@ export async function generateMetadata({ params }: ShowPageProps): Promise<Metad
         },
       ],
     },
+    alternates: {
+      canonical: `/tv/${show.id}`,
+    }
   };
 }
 
@@ -61,11 +67,31 @@ export default async function ShowPage({ params }: ShowPageProps) {
     notFound();
   }
 
+  const showJsonLd: TVSeriesSchema = {
+    '@type': 'TVSeries',
+    name: show.title,
+    description: show.overview,
+    image: show.poster_path,
+    datePublished: show.release_date,
+    numberOfSeasons: show.number_of_seasons,
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: show.vote_average,
+      bestRating: 10,
+      ratingCount: show.popularity, // Using popularity as a proxy
+    },
+    actor: show.cast?.slice(0, 10).map(a => ({ '@type': 'Person', name: a.name })),
+    genre: show.genres.map(g => g.name),
+  };
+
   return (
-    <div className="relative">
-       <div className="md:px-0">
-            <ShowPageClient show={show} />
-        </div>
-    </div>
+    <>
+      <JsonLd data={showJsonLd} />
+      <div className="relative">
+        <div className="md:px-0">
+              <ShowPageClient show={show} />
+          </div>
+      </div>
+    </>
   );
 }

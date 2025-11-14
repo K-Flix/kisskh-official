@@ -14,13 +14,19 @@ interface CategoryPageProps {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: CategoryPageProps): Promise<Metadata> {
   const endpoint = endpoints.find(e => e.key === params.slug);
   const title = endpoint?.title || params.slug.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+  const page = searchParams['page'] || '1';
+  const canonicalUrl = `/category/${params.slug}${page === '1' ? '' : `?page=${page}`}`;
 
   return {
     title: `${title} - kisskh`,
     description: `Browse all items in the ${title} category.`,
+    alternates: {
+      canonical: canonicalUrl,
+    },
   };
 }
 

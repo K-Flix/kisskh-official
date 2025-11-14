@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import { getPersonById } from '@/lib/data';
 import type { Metadata } from 'next';
 import { PersonPageClient } from '@/components/person-page-client';
+import { JsonLd } from '@/components/JsonLd';
+import type { Person as PersonSchema } from 'schema-dts';
 
 interface PersonPageProps {
   params: {
@@ -22,6 +24,7 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
   if (!person) {
     return {
       title: 'Not Found',
+      description: 'The person you are looking for could not be found.',
     };
   }
 
@@ -40,6 +43,9 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
         },
       ],
     },
+    alternates: {
+      canonical: `/person/${person.id}`,
+    }
   };
 }
 
@@ -55,9 +61,24 @@ export default async function PersonPage({ params }: PersonPageProps) {
     notFound();
   }
 
+  const personJsonLd: PersonSchema = {
+    '@type': 'Person',
+    name: person.name,
+    description: person.biography,
+    image: person.profile_path,
+    birthDate: person.birthday || undefined,
+    birthPlace: {
+      '@type': 'Place',
+      name: person.place_of_birth || undefined,
+    },
+  };
+
   return (
-    <div className="container py-8 pt-24">
-      <PersonPageClient person={person} />
-    </div>
+    <>
+      <JsonLd data={personJsonLd} />
+      <div className="container py-8 pt-24">
+        <PersonPageClient person={person} />
+      </div>
+    </>
   );
 }

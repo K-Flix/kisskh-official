@@ -33,7 +33,13 @@ export const metadata: Metadata = {
     type: 'website',
     url: VERCEL_URL,
     siteName: 'kisskh',
-  }
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'kisskh',
+    description: 'A free streaming website for movies and TV shows.',
+    images: [`${VERCEL_URL}/og-image.png`],
+  },
 };
 
 export default function RootLayout({

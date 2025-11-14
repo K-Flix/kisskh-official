@@ -14,15 +14,18 @@ interface SearchPageProps {
 
 export async function generateMetadata({ searchParams }: SearchPageProps): Promise<Metadata> {
     const query = searchParams.q || '';
-    if (query) {
-        return {
-            title: `Search results for "${query}" - kisskh`,
-            description: `Find movies and TV shows matching "${query}".`,
-        };
-    }
+    
+    const title = query ? `Search results for "${query}"` : 'Search';
+    const description = query ? `Find movies and TV shows matching "${query}".` : 'Search for movies and TV shows.';
+
+    const canonicalUrl = `/search${query ? `?q=${encodeURIComponent(query)}` : ''}`;
+
     return {
-        title: 'Search - kisskh',
-        description: 'Search for movies and TV shows.',
+        title: `${title} - kisskh`,
+        description: description,
+        alternates: {
+            canonical: canonicalUrl,
+        }
     };
 }
 
