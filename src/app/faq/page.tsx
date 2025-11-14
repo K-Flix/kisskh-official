@@ -5,6 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { FacebookIcon, TelegramIcon, TwitterIcon } from "@/components/social-icons";
 
 const faqItems = [
   {
@@ -29,6 +30,10 @@ const faqItems = [
   }
 ];
 
+const FACEBOOK_URL = "https://facebook.com";
+const TWITTER_URL = "https://x.com";
+const TELEGRAM_URL = "https://telegram.org";
+
 export default function FAQPage() {
   return (
     <div className="container py-8 max-w-4xl mx-auto text-foreground">
@@ -43,6 +48,23 @@ export default function FAQPage() {
           </AccordionItem>
         ))}
       </Accordion>
+       <div className="text-center mt-16 pt-8">
+            <h2 className="text-2xl font-bold text-foreground mb-4">Find us on</h2>
+            <div className="flex items-center justify-center space-x-6">
+                <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                    <FacebookIcon className="w-8 h-8"/>
+                    <span className="font-semibold">Facebook</span>
+                </a>
+                <a href={TWITTER_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                    <TwitterIcon className="w-7 h-7"/>
+                    <span className="font-semibold">Twitter (X)</span>
+                </a>
+                <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                    <TelegramIcon className="w-7 h-7"/>
+                    <span className="font-semibold">Telegram</span>
+                </a>
+            </div>
+        </div>
     </div>
   );
 }
