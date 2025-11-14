@@ -30,7 +30,7 @@ export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying }
       <div
         onClick={isReleased ? onPlay : undefined}
         className={cn(
-            'flex items-center gap-4 flex-grow min-w-0',
+            'flex items-center gap-4 flex-1 min-w-0',
             isReleased ? 'cursor-pointer' : 'cursor-default opacity-70'
         )}
       >
@@ -59,7 +59,7 @@ export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying }
           <span className="absolute bottom-1 left-1 bg-black/70 text-white text-xs font-bold px-1.5 py-0.5 rounded-full w-6 h-6 flex items-center justify-center rounded-full">{episode.episode_number}</span>
         </div>
 
-        <div className="flex-grow min-w-0">
+        <div className="flex-1 min-w-0">
           <h3 className={cn('text-base font-bold truncate', isPlaying ? 'text-primary' : 'text-white')}>{episode.name}</h3>
           <p className="text-sm text-muted-foreground mt-1.5 line-clamp-2">
             {isReleased
@@ -71,10 +71,10 @@ export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying }
       </div>
       
       {isReleased && (
-        <Button asChild variant="secondary" size="sm" className="w-auto flex-shrink-0">
+        <Button asChild variant="secondary" size="icon" className="w-10 h-10 flex-shrink-0 rounded-full">
           <Link href={downloadUrl} target="_blank" onClick={(e) => e.stopPropagation()}>
-            <Download className="w-4 h-4 sm:mr-2" />
-            <span className="hidden sm:inline">Download</span>
+            <Download className="w-4 h-4" />
+            <span className="sr-only">Download</span>
           </Link>
         </Button>
       )}
