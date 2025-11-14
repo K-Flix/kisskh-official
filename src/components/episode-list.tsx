@@ -62,30 +62,32 @@ export function EpisodeList({ showId, seasons, showBackdropPath, onEpisodePlay, 
         </div>
 
         <div className="bg-secondary/30 border border-border/50 rounded-lg overflow-hidden">
-          <ScrollArea className="h-[50vh] md:h-[70vh] p-3">
-            {selectedSeason && (
-              <div className="space-y-2">
-                {filteredEpisodes.map((episode) => {
-                  const isPlaying = currentEpisode?.season === selectedSeason.season_number && currentEpisode?.episode === episode.episode_number;
-                  return (
-                    <EpisodeCard
-                      key={episode.id}
-                      showId={showId}
-                      seasonNumber={selectedSeason.season_number}
-                      episode={episode}
-                      onPlay={() => onEpisodePlay(selectedSeason.season_number, episode.episode_number)}
-                      isPlaying={isPlaying}
-                    />
-                  )
-                })}
-              </div>
-            )}
-            {filteredEpisodes.length === 0 && (
-              <div className="text-center text-muted-foreground py-16">
-                <p className="text-xl">No episodes found</p>
-                <p className="text-sm mt-1">Try adjusting your search query.</p>
-              </div>
-            )}
+          <ScrollArea className="h-[50vh] md:h-[70vh]">
+            <div className="p-3 space-y-2">
+              {selectedSeason && (
+                <>
+                  {filteredEpisodes.map((episode) => {
+                    const isPlaying = currentEpisode?.season === selectedSeason.season_number && currentEpisode?.episode === episode.episode_number;
+                    return (
+                      <EpisodeCard
+                        key={episode.id}
+                        showId={showId}
+                        seasonNumber={selectedSeason.season_number}
+                        episode={episode}
+                        onPlay={() => onEpisodePlay(selectedSeason.season_number, episode.episode_number)}
+                        isPlaying={isPlaying}
+                      />
+                    )
+                  })}
+                </>
+              )}
+              {filteredEpisodes.length === 0 && (
+                <div className="text-center text-muted-foreground py-16">
+                  <p className="text-xl">No episodes found</p>
+                  <p className="text-sm mt-1">Try adjusting your search query.</p>
+                </div>
+              )}
+            </div>
           </ScrollArea>
         </div>
       </div>
