@@ -113,29 +113,30 @@ export async function getItems(
             ? [media_type as 'movie' | 'tv']
             : ['movie', 'tv'];
 
-        const hasNetworkFilter = !!apiFilters.with_networks;
-        const hasProviderFilter = !!apiFilters.with_watch_providers;
-
         const promises = typesToFetch.map(type => {
             const endpoint = `discover/${type}`;
-            let paramsForType = { ...apiFilters, page: pageStr };
-
+            const paramsForType = { ...apiFilters, page: pageStr };
+            
+            // Logic for TV shows
             if (type === 'tv') {
-                if (hasProviderFilter && !hasNetworkFilter) {
-                    paramsForType.watch_region = 'US';
-                } else if (hasNetworkFilter) {
-                    delete paramsForType.with_watch_providers; // Prioritize network for TV
+                if (paramsForType.with_networks) {
+                    // If a specific network is selected, prioritize it for TV shows
+                    // and don't use the watch provider filter.
+                    delete paramsForType.with_watch_providers;
+                } else if (paramsForType.with_watch_providers) {
+                    // If only a watch provider is available (e.g., Crunchyroll), use it.
+                    paramsForType.watch_region = 'US'; // Required for with_watch_providers
                 }
-            } else if (type === 'movie') {
-                 if (hasProviderFilter) {
-                    paramsForType.watch_region = 'US';
-                    delete paramsForType.with_networks; // Movies don't use with_networks
-                } else if(hasNetworkFilter) {
-                    // Don't fetch movies if there's only a network filter
-                    return Promise.resolve(null);
+            } 
+            // Logic for Movies
+            else if (type === 'movie') {
+                // Movies do not support with_networks, so always remove it.
+                delete paramsForType.with_networks;
+                if (paramsForType.with_watch_providers) {
+                    paramsForType.watch_region = 'US'; // Required for with_watch_providers
                 }
             }
-            
+
             return fetchFromTMDB(endpoint, paramsForType);
         });
 
@@ -331,3 +332,5 @@ export async function getPersonById(id: number): Promise<PersonDetails | null> {
 
     return person;
 }
+
+    
