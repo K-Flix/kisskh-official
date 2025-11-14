@@ -97,4 +97,3 @@ export function DiscoverFilters({ genres, countries, years, onFilterChange, onRe
     </div>
   )
 }
-
