@@ -2,7 +2,6 @@
 import { getItems } from '@/lib/data';
 import { HeroSection } from '@/components/hero-section';
 import { MovieCarousel } from '@/components/movie-carousel';
-import { BannerAd } from '@/components/banner-ad';
 
 export default async function Home() {
   const featured = await getItems('trending_today', 1, true);
