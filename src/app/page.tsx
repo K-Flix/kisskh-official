@@ -18,7 +18,6 @@ export default async function Home() {
       {featured && featured.length > 0 && <HeroSection movies={featured} />}
       <div className="container py-8 space-y-12">
         <MovieCarousel title="Trending Today" movies={trending} seeAllHref="/category/trending_today" />
-        <BannerAd />
         <MovieCarousel title="K-Drama" movies={kDramas} seeAllHref="/category/k_drama" />
         <MovieCarousel title="C-Drama" movies={cDramas} seeAllHref="/category/c_drama" />
         <MovieCarousel title="Anime" movies={anime} seeAllHref="/category/anime" />

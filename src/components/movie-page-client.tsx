@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { safeRouterBack } from '@/lib/navigation';
+import { BannerAd } from './banner-ad';
 
 interface MoviePageClientProps {
   movie: MovieDetails;
@@ -189,6 +190,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
         </div>
 
         <div className="container py-8 space-y-12 md:mt-0" ref={similarSectionRef}>
+            <BannerAd />
             {movie.cast && movie.cast.length > 0 && <ActorCard actors={movie.cast} />}
             {movie.similar && movie.similar.length > 0 && (
                 <MovieCarousel title="Similars" movies={movie.similar} />

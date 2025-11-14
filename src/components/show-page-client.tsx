@@ -23,6 +23,7 @@ import { cn } from '@/lib/utils';
 import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group';
 import { Grid, List } from 'lucide-react';
 import { safeRouterBack } from '@/lib/navigation';
+import { BannerAd } from './banner-ad';
 
 interface ShowPageClientProps {
   show: ShowDetails;
@@ -211,6 +212,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                 />
             </div>
             
+            <BannerAd />
             {show.cast && show.cast.length > 0 && <ActorCard actors={show.cast} />}
             
             <div ref={similarsSectionRef}>
