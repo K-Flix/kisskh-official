@@ -117,23 +117,27 @@ export async function getItems(
             const endpoint = `discover/${type}`;
             const paramsForType = { ...apiFilters, page: pageStr };
             
+            // Handle year filter difference between movies and TV
+            if (paramsForType.primary_release_year) {
+              if (type === 'tv') {
+                paramsForType.first_air_date_year = paramsForType.primary_release_year;
+                delete paramsForType.primary_release_year;
+              }
+            }
+            
             // Logic for TV shows
             if (type === 'tv') {
                 if (paramsForType.with_networks) {
-                    // If a specific network is selected, prioritize it for TV shows
-                    // and don't use the watch provider filter.
                     delete paramsForType.with_watch_providers;
                 } else if (paramsForType.with_watch_providers) {
-                    // If only a watch provider is available (e.g., Crunchyroll), use it.
-                    paramsForType.watch_region = 'US'; // Required for with_watch_providers
+                    paramsForType.watch_region = 'US';
                 }
             } 
             // Logic for Movies
             else if (type === 'movie') {
-                // Movies do not support with_networks, so always remove it.
                 delete paramsForType.with_networks;
                 if (paramsForType.with_watch_providers) {
-                    paramsForType.watch_region = 'US'; // Required for with_watch_providers
+                    paramsForType.watch_region = 'US';
                 }
             }
 
@@ -151,8 +155,11 @@ export async function getItems(
             }
         });
 
-        if (typesToFetch.length > 1) {
+        if (typesToFetch.length > 1 && allItems.length > 0) {
+          const sortBy = filters.sort_by || 'popularity.desc';
+          if (!sortBy.includes('release_date')) {
             allItems.sort((a, b) => b.popularity - a.popularity);
+          }
         }
 
         return allItems;
@@ -332,5 +339,7 @@ export async function getPersonById(id: number): Promise<PersonDetails | null> {
 
     return person;
 }
+
+    
 
     
