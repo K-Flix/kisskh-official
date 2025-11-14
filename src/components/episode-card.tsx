@@ -50,6 +50,7 @@ export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying }
         </div>
         <span className="absolute bottom-1 left-1 bg-black/70 text-white text-xs font-bold px-1.5 py-0.5 rounded pointer-events-none w-6 h-6 flex items-center justify-center rounded-full">{episode.episode_number}</span>
       </div>
+
       <div className="flex-grow min-w-0">
         <h3 className={cn('text-base font-bold truncate', isPlaying ? 'text-primary' : 'text-white')}>{episode.name}</h3>
         <p className="text-sm text-muted-foreground mt-1.5 line-clamp-2">
@@ -59,11 +60,12 @@ export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying }
           }
         </p>
       </div>
+
       <Button
         asChild
         variant="ghost"
         size="icon"
-        className="flex-shrink-0 w-11 h-11 rounded-full bg-background/50 hover:bg-background/80 disabled:opacity-50 disabled:pointer-events-none self-center"
+        className="flex-shrink-0 w-11 h-11 rounded-full bg-background/50 hover:bg-background/80 disabled:opacity-50 disabled:pointer-events-none"
         aria-label={`Download episode ${episode.episode_number}`}
         title={`Download episode ${episode.episode_number}`}
         onClick={(e) => e.stopPropagation()} 
