@@ -13,7 +13,7 @@ export function BannerAd() {
 
     const loadTimer = setTimeout(() => {
         // Prevent ad from loading more than once
-        if (adLoaded-ref.current) return;
+        if (adLoadedRef.current) return;
         adLoadedRef.current = true;
 
         try {
