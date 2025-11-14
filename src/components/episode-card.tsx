@@ -2,9 +2,7 @@
 
 import Image from 'next/image';
 import type { Episode } from '@/lib/types';
-import { Download, PlayCircle, CalendarClock } from 'lucide-react';
-import { Button } from './ui/button';
-import Link from 'next/link';
+import { PlayCircle, CalendarClock } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -17,7 +15,6 @@ interface EpisodeCardProps {
 }
 
 export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying }: EpisodeCardProps) {
-  const downloadUrl = `https://dl.vidsrc.vip/tv/${showId}/${seasonNumber}/${episode.episode_number}`;
   const isReleased = episode.air_date ? new Date(episode.air_date) <= new Date() : false;
   
   return (
@@ -36,7 +33,10 @@ export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying }
           fill
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        <div className={`absolute inset-0 bg-black/20 flex items-center justify-center transition-opacity ${isReleased ? 'opacity-0 group-hover:opacity-100' : 'opacity-100 bg-black/50'}`}>
+        <div className={cn(
+          'absolute inset-0 bg-black/20 flex items-center justify-center transition-opacity',
+          isReleased ? 'opacity-0 group-hover:opacity-100' : 'opacity-100 bg-black/50'
+        )}>
           {isReleased ? (
             <PlayCircle className="w-10 h-10 text-white" />
           ) : (
@@ -60,21 +60,6 @@ export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying }
           }
         </p>
       </div>
-
-      <Button
-        asChild
-        variant="ghost"
-        size="icon"
-        className="flex-shrink-0 w-11 h-11 rounded-full bg-background/50 hover:bg-background/80 disabled:opacity-50 disabled:pointer-events-none"
-        aria-label={`Download episode ${episode.episode_number}`}
-        title={`Download episode ${episode.episode_number}`}
-        onClick={(e) => e.stopPropagation()} 
-        disabled={!isReleased}
-      >
-        <Link href={isReleased ? downloadUrl : '#'} target="_blank" rel="noopener noreferrer" className={!isReleased ? 'pointer-events-none' : ''}>
-          <Download className="w-5 h-5 text-gray-300" />
-        </Link>
-      </Button>
     </div>
   );
 }
