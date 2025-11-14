@@ -1,24 +1,20 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export function BannerAd() {
   const adContainerRef = useRef<HTMLDivElement>(null);
   const adLoadedRef = useRef(false);
+  const [adFailed, setAdFailed] = useState(false);
 
   useEffect(() => {
     const container = adContainerRef.current;
     if (!container || adLoadedRef.current) return;
 
-    const timer = setTimeout(() => {
+    const loadTimer = setTimeout(() => {
         // Prevent ad from loading more than once
-        if (adLoadedRef.current) return;
+        if (adLoaded-ref.current) return;
         adLoadedRef.current = true;
-
-        // Clear previous ad scripts if any, just in case
-        while (container.firstChild) {
-          container.removeChild(container.firstChild);
-        }
 
         try {
           const adScript = document.createElement('script');
@@ -40,17 +36,30 @@ export function BannerAd() {
           container.appendChild(invokeScript);
         } catch (e) {
           console.error("Ad script failed to load", e);
+          setAdFailed(true);
         }
-    }, 3000); // Wait 3 seconds before loading the ad
+    }, 3000); // Wait 3 seconds before trying to load the ad
+
+    // Check if the ad actually loaded after a delay
+    const failTimer = setTimeout(() => {
+        if (container && container.children.length <= 2) { // 2 because we append two script tags
+            setAdFailed(true);
+        }
+    }, 5000); // 5 seconds total (3s delay + 2s to load)
 
     return () => {
-        clearTimeout(timer);
+        clearTimeout(loadTimer);
+        clearTimeout(failTimer);
     }
   }, []);
 
+  if (adFailed) {
+    return null;
+  }
+
   return (
-    <div className="my-8 flex justify-center">
-        <div ref={adContainerRef} style={{ minHeight: '250px' }}></div>
+    <div className="my-8 flex justify-center min-h-[250px]">
+        <div ref={adContainerRef}></div>
     </div>
   );
 }
