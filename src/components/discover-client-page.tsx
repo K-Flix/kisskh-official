@@ -48,6 +48,7 @@ export function DiscoverClientPage({
   const [hasMore, setHasMore] = useState(initialItems.length > 0);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -62,84 +63,86 @@ export function DiscoverClientPage({
     return filters;
   }, [searchParams]);
 
-  const debouncedFilters = useDebounce(currentFilters, 500);
-
   useEffect(() => {
-    startTransition(async () => {
-      const newItems = await getItems('discover_all', 1, false, false, debouncedFilters);
-      setItems(newItems);
-      setPage(2);
-      setHasMore(newItems.length > 0);
-    });
-  }, [debouncedFilters]);
+    setItems(initialItems);
+    setPage(2);
+    setHasMore(initialItems.length > 0);
+  }, [initialItems]);
+
 
   const handleFilterChange = useCallback((key: string, value: string) => {
-    const newParams = new URLSearchParams(searchParams.toString());
-    if (value && value !== 'all') {
-        newParams.set(key, value);
-    } else {
-        newParams.delete(key);
-    }
-    const search = newParams.toString();
-    const query = search ? `?${search}` : "";
-    router.push(`/discover${query}`);
+    startTransition(() => {
+        const newParams = new URLSearchParams(searchParams.toString());
+        if (value && value !== 'all') {
+            newParams.set(key, value);
+        } else {
+            newParams.delete(key);
+        }
+        const search = newParams.toString();
+        const query = search ? `?${search}` : "";
+        router.push(`/discover${query}`);
+    });
   }, [searchParams, router]);
 
 
   const handleNetworkSelect = useCallback((network: NetworkConfig) => {
-    const newParams = new URLSearchParams(searchParams.toString());
-    const networkIds = network.networkIds?.join('|');
-    const providerIds = network.providerIds?.join('|');
+    startTransition(() => {
+        const newParams = new URLSearchParams(searchParams.toString());
+        const networkIds = network.networkIds?.join('|');
+        const providerIds = network.providerIds?.join('|');
 
-    const isCurrentlySelected = 
-        (networkIds && newParams.get('with_networks') === networkIds) ||
-        (providerIds && newParams.get('with_watch_providers') === providerIds);
+        const isCurrentlySelected = 
+            (networkIds && newParams.get('with_networks') === networkIds) ||
+            (providerIds && newParams.get('with_watch_providers') === providerIds);
 
-    // Clear old network/provider filters before adding new ones
-    newParams.delete('with_networks');
-    newParams.delete('with_watch_providers');
+        // Clear old network/provider filters before adding new ones
+        newParams.delete('with_networks');
+        newParams.delete('with_watch_providers');
 
-    if (!isCurrentlySelected) {
-        if (networkIds) newParams.set('with_networks', networkIds);
-        if (providerIds) newParams.set('with_watch_providers', providerIds);
-        
-        // If it's a broadcast-only network, default to TV
-        if (networkIds && (!providerIds || providerIds.length === 0)) {
-            newParams.set('media_type', 'tv');
+        if (!isCurrentlySelected) {
+            if (networkIds) newParams.set('with_networks', networkIds);
+            if (providerIds) newParams.set('with_watch_providers', providerIds);
+            
+            // If it's a broadcast-only network, default to TV
+            if (networkIds && (!providerIds || providerIds.length === 0)) {
+                newParams.set('media_type', 'tv');
+            } else {
+                newParams.delete('media_type');
+            }
         } else {
             newParams.delete('media_type');
         }
-    } else {
-        newParams.delete('media_type');
-    }
-    
-    const search = newParams.toString();
-    const query = search ? `?${search}` : "";
-    router.push(`/discover${query}`);
+        
+        const search = newParams.toString();
+        const query = search ? `?${search}` : "";
+        router.push(`/discover${query}`);
+    });
   }, [searchParams, router]);
 
   const handleReset = useCallback(() => {
-    router.push('/discover');
+    startTransition(() => {
+        router.push('/discover');
+    });
   }, [router]);
 
 
   const loadMoreItems = useCallback(async () => {
-    if (isPending || !hasMore) return;
-    startTransition(async () => {
-      const newItems = await getItems('discover_all', page, false, false, debouncedFilters);
+    if (isLoadingMore || isPending || !hasMore) return;
+    setIsLoadingMore(true);
+      const newItems = await getItems('discover_all', page, false, false, currentFilters);
       if (newItems.length > 0) {
         setItems((prev) => [...prev, ...newItems]);
         setPage((prev) => prev + 1);
       } else {
         setHasMore(false);
       }
-    });
-  }, [isPending, hasMore, page, debouncedFilters]);
+    setIsLoadingMore(false);
+  }, [isLoadingMore, isPending, hasMore, page, currentFilters]);
   
 
   const lastItemRef = useCallback(
     (node: HTMLDivElement) => {
-      if (isPending) return;
+      if (isLoadingMore || isPending) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
@@ -148,7 +151,7 @@ export function DiscoverClientPage({
       });
       if (node) observer.current.observe(node);
     },
-    [isPending, hasMore, loadMoreItems]
+    [isLoadingMore, isPending, hasMore, loadMoreItems]
   );
 
   const handleScroll = () => {
@@ -241,7 +244,7 @@ export function DiscoverClientPage({
         </div>
       )}
 
-      {isPending && page > 2 && (
+      {isLoadingMore && (
         <div className="flex justify-center items-center py-8">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
