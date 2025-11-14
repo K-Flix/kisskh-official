@@ -30,7 +30,7 @@ export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying }
       <div
         onClick={isReleased ? onPlay : undefined}
         className={cn(
-            'flex items-center gap-4 flex-1 min-w-0',
+            'flex items-center gap-4 flex-grow min-w-0',
             isReleased ? 'cursor-pointer' : 'cursor-default opacity-70'
         )}
       >
