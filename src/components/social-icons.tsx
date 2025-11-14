@@ -1,3 +1,4 @@
+
 import { SVGProps } from 'react';
 
 export function FacebookIcon(props: SVGProps<SVGSVGElement>) {
@@ -30,13 +31,8 @@ export function TwitterIcon(props: SVGProps<SVGSVGElement>) {
 
 export function TelegramIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-    >
-        <path d="M24 12c0 6.627-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0s12 5.373 12 12zM5.232 12.016l.004-.004 6.745 2.545a.635.635 0 0 0 .888-.235l2.064-3.882a.317.317 0 0 1 .584.117l-1.57 5.568a.634.634 0 0 0 .58.74l.056.002h.01a.634.634 0 0 0 .584-.45l2.25-6.938s.317-.95-.475-1.108c-.792-.158-10.824-4.14-10.824-4.14s-.635-.237-.635.474l-.004.002s.634.238 1.11 1.42l1.583 3.882-5.45 1.834a.476.476 0 0 0-.256.666z"/>
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="m9.417 15.181-.397 5.584c.568 0 .814-.244 1.109-.537l2.663-2.545 5.518 4.041c1.012.564 1.725.267 1.998-.931L22.43 3.947c.328-1.358-.517-1.858-1.4-1.51L1.562 9.103c-1.343.525-1.326 1.258-.242 1.581l4.971 1.545 11.392-6.93c.533-.324 1.012-.153.583.186z"/>
     </svg>
   );
 }
