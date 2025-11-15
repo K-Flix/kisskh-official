@@ -76,6 +76,7 @@ export function EpisodeList({ showId, seasons, showBackdropPath, onEpisodePlay, 
                         episode={episode}
                         onPlay={() => onEpisodePlay(selectedSeason.season_number, episode.episode_number)}
                         isPlaying={isPlaying}
+                        showBackdropPath={showBackdropPath}
                       />
                     )
                   })}

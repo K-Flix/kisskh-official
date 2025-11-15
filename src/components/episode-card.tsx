@@ -15,9 +15,10 @@ interface EpisodeCardProps {
   seasonNumber: number;
   onPlay: () => void;
   isPlaying: boolean;
+  showBackdropPath: string;
 }
 
-export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying }: EpisodeCardProps) {
+export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying, showBackdropPath }: EpisodeCardProps) {
   const isReleased = episode.air_date ? new Date(episode.air_date) <= new Date() : false;
   const downloadUrl = `https://dl.vidsrc.vip/tv/${showId}/${seasonNumber}/${episode.episode_number}`;
 
@@ -36,7 +37,7 @@ export function EpisodeCard({ episode, showId, seasonNumber, onPlay, isPlaying }
         )}
       >
         <Image
-          src={episode.still_path || '/placeholder.svg'}
+          src={episode.still_path || showBackdropPath || '/placeholder.svg'}
           alt={episode.name}
           fill
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
