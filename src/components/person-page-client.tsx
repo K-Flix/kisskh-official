@@ -45,14 +45,14 @@ export function PersonPageClient({ person }: PersonPageClientProps) {
   return (
     <div>
         <div className="flex flex-col md:flex-row gap-8 md:gap-12">
-            <div className="w-full md:w-1/6 flex-shrink-0">
-                <div className="aspect-[2/3] w-full max-w-sm mx-auto md:max-w-none relative overflow-hidden rounded-lg">
+            <div className="w-1/2 md:w-1/6 flex-shrink-0 mx-auto md:mx-0">
+                <div className="aspect-[2/3] w-full relative overflow-hidden rounded-lg">
                     <Image
                         src={person.profile_path}
                         alt={person.name}
                         fill
                         className="object-cover"
-                        sizes="(max-width: 768px) 80vw, 16vw"
+                        sizes="(max-width: 768px) 40vw, 16vw"
                     />
                 </div>
             </div>
