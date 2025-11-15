@@ -5,9 +5,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { MovieCard } from '@/components/movie-card';
 import { Movie, Show } from '@/lib/types';
 import { searchMovies } from '@/lib/data';
-import { Loader2, ChevronUp } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
 
 interface SearchClientPageProps {
   initialItems: (Movie | Show)[];
@@ -19,7 +17,6 @@ export function SearchClientPage({ initialItems, query }: SearchClientPageProps)
   const [page, setPage] = useState(2);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(initialItems.length > 0);
-  const [showBackToTop, setShowBackToTop] = useState(false);
   const observer = useRef<IntersectionObserver>();
 
   const loadMoreItems = useCallback(async () => {
@@ -50,23 +47,6 @@ export function SearchClientPage({ initialItems, query }: SearchClientPageProps)
   );
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 400) {
-        setShowBackToTop(true);
-      } else {
-        setShowBackToTop(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  useEffect(() => {
     // Reset state when query changes
     setItems(initialItems);
     setPage(2);
@@ -88,18 +68,6 @@ export function SearchClientPage({ initialItems, query }: SearchClientPageProps)
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       )}
-       <Button
-        size="icon"
-        onClick={scrollToTop}
-        className={cn(
-          'fixed bottom-10 right-8 z-50 h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:scale-110',
-          showBackToTop ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        )}
-        aria-label="Back to top"
-        title="Back to top"
-      >
-        <ChevronUp className="w-6 h-6" />
-      </Button>
     </>
   );
 }
