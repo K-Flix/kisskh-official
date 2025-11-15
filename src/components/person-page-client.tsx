@@ -9,7 +9,7 @@ import { ExpandableText } from './expandable-text';
 import { MovieCard } from './movie-card';
 import { useState, useRef, useCallback } from 'react';
 import { Button } from './ui/button';
-import { safeRouterBack } from '@/lib/navigation';
+import { useBack } from '@/hooks/use-back';
 
 interface PersonPageClientProps {
   person: PersonDetails;
@@ -21,6 +21,7 @@ export function PersonPageClient({ person }: PersonPageClientProps) {
   const router = useRouter();
   const [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE);
   const observer = useRef<IntersectionObserver>();
+  const { handleBack } = useBack();
 
   const loadMoreItems = useCallback(() => {
     setVisibleItems((prev) => Math.min(prev + ITEMS_PER_PAGE, person.known_for.length));
@@ -71,7 +72,7 @@ export function PersonPageClient({ person }: PersonPageClientProps) {
 
         <div className="mt-12">
              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-1.sem h-7 bg-primary rounded-full" />
+                <div className="w-1.5 h-7 bg-primary rounded-full" />
                 <h2 className="text-2xl font-bold">Filmography</h2>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">

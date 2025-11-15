@@ -11,7 +11,6 @@ import { ShowHero } from './show-hero';
 import { ArrowLeft, X } from 'lucide-react';
 import { Dialog, DialogClose, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
-import { useRouter } from 'next/navigation';
 import {
   Select,
   SelectContent,
@@ -19,10 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { cn } from '@/lib/utils';
-import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group';
-import { Grid, List } from 'lucide-react';
-import { safeRouterBack } from '@/lib/navigation';
+import { useBack } from '@/hooks/use-back';
 import { BannerAd } from './banner-ad';
 
 interface ShowPageClientProps {
@@ -50,7 +46,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
   const [selectedServer, setSelectedServer] = useState('Vidstorm');
   const episodesSectionRef = useRef<HTMLDivElement>(null);
   const similarsSectionRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+  const { handleBack } = useBack();
 
   const handlePlay = (season: number, episode: number) => {
     setPlayerState({ season, episode });
@@ -108,7 +104,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
 
   return (
     <div className="text-white">
-      <button onClick={() => safeRouterBack(router)} className="absolute top-6 left-4 md:left-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
+      <button onClick={handleBack} className="absolute top-6 left-4 md:left-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
           <ArrowLeft className="w-6 h-6 text-white"/>
           <span className="sr-only">Back</span>
       </button>

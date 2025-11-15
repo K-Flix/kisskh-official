@@ -1,13 +1,13 @@
 
 'use client';
 
-import { useWatchlist } from '@/context/watchlist-context';
+import { useApp } from '@/context/app-context';
 import { MovieCard } from '@/components/movie-card';
 import { Film } from 'lucide-react';
 import { useEffect } from 'react';
 
 export default function WatchlistPage() {
-  const { watchlist } = useWatchlist();
+  const { watchlist } = useApp();
 
   useEffect(() => {
     document.title = 'My Watchlist - kisskh';
@@ -32,5 +32,3 @@ export default function WatchlistPage() {
     </div>
   );
 }
-
-    

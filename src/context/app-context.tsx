@@ -5,19 +5,25 @@ import type { ReactNode } from 'react';
 import { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import type { Movie, Show } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
+import { usePathname } from 'next/navigation';
 
-interface WatchlistContextType {
+interface AppContextType {
+  // Watchlist
   watchlist: (Movie | Show)[];
   addToWatchlist: (movie: Movie | Show) => void;
   removeFromWatchlist: (movieId: number) => void;
   isInWatchlist: (movieId: number) => boolean;
+  // Navigation
+  previousPath: string | null;
 }
 
-const WatchlistContext = createContext<WatchlistContextType | undefined>(undefined);
+const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export function WatchlistProvider({ children }: { children: ReactNode }) {
+export function AppProvider({ children }: { children: ReactNode }) {
   const [watchlist, setWatchlist] = useState<(Movie | Show)[]>([]);
   const { toast } = useToast();
+  const pathname = usePathname();
+  const [previousPath, setPreviousPath] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -38,6 +44,13 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
       console.error('Failed to save watchlist to localStorage', error);
     }
   }, [watchlist]);
+
+  useEffect(() => {
+    // Don't set a new previous path if it's a detail page, to avoid loops
+    if (!pathname.startsWith('/movie/') && !pathname.startsWith('/tv/') && !pathname.startsWith('/person/')) {
+      setPreviousPath(pathname);
+    }
+  }, [pathname]);
 
   const addToWatchlist = useCallback((movie: Movie | Show) => {
     setWatchlist((prev) => {
@@ -69,19 +82,25 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
     return watchlist.some((item) => item.id === movieId);
   }, [watchlist]);
 
-  const value = useMemo(() => ({ watchlist, addToWatchlist, removeFromWatchlist, isInWatchlist }), [watchlist, addToWatchlist, removeFromWatchlist, isInWatchlist]);
+  const value = useMemo(() => ({ 
+    watchlist, 
+    addToWatchlist, 
+    removeFromWatchlist, 
+    isInWatchlist,
+    previousPath
+  }), [watchlist, addToWatchlist, removeFromWatchlist, isInWatchlist, previousPath]);
 
   return (
-    <WatchlistContext.Provider value={value}>
+    <AppContext.Provider value={value}>
       {children}
-    </WatchlistContext.Provider>
+    </AppContext.Provider>
   );
 }
 
-export function useWatchlist() {
-  const context = useContext(WatchlistContext);
+export function useApp() {
+  const context = useContext(AppContext);
   if (context === undefined) {
-    throw new Error('useWatchlist must be used within a WatchlistProvider');
+    throw new Error('useApp must be used within a AppProvider');
   }
   return context;
 }

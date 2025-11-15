@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
-import { WatchlistProvider } from '@/context/watchlist-context';
+import { AppProvider } from '@/context/app-context';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { MainLayout } from '@/components/layout/main-layout';
 import { ThemeProvider } from '@/context/theme-context';
@@ -53,12 +53,12 @@ export default function RootLayout({
         <ThemeProvider>
           <ThemeInjector />
           <TooltipProvider>
-              <WatchlistProvider>
+              <AppProvider>
                   <MainLayout>
                       {children}
                   </MainLayout>
                   <Toaster />
-              </WatchlistProvider>
+              </AppProvider>
           </TooltipProvider>
         </ThemeProvider>
       </body>

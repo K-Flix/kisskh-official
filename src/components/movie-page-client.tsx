@@ -11,7 +11,6 @@ import { ArrowLeft, Download, X } from 'lucide-react';
 import { Dialog, DialogClose, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import {
   Select,
@@ -20,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { safeRouterBack } from '@/lib/navigation';
+import { useBack } from '@/hooks/use-back';
 import { BannerAd } from './banner-ad';
 
 interface MoviePageClientProps {
@@ -42,7 +41,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
   const [showTrailer, setShowTrailer] = useState(false);
   const [selectedServer, setSelectedServer] = useState('Vidstorm');
   const similarSectionRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+  const { handleBack } = useBack();
 
   const getPlayerUrl = () => {
     const id = movie.id;
@@ -83,7 +82,7 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
 
   return (
     <div className="text-white">
-        <button onClick={() => safeRouterBack(router)} className="absolute top-6 left-4 md:left-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
+        <button onClick={handleBack} className="absolute top-6 left-4 md:left-6 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
             <ArrowLeft className="w-6 h-6 text-white"/>
             <span className="sr-only">Back</span>
         </button>

@@ -2,7 +2,7 @@
 'use client';
 
 import { BookmarkCheck, Plus } from 'lucide-react';
-import { useWatchlist } from '@/context/watchlist-context';
+import { useApp } from '@/context/app-context';
 import type { Movie, Show } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,7 +16,7 @@ interface WatchlistButtonProps {
 }
 
 export function WatchlistButton({ movie }: WatchlistButtonProps) {
-  const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useWatchlist();
+  const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useApp();
   const isBookmarked = isInWatchlist(movie.id);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
