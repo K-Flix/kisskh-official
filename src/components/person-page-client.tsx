@@ -9,7 +9,6 @@ import { ExpandableText } from './expandable-text';
 import { MovieCard } from './movie-card';
 import { useState, useRef, useCallback } from 'react';
 import { Button } from './ui/button';
-import { useBack } from '@/hooks/use-back';
 
 interface PersonPageClientProps {
   person: PersonDetails;
@@ -21,7 +20,6 @@ export function PersonPageClient({ person }: PersonPageClientProps) {
   const router = useRouter();
   const [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE);
   const observer = useRef<IntersectionObserver>();
-  const { handleBack } = useBack();
 
   const loadMoreItems = useCallback(() => {
     setVisibleItems((prev) => Math.min(prev + ITEMS_PER_PAGE, person.known_for.length));
@@ -44,7 +42,7 @@ export function PersonPageClient({ person }: PersonPageClientProps) {
 
   return (
     <div className="relative">
-        <button onClick={handleBack} className="absolute -top-16 left-0 md:left-0 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
+        <button onClick={() => router.back()} className="absolute -top-16 left-0 md:left-0 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
             <ArrowLeft className="w-6 h-6 text-white"/>
             <span className="sr-only">Back</span>
         </button>
