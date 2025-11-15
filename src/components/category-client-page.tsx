@@ -24,21 +24,7 @@ export function CategoryClientPage({ initialItems, slug }: CategoryClientPagePro
   const observer = useRef<IntersectionObserver>();
   const searchParams = useSearchParams();
 
-  const lastItemRef = useCallback(
-    (node: HTMLDivElement) => {
-      if (loading) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          loadMoreItems();
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [loading, hasMore]
-  );
-
-  const loadMoreItems = async () => {
+  const loadMoreItems = useCallback(async () => {
     if (loading || !hasMore) return;
     setLoading(true);
 
@@ -55,7 +41,21 @@ export function CategoryClientPage({ initialItems, slug }: CategoryClientPagePro
       setHasMore(false);
     }
     setLoading(false);
-  };
+  }, [loading, hasMore, page, searchParams, slug]);
+
+  const lastItemRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          loadMoreItems();
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasMore, loadMoreItems]
+  );
 
   const handleScroll = () => {
     if (window.scrollY > 400) {

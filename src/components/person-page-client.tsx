@@ -61,12 +61,12 @@ export function PersonPageClient({ person }: PersonPageClientProps) {
 
   return (
     <div className="relative">
-        <button onClick={() => router.back()} className="absolute -top-16 left-0 md:left-0 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
+        <button onClick={() => router.back()} className="absolute -top-16 left-0 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors z-10">
             <ArrowLeft className="w-6 h-6 text-white"/>
             <span className="sr-only">Back</span>
         </button>
         <div className="flex flex-col md:flex-row gap-8 md:gap-12">
-            <div className="w-1/2 md:w-1/6 flex-shrink-0 mx-auto md:mx-0">
+            <div className="w-1/2 md:w-1/4 lg:w-1/6 flex-shrink-0 mx-auto md:mx-0">
                 <div className="aspect-[2/3] w-full relative overflow-hidden rounded-lg">
                     <Image
                         src={person.profile_path}

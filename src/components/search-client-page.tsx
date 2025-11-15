@@ -22,6 +22,19 @@ export function SearchClientPage({ initialItems, query }: SearchClientPageProps)
   const [showBackToTop, setShowBackToTop] = useState(false);
   const observer = useRef<IntersectionObserver>();
 
+  const loadMoreItems = useCallback(async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+    const newItems = await searchMovies(query, page);
+    if (newItems.length > 0) {
+      setItems((prev) => [...prev, ...newItems]);
+      setPage((prev) => prev + 1);
+    } else {
+      setHasMore(false);
+    }
+    setLoading(false);
+  }, [loading, hasMore, page, query]);
+
   const lastItemRef = useCallback(
     (node: HTMLDivElement) => {
       if (loading) return;
@@ -33,21 +46,8 @@ export function SearchClientPage({ initialItems, query }: SearchClientPageProps)
       });
       if (node) observer.current.observe(node);
     },
-    [loading, hasMore]
+    [loading, hasMore, loadMoreItems]
   );
-
-  const loadMoreItems = async () => {
-    if (loading || !hasMore) return;
-    setLoading(true);
-    const newItems = await searchMovies(query, page);
-    if (newItems.length > 0) {
-      setItems((prev) => [...prev, ...newItems]);
-      setPage((prev) => prev + 1);
-    } else {
-      setHasMore(false);
-    }
-    setLoading(false);
-  };
 
   const handleScroll = () => {
     if (window.scrollY > 400) {
