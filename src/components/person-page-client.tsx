@@ -42,22 +42,22 @@ export function PersonPageClient({ person }: PersonPageClientProps) {
   
   const hasMore = visibleItems < person.known_for.length;
 
-  const handleScroll = () => {
-    if (window.scrollY > 400) {
-      setShowBackToTop(true);
-    } else {
-      setShowBackToTop(false);
-    }
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 400) {
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   return (
     <div className="relative">
@@ -120,10 +120,7 @@ export function PersonPageClient({ person }: PersonPageClientProps) {
             onClick={scrollToTop}
             className={cn(
               'fixed bottom-8 right-8 z-50 rounded-full transition-opacity duration-300',
-              {
-                'opacity-100': showBackToTop,
-                'opacity-0 pointer-events-none': !showBackToTop,
-              }
+              showBackToTop ? 'opacity-100' : 'opacity-0 pointer-events-none'
             )}
             aria-label="Back to top"
           >

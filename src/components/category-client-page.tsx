@@ -57,13 +57,18 @@ export function CategoryClientPage({ initialItems, slug }: CategoryClientPagePro
     [loading, hasMore, loadMoreItems]
   );
 
-  const handleScroll = () => {
-    if (window.scrollY > 400) {
-      setShowBackToTop(true);
-    } else {
-      setShowBackToTop(false);
-    }
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 400) {
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -74,11 +79,6 @@ export function CategoryClientPage({ initialItems, slug }: CategoryClientPagePro
     setPage(2);
     setHasMore(initialItems.length > 0);
   }, [initialItems]);
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   return (
     <>
@@ -100,10 +100,7 @@ export function CategoryClientPage({ initialItems, slug }: CategoryClientPagePro
         onClick={scrollToTop}
         className={cn(
           'fixed bottom-8 right-8 z-50 rounded-full transition-opacity duration-300',
-          {
-            'opacity-100': showBackToTop,
-            'opacity-0 pointer-events-none': !showBackToTop,
-          }
+          showBackToTop ? 'opacity-100' : 'opacity-0 pointer-events-none'
         )}
         aria-label="Back to top"
       >
