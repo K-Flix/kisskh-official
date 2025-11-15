@@ -8,7 +8,7 @@ export function BannerAd() {
     <div className="my-8 flex justify-center">
       <iframe
         src="/ad-frame.html"
-        sandbox="allow-scripts"
+        sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation allow-same-origin"
         width="300"
         height="250"
         scrolling="no"
