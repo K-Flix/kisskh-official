@@ -43,7 +43,11 @@ export function PersonPageClient({ person }: PersonPageClientProps) {
   const hasMore = visibleItems < person.known_for.length;
 
   return (
-    <div>
+    <div className="relative">
+        <button onClick={handleBack} className="absolute -top-16 left-0 md:left-0 z-50 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors">
+            <ArrowLeft className="w-6 h-6 text-white"/>
+            <span className="sr-only">Back</span>
+        </button>
         <div className="flex flex-col md:flex-row gap-8 md:gap-12">
             <div className="w-1/2 md:w-1/6 flex-shrink-0 mx-auto md:mx-0">
                 <div className="aspect-[2/3] w-full relative overflow-hidden rounded-lg">
