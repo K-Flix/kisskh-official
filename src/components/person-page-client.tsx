@@ -120,7 +120,10 @@ export function PersonPageClient({ person }: PersonPageClientProps) {
             onClick={scrollToTop}
             className={cn(
               'fixed bottom-8 right-8 z-50 rounded-full transition-opacity duration-300',
-              showBackToTop ? 'opacity-100' : 'opacity-0 pointer-events-none'
+              {
+                'opacity-100': showBackToTop,
+                'opacity-0 pointer-events-none': !showBackToTop,
+              }
             )}
             aria-label="Back to top"
           >
