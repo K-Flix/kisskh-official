@@ -3,12 +3,13 @@
 
 import Image from 'next/image';
 import { PersonDetails, Movie, Show } from '@/lib/types';
-import { ArrowLeft, Calendar, Loader2 } from 'lucide-react';
+import { ArrowLeft, Calendar, Loader2, ChevronUp } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ExpandableText } from './expandable-text';
 import { MovieCard } from './movie-card';
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Button } from './ui/button';
+import { cn } from '@/lib/utils';
 
 interface PersonPageClientProps {
   person: PersonDetails;
@@ -19,6 +20,7 @@ const ITEMS_PER_PAGE = 18;
 export function PersonPageClient({ person }: PersonPageClientProps) {
   const router = useRouter();
   const [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE);
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const observer = useRef<IntersectionObserver>();
 
   const loadMoreItems = useCallback(() => {
@@ -39,6 +41,23 @@ export function PersonPageClient({ person }: PersonPageClientProps) {
   );
   
   const hasMore = visibleItems < person.known_for.length;
+
+  const handleScroll = () => {
+    if (window.scrollY > 400) {
+      setShowBackToTop(true);
+    } else {
+      setShowBackToTop(false);
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <div className="relative">
@@ -96,6 +115,17 @@ export function PersonPageClient({ person }: PersonPageClientProps) {
                 </div>
             )}
         </div>
+        <Button
+            size="icon"
+            onClick={scrollToTop}
+            className={cn(
+              'fixed bottom-8 right-8 z-50 rounded-full transition-opacity duration-300',
+              showBackToTop ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            )}
+            aria-label="Back to top"
+          >
+            <ChevronUp className="w-6 h-6" />
+        </Button>
     </div>
   );
 }
