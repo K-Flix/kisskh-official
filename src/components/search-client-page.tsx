@@ -92,10 +92,11 @@ export function SearchClientPage({ initialItems, query }: SearchClientPageProps)
         size="icon"
         onClick={scrollToTop}
         className={cn(
-          'fixed bottom-8 right-8 z-50 rounded-full transition-opacity duration-300',
+          'fixed bottom-10 right-8 z-50 h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:scale-110',
           showBackToTop ? 'opacity-100' : 'opacity-0 pointer-events-none'
         )}
         aria-label="Back to top"
+        title="Back to top"
       >
         <ChevronUp className="w-6 h-6" />
       </Button>
