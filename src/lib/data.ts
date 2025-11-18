@@ -201,7 +201,7 @@ export async function getItems(
   }
 
 export async function getMovieById(id: number): Promise<MovieDetails | null> {
-    const data = await fetchFromTMDB(`movie/${id}`, { append_to_response: 'aggregate_credits,images,similar,videos' });
+    const data = await fetchFromTMDB(`movie/${id}`, { append_to_response: 'credits,images,similar,videos' });
     if (!data) return null;
 
     const logo = data.images?.logos?.find((l: any) => l.iso_639_1 === 'en' && !l.file_path.endsWith('.svg'));
@@ -220,11 +220,11 @@ export async function getMovieById(id: number): Promise<MovieDetails | null> {
         trailer_url: trailer ? `https://www.youtube.com/embed/${trailer.key}` : undefined,
         media_type: 'movie',
         runtime: data.runtime,
-        cast: (data.aggregate_credits?.cast || []).map((member: any) => ({
+        cast: (data.credits?.cast || []).map((member: any) => ({
             id: member.id,
-            credit_id: member.roles?.[0]?.credit_id || member.id,
+            credit_id: member.credit_id,
             name: member.name,
-            character: member.roles?.map((r: any) => r.character).join(', ') || '',
+            character: member.character || '',
             profile_path: member.profile_path ? `${IMAGE_BASE_URL}/w300${member.profile_path}` : null
         })),
         similar: (data.similar?.results || [])
@@ -339,3 +339,5 @@ export async function getPersonById(id: number): Promise<PersonDetails | null> {
 
     return person;
 }
+
+    
