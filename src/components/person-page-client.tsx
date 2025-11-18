@@ -4,11 +4,11 @@
 import Image from 'next/image';
 import { PersonDetails } from '@/lib/types';
 import { ArrowLeft, Calendar, Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { ExpandableText } from './expandable-text';
 import { MovieCard } from './movie-card';
 import { useState, useRef, useCallback } from 'react';
 import { Button } from './ui/button';
+import { useBack } from '@/hooks/use-back';
 
 interface PersonPageClientProps {
   person: PersonDetails;
@@ -17,32 +17,38 @@ interface PersonPageClientProps {
 const ITEMS_PER_PAGE = 18;
 
 export function PersonPageClient({ person }: PersonPageClientProps) {
-  const router = useRouter();
+  const { handleBack } = useBack();
   const [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE);
+  const [isLoading, setIsLoading] = useState(false);
   const observer = useRef<IntersectionObserver>();
 
+  const hasMore = visibleItems < person.known_for.length;
+
   const loadMoreItems = useCallback(() => {
-    setVisibleItems((prev) => Math.min(prev + ITEMS_PER_PAGE, person.known_for.length));
+    setIsLoading(true);
+    setTimeout(() => {
+        setVisibleItems((prev) => Math.min(prev + ITEMS_PER_PAGE, person.known_for.length));
+        setIsLoading(false);
+    }, 500); // Simulate network delay
   }, [person.known_for.length]);
 
   const lastItemRef = useCallback(
     (node: HTMLDivElement) => {
+      if (isLoading) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && visibleItems < person.known_for.length) {
+        if (entries[0].isIntersecting && hasMore) {
           loadMoreItems();
         }
       });
       if (node) observer.current.observe(node);
     },
-    [loadMoreItems, visibleItems, person.known_for.length]
+    [isLoading, hasMore, loadMoreItems]
   );
-  
-  const hasMore = visibleItems < person.known_for.length;
 
   return (
     <div className="relative">
-        <button onClick={() => router.back()} className="absolute -top-16 left-0 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors z-10">
+        <button onClick={handleBack} className="absolute -top-16 left-0 flex items-center justify-center bg-black/30 p-2 rounded-full hover:bg-black/50 transition-colors z-10">
             <ArrowLeft className="w-6 h-6 text-white"/>
             <span className="sr-only">Back</span>
         </button>
@@ -53,6 +59,7 @@ export function PersonPageClient({ person }: PersonPageClientProps) {
                         src={person.profile_path}
                         alt={person.name}
                         fill
+                        priority
                         className="object-cover"
                         sizes="(max-width: 768px) 40vw, 16vw"
                     />
@@ -82,15 +89,19 @@ export function PersonPageClient({ person }: PersonPageClientProps) {
                      const isLastItem = index === visibleItems - 1;
                      return (
                         <div key={`${item.id}-${item.media_type}-${index}`} ref={isLastItem ? lastItemRef : null}>
-                            <MovieCard movie={item} />
+                            <MovieCard movie={item} priority={index < ITEMS_PER_PAGE} />
                         </div>
                     )
                 })}
             </div>
-            {hasMore && (
+            {isLoading && (
                 <div className="flex justify-center mt-8">
-                    <Button onClick={loadMoreItems}>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+            )}
+            {!isLoading && hasMore && (
+                 <div className="flex justify-center mt-8">
+                    <Button onClick={loadMoreItems} variant="secondary">
                         Load More
                     </Button>
                 </div>

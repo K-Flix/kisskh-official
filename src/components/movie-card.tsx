@@ -6,9 +6,10 @@ import { Card, CardContent } from '@/components/ui/card';
 
 interface MovieCardProps {
   movie: Movie | Show;
+  priority?: boolean;
 }
 
-export function MovieCard({ movie }: MovieCardProps) {
+export function MovieCard({ movie, priority = false }: MovieCardProps) {
   const href = movie.media_type === 'tv' ? `/tv/${movie.id}` : `/movie/${movie.id}`;
   const year = movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A';
   
@@ -21,6 +22,7 @@ export function MovieCard({ movie }: MovieCardProps) {
               src={movie.poster_path}
               alt={movie.title}
               fill
+              priority={priority}
               className="object-cover rounded-md"
               sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
               data-ai-hint="movie poster"

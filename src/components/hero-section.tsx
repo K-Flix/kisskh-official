@@ -23,6 +23,7 @@ function HeroContent({ movie }: { movie: Movie | Show }) {
             src={movie.logo_path}
             alt={`${movie.title} logo`}
             fill
+            priority
             className="object-contain object-left-bottom"
             data-ai-hint="movie logo"
             />
@@ -68,7 +69,7 @@ export function HeroSection({ movies }: HeroSectionProps) {
       onMouseLeave={plugin.current.reset}
     >
       <CarouselContent>
-        {movies.map((movie) => (
+        {movies.map((movie, index) => (
           <CarouselItem key={movie.id}>
             {/* Mobile Layout */}
             <div className="md:hidden relative h-[50vh] w-full">
@@ -76,7 +77,7 @@ export function HeroSection({ movies }: HeroSectionProps) {
                 src={movie.backdrop_path}
                 alt={`Backdrop for ${movie.title}`}
                 fill
-                priority
+                priority={index === 0}
                 className="object-cover object-top"
                 data-ai-hint="movie backdrop"
               />
@@ -94,7 +95,7 @@ export function HeroSection({ movies }: HeroSectionProps) {
                     src={movie.backdrop_path}
                     alt={`Backdrop for ${movie.title}`}
                     fill
-                    priority
+                    priority={index === 0}
                     className="object-cover object-top"
                     data-ai-hint="movie backdrop"
                 />

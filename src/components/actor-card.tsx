@@ -12,14 +12,15 @@ interface ActorCardProps {
 
 function SingleActorCard({ actor }: ActorCardProps) {
   return (
-    <Link href={`/person/${actor.id}`} className="block">
-      <Card className="bg-secondary border-0 text-center shrink-0 w-36 overflow-hidden group">
+    <Link href={`/person/${actor.id}`} className="block group">
+      <Card className="bg-secondary border-0 text-center shrink-0 w-36 overflow-hidden">
           <div className="relative aspect-[2/3] w-full">
               {actor.profile_path ? (
               <Image
                   src={actor.profile_path}
                   alt={actor.name}
                   fill
+                  loading="lazy"
                   className="object-cover rounded-t-lg transition-transform duration-300 group-hover:scale-105"
                   sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, (max-width: 1024px) 20vw, 14vw"
               />

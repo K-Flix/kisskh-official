@@ -43,9 +43,9 @@ export function MovieCarousel({ title, movies, seeAllHref }: MovieCarouselProps)
         className="w-full"
       >
         <CarouselContent className="-ml-4">
-          {movies.map((movie) => (
+          {movies.map((movie, index) => (
             <CarouselItem key={movie.id} className="pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6">
-              <MovieCard movie={movie} />
+              <MovieCard movie={movie} priority={index < 5} />
             </CarouselItem>
           ))}
         </CarouselContent>
