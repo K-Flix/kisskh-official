@@ -29,13 +29,15 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
     const isDetailPage = /^\/(movie|tv|person)\/.+/.test(pathname);
 
     return (
-        <div className="relative flex min-h-screen flex-col">
-            {!isDetailPage && <Header />}
-            <main className="flex-1">
-                {isPageWithHero || isDetailPage ? children : <div className="pt-16">{children}</div>}
-            </main>
-            <Footer />
+        <>
+            <div className="relative flex min-h-screen flex-col">
+                {!isDetailPage && <Header />}
+                <main className="flex-1">
+                    {isPageWithHero || isDetailPage ? children : <div className="pt-16">{children}</div>}
+                </main>
+                <Footer />
+            </div>
             <BackToTopButton />
-        </div>
+        </>
     );
 }
