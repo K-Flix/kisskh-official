@@ -222,7 +222,7 @@ export async function getMovieById(id: number): Promise<MovieDetails | null> {
         runtime: data.runtime,
         cast: (data.aggregate_credits?.cast || []).map((member: any) => ({
             id: member.id,
-            credit_id: member.credit_id,
+            credit_id: member.roles?.[0]?.credit_id || member.id,
             name: member.name,
             character: member.roles?.map((r: any) => r.character).join(', ') || '',
             profile_path: member.profile_path ? `${IMAGE_BASE_URL}/w300${member.profile_path}` : null
@@ -258,7 +258,7 @@ export async function getShowById(id: number): Promise<ShowDetails | null> {
 
     const cast = (data.aggregate_credits?.cast || []).map((member: any) => ({
         id: member.id,
-        credit_id: member.credit_id,
+        credit_id: member.roles?.[0]?.credit_id || member.id,
         name: member.name,
         character: member.roles?.map((r: any) => r.character).join(', ') || '',
         profile_path: member.profile_path ? `${IMAGE_BASE_URL}/w300${member.profile_path}` : null
