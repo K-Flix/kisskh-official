@@ -93,7 +93,10 @@ export interface TmdbItem {
     };
     runtime?: number;
     number_of_seasons?: number;
-    credits?: {
+    credits?: { // For backward compatibility with some calls
+        cast?: any[];
+    };
+    aggregate_credits?: {
         cast?: any[];
     };
     seasons?: any[];
