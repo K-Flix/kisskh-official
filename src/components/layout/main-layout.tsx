@@ -4,6 +4,7 @@
 import { usePathname } from 'next/navigation';
 import { Header } from './header';
 import Link from 'next/link';
+import { BackToTopButton } from '../back-to-top-button';
 
 function Footer() {
   return (
@@ -34,6 +35,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
                 {isPageWithHero || isDetailPage ? children : <div className="pt-16">{children}</div>}
             </main>
             <Footer />
+            <BackToTopButton />
         </div>
     );
 }
