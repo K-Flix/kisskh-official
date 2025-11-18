@@ -1,10 +1,15 @@
 
+'use client';
+
 import Image from 'next/image';
 import type { CastMember } from '@/lib/types';
-import { User } from 'lucide-react';
+import { User, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
 import Link from 'next/link';
+import { Button } from './ui/button';
+import { ViewAllCastDialog } from './view-all-cast-dialog';
+import { useState } from 'react';
 
 interface ActorCardProps {
   actor: CastMember;
@@ -40,11 +45,24 @@ function SingleActorCard({ actor }: ActorCardProps) {
 }
 
 export function ActorCard({ actors }: { actors: CastMember[] }) {
+    const [isDialogOpen, setDialogOpen] = useState(false);
+    
+    if (!actors || actors.length === 0) return null;
+
+    const visibleActors = actors.slice(0, 15);
+
     return (
         <div>
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="w-1.5 h-7 bg-primary rounded-full" />
-            <h2 className="text-2xl font-bold">Cast</h2>
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-1.5 h-7 bg-primary rounded-full" />
+              <h2 className="text-2xl font-bold">Cast</h2>
+            </div>
+             {actors.length > 15 && (
+                <Button variant="link" onClick={() => setDialogOpen(true)}>
+                    View All <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+            )}
           </div>
           <Carousel
             opts={{
@@ -54,7 +72,7 @@ export function ActorCard({ actors }: { actors: CastMember[] }) {
             className="w-full"
           >
             <CarouselContent className="-ml-4">
-              {actors.map((member) => (
+              {visibleActors.map((member) => (
                 <CarouselItem key={member.credit_id} className="pl-4 basis-auto">
                   <SingleActorCard actor={member} />
                 </CarouselItem>
@@ -63,6 +81,11 @@ export function ActorCard({ actors }: { actors: CastMember[] }) {
             <CarouselPrevious />
             <CarouselNext />
           </Carousel>
+          <ViewAllCastDialog
+            isOpen={isDialogOpen}
+            onOpenChange={setDialogOpen}
+            cast={actors}
+          />
         </div>
     )
 }
