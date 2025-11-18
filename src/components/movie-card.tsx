@@ -11,7 +11,7 @@ interface MovieCardProps {
 
 export function MovieCard({ movie, priority = false }: MovieCardProps) {
   const href = movie.media_type === 'tv' ? `/tv/${movie.id}` : `/movie/${movie.id}`;
-  const year = movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A';
+  const year = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
   
   return (
     <Link href={href} className="group block">
