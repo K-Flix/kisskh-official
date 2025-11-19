@@ -10,8 +10,10 @@ export function useBack() {
   const { previousPath } = useApp();
 
   const handleBack = useCallback(() => {
-    // Check if there is history to go back to in the browser
-    if (window.history.length > 2 && previousPath) {
+    const hasHistory = typeof window !== 'undefined' && window.history.length > 2;
+    const isSameOrigin = typeof window !== 'undefined' && document.referrer.includes(window.location.origin);
+
+    if (hasHistory && isSameOrigin) {
         router.back();
     } else if (previousPath) {
         router.push(previousPath);

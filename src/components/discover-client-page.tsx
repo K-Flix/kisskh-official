@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect, useMemo, useTransition } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { MovieCard } from '@/components/movie-card';
 import { Movie, Show, Genre, Country, NetworkConfig } from '@/lib/types';
 import { getItems } from '@/lib/data';
@@ -46,7 +46,6 @@ export function DiscoverClientPage({
   const [isPending, startTransition] = useTransition();
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  const router = useRouter();
   const searchParams = useSearchParams();
   const observer = useRef<IntersectionObserver>();
 
@@ -59,6 +58,21 @@ export function DiscoverClientPage({
     return filters;
   }, [searchParams]);
 
+  const updateUrl = (newParams: URLSearchParams) => {
+    const search = newParams.toString();
+    const query = search ? `?${search}` : "";
+    window.history.pushState(null, '', `/discover${query}`);
+  };
+
+  const applyFilters = (newFilters: Record<string, string>) => {
+    startTransition(async () => {
+        const newItems = await getItems('discover_all', 1, false, false, newFilters);
+        setItems(newItems);
+        setPage(2);
+        setHasMore(newItems.length > 0);
+    });
+  };
+
   useEffect(() => {
     setItems(initialItems);
     setPage(2);
@@ -67,65 +81,66 @@ export function DiscoverClientPage({
 
 
   const handleFilterChange = useCallback((key: string, value: string) => {
-    startTransition(() => {
-        const newParams = new URLSearchParams(searchParams.toString());
-        if (value && value !== 'all') {
-            newParams.set(key, value);
-        } else {
-            newParams.delete(key);
-        }
-        const search = newParams.toString();
-        const query = search ? `?${search}` : "";
-        router.push(`/discover${query}`);
-    });
-  }, [searchParams, router]);
+    const newParams = new URLSearchParams(window.location.search);
+    if (value && value !== 'all') {
+        newParams.set(key, value);
+    } else {
+        newParams.delete(key);
+    }
+    updateUrl(newParams);
+    const newFilters: Record<string, string> = {};
+    newParams.forEach((v, k) => { newFilters[k] = v });
+    applyFilters(newFilters);
+  }, []);
 
 
   const handleNetworkSelect = useCallback((network: NetworkConfig) => {
-    startTransition(() => {
-        const newParams = new URLSearchParams(searchParams.toString());
-        const networkIds = network.networkIds?.join('|');
-        const providerIds = network.providerIds?.join('|');
+    const newParams = new URLSearchParams(window.location.search);
+    const networkIds = network.networkIds?.join('|');
+    const providerIds = network.providerIds?.join('|');
 
-        const isCurrentlySelected = 
-            (networkIds && newParams.get('with_networks') === networkIds) ||
-            (providerIds && newParams.get('with_watch_providers') === providerIds);
+    const isCurrentlySelected = 
+        (networkIds && newParams.get('with_networks') === networkIds) ||
+        (providerIds && newParams.get('with_watch_providers') === providerIds);
 
-        // Clear old network/provider filters before adding new ones
-        newParams.delete('with_networks');
-        newParams.delete('with_watch_providers');
+    // Clear old network/provider filters before adding new ones
+    newParams.delete('with_networks');
+    newParams.delete('with_watch_providers');
 
-        if (!isCurrentlySelected) {
-            if (networkIds) newParams.set('with_networks', networkIds);
-            if (providerIds) newParams.set('with_watch_providers', providerIds);
-            
-            // If it's a broadcast-only network, default to TV
-            if (networkIds && (!providerIds || providerIds.length === 0)) {
-                newParams.set('media_type', 'tv');
-            } else {
-                newParams.delete('media_type');
-            }
+    if (!isCurrentlySelected) {
+        if (networkIds) newParams.set('with_networks', networkIds);
+        if (providerIds) newParams.set('with_watch_providers', providerIds);
+        
+        if (networkIds && (!providerIds || providerIds.length === 0)) {
+            newParams.set('media_type', 'tv');
         } else {
             newParams.delete('media_type');
         }
-        
-        const search = newParams.toString();
-        const query = search ? `?${search}` : "";
-        router.push(`/discover${query}`);
-    });
-  }, [searchParams, router]);
+    } else {
+        newParams.delete('media_type');
+    }
+    
+    updateUrl(newParams);
+    const newFilters: Record<string, string> = {};
+    newParams.forEach((v, k) => { newFilters[k] = v });
+    applyFilters(newFilters);
+  }, []);
 
   const handleReset = useCallback(() => {
-    startTransition(() => {
-        router.push('/discover');
-    });
-  }, [router]);
+    const newParams = new URLSearchParams();
+    updateUrl(newParams);
+    applyFilters({});
+  }, []);
 
 
   const loadMoreItems = useCallback(async () => {
     if (isLoadingMore || isPending || !hasMore) return;
     setIsLoadingMore(true);
-      const newItems = await getItems('discover_all', page, false, false, currentFilters);
+    const params = new URLSearchParams(window.location.search);
+    const filters: Record<string, string> = {};
+    params.forEach((v, k) => { filters[k] = v });
+
+      const newItems = await getItems('discover_all', page, false, false, filters);
       if (newItems.length > 0) {
         setItems((prev) => [...prev, ...newItems]);
         setPage((prev) => prev + 1);
@@ -133,7 +148,7 @@ export function DiscoverClientPage({
         setHasMore(false);
       }
     setIsLoadingMore(false);
-  }, [isLoadingMore, isPending, hasMore, page, currentFilters]);
+  }, [isLoadingMore, isPending, hasMore, page]);
   
 
   const lastItemRef = useCallback(
@@ -150,8 +165,8 @@ export function DiscoverClientPage({
     [isLoadingMore, isPending, hasMore, loadMoreItems]
   );
 
-  const selectedNetworkId = searchParams.get('with_networks');
-  const selectedProviderId = searchParams.get('with_watch_providers');
+  const selectedNetworkId = currentFilters['with_networks'];
+  const selectedProviderId = currentFilters['with_watch_providers'];
 
   const selectedNetwork = networks.find(n => 
     (n.networkIds?.join('|') === selectedNetworkId && n.providerIds?.join('|') === selectedProviderId) ||

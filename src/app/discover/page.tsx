@@ -54,7 +54,6 @@ function DiscoverSkeleton() {
 }
 
 export default async function DiscoverPage({ searchParams }: DiscoverPageProps) {
-    // Flatten searchParams
     const flatFilters: Record<string, string> = {};
     for (const key in searchParams) {
         const value = searchParams[key];
@@ -63,9 +62,12 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
         }
     }
     
-    const initialItems = await getItems('discover_all', 1, false, false, flatFilters);
-    const genres = await getGenres();
-    const countries = await getCountries();
+    // Fetch initial data on the server
+    const [initialItems, genres, countries] = await Promise.all([
+        getItems('discover_all', 1, false, false, flatFilters),
+        getGenres(),
+        getCountries()
+    ]);
 
     const years = Array.from({ length: new Date().getFullYear() - 1900 + 1 }, (_, i) => (new Date().getFullYear() - i).toString());
 
