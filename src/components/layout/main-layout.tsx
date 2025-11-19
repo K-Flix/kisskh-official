@@ -29,7 +29,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
     const isDetailPage = /^\/(movie|tv|person)\/.+/.test(pathname);
 
     return (
-        <>
+        <div className="relative flex min-h-screen flex-col">
             <div className="flex-1">
                 {!isDetailPage && <Header />}
                 <main className="flex-1">
@@ -38,6 +38,6 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
             </div>
             <Footer />
             <BackToTopButton />
-        </>
+        </div>
     );
 }
