@@ -50,7 +50,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`dark ${inter.variable}`}>
-      <body>
+      <body className="relative flex min-h-screen flex-col">
         <ThemeProvider>
           <ThemeInjector />
           <TooltipProvider>
