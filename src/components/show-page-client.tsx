@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import type { ShowDetails } from '@/lib/types';
 import { EpisodeList } from '@/components/episode-list';
@@ -9,7 +9,7 @@ import { MovieCarousel } from '@/components/movie-carousel';
 import { ActorCard } from '@/components/actor-card';
 import { ShowHero } from './show-hero';
 import { ArrowLeft, X } from 'lucide-react';
-import { Dialog, DialogClose, DialogContent } from './ui/dialog';
+import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import {
   Select,
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select"
 import { useBack } from '@/hooks/use-back';
 import { BannerAd } from './banner-ad';
+import { servers } from '@/lib/servers';
 
 interface ShowPageClientProps {
   show: ShowDetails;
@@ -30,23 +31,20 @@ interface PlayerState {
   episode: number;
 }
 
-const servers = [
-    { name: 'Vidstorm', displayName: 'Primary' },
-    { name: 'VidSrcV2', displayName: 'Alternate 1' },
-    { name: 'Videasy', displayName: 'Alternate 2' },
-    { name: 'VidSrcMe', displayName: 'Alternate 3' },
-    { name: 'VidPlus', displayName: 'Alternate 4' },
-    { name: 'MoviesAPI', displayName: 'Alternate 5' },
-    { name: 'VidLink', displayName: 'Alternate 6' }
-  ];
-
 export function ShowPageClient({ show }: ShowPageClientProps) {
   const [playerState, setPlayerState] = useState<PlayerState | null>(null);
   const [showTrailer, setShowTrailer] = useState(false);
-  const [selectedServer, setSelectedServer] = useState('Vidstorm');
+  const [selectedServer, setSelectedServer] = useState(servers[0].name);
   const episodesSectionRef = useRef<HTMLDivElement>(null);
   const similarsSectionRef = useRef<HTMLDivElement>(null);
   const { handleBack } = useBack();
+
+  useEffect(() => {
+    // Reset state when show changes
+    setPlayerState(null);
+    setShowTrailer(false);
+    setSelectedServer(servers[0].name);
+  }, [show.id]);
 
   const handlePlay = (season: number, episode: number) => {
     setPlayerState({ season, episode });
@@ -78,25 +76,12 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
 
     const id = show.id;
     const { season: seasonNum, episode: episodeNum } = playerState;
-
-    switch (selectedServer) {
-        case 'Vidstorm':
-            return `https://vidstorm.ru/tv/${id}/${seasonNum}/${episodeNum}`;
-        case 'VidSrcV2':
-            return `https://vidsrc.cc/v2/embed/tv/${id}/${seasonNum}/${episodeNum}?autoPlay=true`;
-        case 'Videasy':
-            return `https://player.videasy.net/tv/${id}/${seasonNum}/${episodeNum}?autoplay=true`;
-        case 'VidSrcMe':
-            return `https://vidsrcme.ru/embed/tv?tmdb=${id}&season=${seasonNum}&episode=${episodeNum}`;
-        case 'VidPlus':
-            return `https://player.vidplus.to/embed/tv/${id}/${seasonNum}/${episodeNum}?autoplay=true`;
-        case 'MoviesAPI':
-            return `https://moviesapi.club/tv/${id}-${seasonNum}-${episodeNum}`;
-        case 'VidLink':
-            return `https://vidlink.pro/tv/${id}/${seasonNum}/${episodeNum}`;
-        default:
-            return `https://vidstorm.ru/tv/${id}/${seasonNum}/${episodeNum}`;
+    
+    const server = servers.find(s => s.name === selectedServer);
+    if (server) {
+      return server.url.replace('{id}', id.toString()).replace('{season}', seasonNum.toString()).replace('{episode}', episodeNum.toString());
     }
+    return servers[0].url.replace('{id}', id.toString()).replace('{season}', seasonNum.toString()).replace('{episode}', episodeNum.toString());
   };
 
   const videoUrl = getPlayerUrl();
@@ -140,7 +125,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                                           </SelectValue>
                                       </SelectTrigger>
                                       <SelectContent>
-                                          {servers.map(({ name, displayName }) => (
+                                          {servers.filter(s => s.type === 'tv' || s.type === 'any').map(({ name, displayName }) => (
                                               <SelectItem key={name} value={name}>
                                                   {displayName}
                                               </SelectItem>
@@ -151,7 +136,7 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                                 
                                 {/* Desktop Buttons */}
                                 <div className="hidden sm:flex flex-wrap gap-2">
-                                  {servers.map(({ name, displayName }) => (
+                                  {servers.filter(s => s.type === 'tv' || s.type === 'any').map(({ name, displayName }) => (
                                       <Button
                                           key={name}
                                           variant={selectedServer === name ? 'default' : 'secondary'}
@@ -226,10 +211,6 @@ export function ShowPageClient({ show }: ShowPageClientProps) {
                   allowFullScreen
                   className="w-full h-full border-0 rounded-lg"
               ></iframe>
-              <DialogClose className="absolute right-2 top-2 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10">
-                    <X className="h-5 w-5 text-white bg-black/50 rounded-full p-0.5" />
-                    <span className="sr-only">Close</span>
-                </DialogClose>
           </DialogContent>
       </Dialog>
     </div>

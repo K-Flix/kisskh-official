@@ -1,14 +1,14 @@
 
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import type { MovieDetails } from '@/lib/types';
 import { ActorCard } from '@/components/actor-card';
 import { MovieCarousel } from '@/components/movie-carousel';
 import { ShowHero } from './show-hero';
 import { ArrowLeft, Download, X } from 'lucide-react';
-import { Dialog, DialogClose, DialogContent } from './ui/dialog';
+import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import Link from 'next/link';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
@@ -21,49 +21,34 @@ import {
 } from "@/components/ui/select"
 import { useBack } from '@/hooks/use-back';
 import { BannerAd } from './banner-ad';
+import { servers } from '@/lib/servers';
 
 interface MoviePageClientProps {
   movie: MovieDetails;
 }
 
-const servers = [
-    { name: 'Vidstorm', displayName: 'Primary' },
-    { name: 'VidSrcV2', displayName: 'Alternate 1' },
-    { name: 'Videasy', displayName: 'Alternate 2' },
-    { name: 'VidSrcMe', displayName: 'Alternate 3' },
-    { name: 'VidPlus', displayName: 'Alternate 4' },
-    { name: 'MoviesAPI', displayName: 'Alternate 5' },
-    { name: 'VidLink', displayName: 'Alternate 6' }
-  ];
-
 export function MoviePageClient({ movie }: MoviePageClientProps) {
   const [showPlayer, setShowPlayer] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
-  const [selectedServer, setSelectedServer] = useState('Vidstorm');
+  const [selectedServer, setSelectedServer] = useState(servers[0].name);
   const similarSectionRef = useRef<HTMLDivElement>(null);
   const { handleBack } = useBack();
+
+  useEffect(() => {
+    // Reset state when movie changes
+    setShowPlayer(false);
+    setShowTrailer(false);
+    setSelectedServer(servers[0].name);
+  }, [movie.id]);
 
   const getPlayerUrl = () => {
     const id = movie.id;
 
-    switch (selectedServer) {
-        case 'Vidstorm':
-            return `https://vidstorm.ru/movie/${id}`;
-        case 'VidSrcV2':
-            return `https://vidsrc.cc/v2/embed/movie/${id}?autoPlay=true`;
-        case 'Videasy':
-            return `https://player.videasy.net/movie/${id}?autoplay=true`;
-        case 'VidSrcMe':
-            return `https://vidsrcme.ru/embed/movie?tmdb=${id}`;
-        case 'VidPlus':
-            return `https://player.vidplus.to/embed/movie/${id}?autoplay=true`;
-        case 'MoviesAPI':
-            return `https://moviesapi.club/movie/${id}`;
-        case 'VidLink':
-            return `https://vidlink.pro/movie/${id}`;
-        default:
-            return `https://vidstorm.ru/movie/${id}`;
+    const server = servers.find(s => s.name === selectedServer);
+    if (server) {
+      return server.url.replace('{id}', id.toString());
     }
+    return servers[0].url.replace('{id}', id.toString());
   };
 
   const videoUrl = getPlayerUrl();
@@ -204,10 +189,6 @@ export function MoviePageClient({ movie }: MoviePageClientProps) {
                     allowFullScreen
                     className="w-full h-full border-0 rounded-lg"
                 ></iframe>
-                 <DialogClose className="absolute right-2 top-2 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10">
-                    <X className="h-5 w-5 text-white bg-black/50 rounded-full p-0.5" />
-                    <span className="sr-only">Close</span>
-                </DialogClose>
             </DialogContent>
         </Dialog>
     </div>
